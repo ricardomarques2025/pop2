@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>PLANO GOINFRA<span>2026 - 2030</span></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/style.css" />
+ </head>
+<body>
+<header id="topbar">
+  <div class="topbar-left">
+    <strong>PLANO GOINFRA</strong>
+    <span>2026 – 2030</span>
+  </div>
+
+  <div class="topbar-right">
+    <span>Sistema de Monitoramento</span>
+  </div>
+</header>
+  <div id="app" class="com-topbar">
+  <aside id="sidebar-left">
+    <div id="sidebar-left-header" class="sidebar-header">
+      <button id="toggleSidebarLeft" type="button" class="sidebar-toggle-btn">«</button>
+    </div>
+    <div class="scroll-inner" id="sidebar-left-content">
+   
+    <div class="bloco">
+      <div class="subtitulo">ORIGEM</div>
+      <div class="grid-servicos" id="servicosLinearesBotoes">
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="FUNDEINFRA" type="button">FUNDEINFRA</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOR" type="button">DOR</button>
+      </div>
+
+      <label for="servicoSelect">Serviço</label>
+      <select id="servicoSelect">
+        <option value="">Todos</option>
+      </select>
+
+      <label for="rgPlanSelect">Região de Planejamento</label>
+      <select id="rgPlanSelect">
+        <option value="">Todas</option>
+      </select>
+
+      <label for="municipioBusca">Município</label>
+
+      <div class="autocomplete-wrap">
+        <input 
+          type="text" 
+          id="municipioBusca" 
+          placeholder="Digite o nome do município..."
+          autocomplete="off"
+        />
+        <div id="municipioSugestoes" class="autocomplete-list"></div>
+      </div>
+
+      <select id="municipioSelect">
+        <option value="">Todos</option>
+      </select>
+
+      <label for="localidadeBusca">Localidade</label>
+      <div class="autocomplete-wrap">
+        <input
+          type="text"
+          id="localidadeBusca"
+          placeholder="Digite o nome da localidade..."
+          autocomplete="off"
+        />
+        <div id="localidadeSugestoes" class="autocomplete-list"></div>
+      </div>
+
+      <select id="localidadeSelect">
+        <option value="">Todas</option>
+      </select>
+
+      <label for="rodoviaSelect">Rodovia</label>
+      <select id="rodoviaSelect">
+        <option value="">Todas</option>
+      </select>
+
+      <label for="sreSelect">SRE</label>
+      <select id="sreSelect">
+        <option value="">Todos</option>
+      </select>
+
+      <label for="propostaSelect">Proposta</label>
+      <select id="propostaSelect">
+        <option value="">Todas</option>
+      </select>
+
+      <div class="subtitulo">Malhas de base</div>
+      <div class="grid-botoes">
+        <button class="filtro-btn base-btn" id="toggleMunicipiosBase" type="button">Municípios</button>
+        <button class="filtro-btn base-btn ativo-filtro" id="toggleSREBase" type="button">Malha Estadual</button>
+        <button class="filtro-btn base-btn ativo-filtro" id="toggleSNV" type="button">Malha Federal</button>
+        <button class="filtro-btn base-btn ativo-filtro" id="toggleLocalidades" type="button">Localidades</button>
+      </div>
+
+      <button id="desligarTudo" type="button">Desligar Tudo</button>
+      <button id="limparFiltro" type="button">Ligar Tudo / Limpar</button>
+
+      <div class="contador">
+        Municípios: <span id="countMunicipios">0</span><br>
+        Linhas: <span id="countLinhas">0</span><br>
+        Obras FUNDEINFRA: <span id="countOAE">0</span><br>
+        Obras DOR: <span id="countDor">0</span>
+      </div>
+    </div>
+  </div></aside>
+
+ <div id="centro-mapa">
+  <main id="map-wrap">
+    <div id="map"></div>
+  </main>
+
+  <section id="painelTabela" class="painel-fechado">
+    <div id="painelTabelaHeader">
+      <strong>Detalhes do trecho selecionado</strong>
+      <button id="togglePainelTabela" type="button">Mostrar tabela</button>
+    </div>
+
+    <div id="painelTabelaConteudo">
+      <b>Nenhum trecho selecionado</b>
+    </div>
+  </section>
+</div>
+
+
+  <aside id="sidebar-right">
+    <div id="sidebar-right-header" class="sidebar-header">
+      <button id="toggleSidebarRight" type="button" class="sidebar-toggle-btn">»</button>
+    </div>
+    <div class="scroll-inner" id="sidebar-right-content">
+      <div class="bloco">
+        <div class="subtitulo">Legenda — FUNDEINFRA</div>
+        <div id="legendaServicos"></div>
+      </div>
+
+      <div class="bloco">
+        <div class="subtitulo">Legenda — DOR</div>
+        <div id="legendaDor"></div>
+      </div>
+
+      <div class="bloco" id="blocoLegendaRodEst">
+        <div class="subtitulo">Legenda — Rodovia Estadual</div>
+        <div id="legendaRodEst"></div>
+      </div>
+
+      <div class="bloco" id="blocoLegendaRodFed">
+        <div class="subtitulo">Legenda — Rodovia Federal</div>
+        <div id="legendaRodFed"></div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="js/estilos.js"></script>
+<script src="js/mapa.js"></script>
+
+</body>
+</html>

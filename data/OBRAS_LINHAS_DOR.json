@@ -1,0 +1,4061 @@
+[
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0043",
+    "SEI": 202500036004429,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 32,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0177",
+    "SEI": 202500005007649,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0043",
+    "SEI": 202500036004429,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0074",
+    "SEI": 202400036016293,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/27"
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0074",
+    "SEI": 202400036016293,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/27"
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0074",
+    "SEI": 202400036016293,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/27"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 24,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0169",
+    "SEI": 202300036014701,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 18,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0092",
+    "SEI": 202500036007298,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jun/32"
+  },
+  {
+    "PROPOSTA": 59,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0133",
+    "SEI": 202300036014695,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 59,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0133",
+    "SEI": 202300036014695,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0154",
+    "SEI": 202400036001325,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/26"
+  },
+  {
+    "PROPOSTA": 24,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0169",
+    "SEI": 202300036014701,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 24,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0169",
+    "SEI": 202300036014701,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 18,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0092",
+    "SEI": 202500036007298,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jun/32"
+  },
+  {
+    "PROPOSTA": 60,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0134",
+    "SEI": 202500036014547,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "set/26"
+  },
+  {
+    "PROPOSTA": 59,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0133",
+    "SEI": 202300036014695,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0150",
+    "SEI": 202500005004747,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jun/26"
+  },
+  {
+    "PROPOSTA": 24,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0169",
+    "SEI": 202300036014701,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 25,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0170",
+    "SEI": 202500005007649,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 18,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0092",
+    "SEI": 202500036007298,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jun/32"
+  },
+  {
+    "PROPOSTA": 60,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0134",
+    "SEI": 202500036014547,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "set/26"
+  },
+  {
+    "PROPOSTA": 59,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0133",
+    "SEI": 202300036014695,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 25,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0170",
+    "SEI": 202500005007649,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 40,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0114",
+    "SEI": 202320920000316,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jun/26"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0154",
+    "SEI": 202400036001325,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/26"
+  },
+  {
+    "PROPOSTA": 19,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0164",
+    "SEI": 201700036000506,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "mar/25"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0154",
+    "SEI": 202400036001325,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/26"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0154",
+    "SEI": 202400036001325,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/26"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0154",
+    "SEI": 202400036001325,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/26"
+  },
+  {
+    "PROPOSTA": 44,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0118",
+    "SEI": 201300036004171,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jul/25"
+  },
+  {
+    "PROPOSTA": 16,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0161",
+    "SEI": 202500005026672,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0154",
+    "SEI": 202400036001325,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/26"
+  },
+  {
+    "PROPOSTA": 16,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0161",
+    "SEI": 202500005026672,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0154",
+    "SEI": 202400036001325,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/26"
+  },
+  {
+    "PROPOSTA": 44,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0118",
+    "SEI": 201300036004171,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jul/25"
+  },
+  {
+    "PROPOSTA": 25,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0099",
+    "SEI": 202200036012330,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jul/25"
+  },
+  {
+    "PROPOSTA": 19,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0093",
+    "SEI": 202500036004664,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jun/32"
+  },
+  {
+    "PROPOSTA": 67,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0141",
+    "SEI": 202100036011403,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "ago/25"
+  },
+  {
+    "PROPOSTA": 44,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0118",
+    "SEI": 201300036004171,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jul/25"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0082",
+    "SEI": 201810216000062,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jan/27"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0082",
+    "SEI": 201810216000062,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jan/27"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0082",
+    "SEI": 201810216000062,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jan/27"
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0027",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0027",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0011",
+    "SEI": 202400012000560,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0011",
+    "SEI": 202400012000560,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 30,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0175",
+    "SEI": 202500036010838,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 30,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0175",
+    "SEI": 202500036010838,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 41,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0115",
+    "SEI": 201300036004787,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "out/24"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0029",
+    "SEI": 202500036001924,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": "jun/25"
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0147",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0076",
+    "SEI": 202500005027554,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 41,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0115",
+    "SEI": 201300036004787,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "out/24"
+  },
+  {
+    "PROPOSTA": 41,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0115",
+    "SEI": 201300036004787,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "out/24"
+  },
+  {
+    "PROPOSTA": 62,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0136",
+    "SEI": 201400036000376,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jun/24"
+  },
+  {
+    "PROPOSTA": 33,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0178",
+    "SEI": 202500005029681,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0158",
+    "SEI": 202500036001925,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0029",
+    "SEI": 202500036001924,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": "jun/25"
+  },
+  {
+    "PROPOSTA": 62,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0136",
+    "SEI": 201400036000376,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jun/24"
+  },
+  {
+    "PROPOSTA": 16,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0036",
+    "SEI": 202500036001924,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0089",
+    "SEI": 202500005027137,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "fev/28"
+  },
+  {
+    "PROPOSTA": 66,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0140",
+    "SEI": 202320920000709,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 62,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0136",
+    "SEI": 201400036000376,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jun/24"
+  },
+  {
+    "PROPOSTA": 16,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0036",
+    "SEI": 202500036001924,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0089",
+    "SEI": 202500005027137,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "fev/28"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0089",
+    "SEI": 202500005027137,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "fev/28"
+  },
+  {
+    "PROPOSTA": 66,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0140",
+    "SEI": 202320920000709,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 66,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0140",
+    "SEI": 202320920000709,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0014",
+    "SEI": 202400036007020,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 16,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0090",
+    "SEI": 202200036005822,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "nov/24"
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0014",
+    "SEI": 202400036007020,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0029",
+    "SEI": 202500036001924,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": "jun/25"
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0014",
+    "SEI": 202400036007020,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 43,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0117",
+    "SEI": 202400036009795,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0077",
+    "SEI": 202320920000596,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/27"
+  },
+  {
+    "PROPOSTA": 16,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0090",
+    "SEI": 202200036005822,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "nov/24"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0077",
+    "SEI": 202320920000596,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/27"
+  },
+  {
+    "PROPOSTA": 33,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0178",
+    "SEI": 202500005029681,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 33,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0178",
+    "SEI": 202500005029681,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 53,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0127",
+    "SEI": 202500005037140,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "out/26"
+  },
+  {
+    "PROPOSTA": 33,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0178",
+    "SEI": 202500005029681,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 33,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0178",
+    "SEI": 202500005029681,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 24,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0098",
+    "SEI": 202320920000743,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/27"
+  },
+  {
+    "PROPOSTA": 34,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0179",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 28,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0102",
+    "SEI": 202200036003803,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "mai/24"
+  },
+  {
+    "PROPOSTA": 37,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0182",
+    "SEI": 202500005024474,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 34,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0179",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 37,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0182",
+    "SEI": 202500005024474,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 14,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0088",
+    "SEI": 202100036005445,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "out/25"
+  },
+  {
+    "PROPOSTA": 16,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0090",
+    "SEI": 202200036005822,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "nov/24"
+  },
+  {
+    "PROPOSTA": 16,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0090",
+    "SEI": 202200036005822,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "nov/24"
+  },
+  {
+    "PROPOSTA": 16,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0090",
+    "SEI": 202200036005822,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "nov/24"
+  },
+  {
+    "PROPOSTA": 34,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0179",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 56,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0130",
+    "SEI": 202500036011681,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 14,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0088",
+    "SEI": 202100036005445,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "out/25"
+  },
+  {
+    "PROPOSTA": 14,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0088",
+    "SEI": 202100036005445,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "out/25"
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0085",
+    "SEI": 201300036005578,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/25"
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0032",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0085",
+    "SEI": 201300036005578,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/25"
+  },
+  {
+    "PROPOSTA": 37,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0111",
+    "SEI": 202400036014783,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/26"
+  },
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0097",
+    "SEI": 202320920000594,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/26"
+  },
+  {
+    "PROPOSTA": 65,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0139",
+    "SEI": 202520920000587,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/26"
+  },
+  {
+    "PROPOSTA": 65,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0139",
+    "SEI": 202520920000587,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/26"
+  },
+  {
+    "PROPOSTA": 65,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0139",
+    "SEI": 202520920000587,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/26"
+  },
+  {
+    "PROPOSTA": 37,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0111",
+    "SEI": 202400036014783,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/26"
+  },
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0097",
+    "SEI": 202320920000594,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/26"
+  },
+  {
+    "PROPOSTA": 52,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0126",
+    "SEI": 202500036004691,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "ago/28"
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0158",
+    "SEI": 202500036001925,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0158",
+    "SEI": 202500036001925,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0158",
+    "SEI": 202500036001925,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 52,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0126",
+    "SEI": 202500036004691,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "ago/28"
+  },
+  {
+    "PROPOSTA": 50,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0124",
+    "SEI": 202320920000730,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jul/28"
+  },
+  {
+    "PROPOSTA": 18,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0163",
+    "SEI": 202100036002064,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "mar/26"
+  },
+  {
+    "PROPOSTA": 18,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0163",
+    "SEI": 202100036002064,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "mar/26"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0023",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 56,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0130",
+    "SEI": 202500036011681,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 56,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0130",
+    "SEI": 202500036011681,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 56,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0130",
+    "SEI": 202500036011681,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 56,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0130",
+    "SEI": 202500036011681,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0023",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0023",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0017",
+    "SEI": 202300036004034,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jul/26"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0017",
+    "SEI": 202300036004034,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jul/26"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0017",
+    "SEI": 202300036004034,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jul/26"
+  },
+  {
+    "PROPOSTA": 20,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0165",
+    "SEI": 202500036003050,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0013",
+    "SEI": 202520920000587,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0013",
+    "SEI": 202520920000587,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0174",
+    "SEI": 202100036002064,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "mar/26"
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0151",
+    "SEI": 202600036000521,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0013",
+    "SEI": 202520920000587,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0151",
+    "SEI": 202600036000521,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0147",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0025",
+    "SEI": 202400005022766,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 61,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0135",
+    "SEI": 202500005027973,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 61,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0135",
+    "SEI": 202500005027973,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 17,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0037",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 17,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0037",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 17,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0037",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 17,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0037",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 36,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0181",
+    "SEI": 202500036010831,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 17,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0037",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0018",
+    "SEI": 202500036012446,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "ago/26"
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0025",
+    "SEI": 202400005022766,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 32,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0106",
+    "SEI": 202500005037249,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jan/28"
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0025",
+    "SEI": 202400005022766,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 34,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0108",
+    "SEI": 202500036008176,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0148",
+    "SEI": 202300036007771,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0025",
+    "SEI": 202400005022766,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0148",
+    "SEI": 202300036007771,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0148",
+    "SEI": 202300036007771,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0148",
+    "SEI": 202300036007771,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0148",
+    "SEI": 202300036007771,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0025",
+    "SEI": 202400005022766,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0168",
+    "SEI": 202300036005087,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/27"
+  },
+  {
+    "PROPOSTA": 63,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0137",
+    "SEI": 202400036002846,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 27,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0172",
+    "SEI": 202500036012110,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0025",
+    "SEI": 202400005022766,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 27,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0172",
+    "SEI": 202500036012110,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0015",
+    "SEI": 202300036005087,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/27"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0010",
+    "SEI": 201700036000286,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jun/25"
+  },
+  {
+    "PROPOSTA": 32,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0106",
+    "SEI": 202500005037249,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jan/28"
+  },
+  {
+    "PROPOSTA": 48,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0122",
+    "SEI": 202320920000314,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": "jun/27"
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0156",
+    "SEI": 202100036014002,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 18,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0038",
+    "SEI": 202400036017189,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/25"
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0156",
+    "SEI": 202100036014002,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0080",
+    "SEI": 202100036008638,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "mar/25"
+  },
+  {
+    "PROPOSTA": 18,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0038",
+    "SEI": 202400036017189,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/25"
+  },
+  {
+    "PROPOSTA": 48,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0122",
+    "SEI": 202320920000314,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": "jun/27"
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0080",
+    "SEI": 202100036008638,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "mar/25"
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 34,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0179",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Ampliação de Capacidade",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0001",
+    "SEI": 202500036000233,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0024",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 34,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0179",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Drenagem",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0006",
+    "SEI": 202500036004762,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 34,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0179",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0152",
+    "SEI": 201400036001323,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 33,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0107",
+    "SEI": 202320920001066,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/26"
+  },
+  {
+    "PROPOSTA": 20,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0094",
+    "SEI": 202500005018067,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "out/28"
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0024",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0024",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0024",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0152",
+    "SEI": 201400036001323,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0152",
+    "SEI": 201400036001323,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0028",
+    "SEI": 202500036001214,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 58,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0132",
+    "SEI": 202500005037043,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "set/26"
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0152",
+    "SEI": 201400036001323,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0095",
+    "SEI": 202100036014936,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jan/24"
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0152",
+    "SEI": 201400036001323,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0166",
+    "SEI": 202500005026672,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0041",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 36,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0181",
+    "SEI": 202500036010831,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0028",
+    "SEI": 202500036001214,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0028",
+    "SEI": 202500036001214,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0166",
+    "SEI": 202500005026672,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0157",
+    "SEI": 202500005019229,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0157",
+    "SEI": 202500005019229,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0157",
+    "SEI": 202500005019229,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 36,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0181",
+    "SEI": 202500036010831,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 36,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0181",
+    "SEI": 202500036010831,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0086",
+    "SEI": 202400036011308,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 36,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0181",
+    "SEI": 202500036010831,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0028",
+    "SEI": 202500036001214,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0028",
+    "SEI": 202500036001214,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0028",
+    "SEI": 202500036001214,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0166",
+    "SEI": 202500005026672,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0080",
+    "SEI": 202100036008638,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "mar/25"
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0095",
+    "SEI": 202100036014936,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jan/24"
+  },
+  {
+    "PROPOSTA": 36,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0181",
+    "SEI": 202500036010831,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 36,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0181",
+    "SEI": 202500036010831,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 17,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0162",
+    "SEI": 202100036002064,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "mar/26"
+  },
+  {
+    "PROPOSTA": 17,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0162",
+    "SEI": 202100036002064,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "mar/26"
+  },
+  {
+    "PROPOSTA": 17,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0162",
+    "SEI": 202100036002064,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "mar/26"
+  },
+  {
+    "PROPOSTA": 30,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0104",
+    "SEI": 202500036009059,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "out/27"
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0157",
+    "SEI": 202500005019229,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0166",
+    "SEI": 202500005026672,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0152",
+    "SEI": 201400036001323,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0157",
+    "SEI": 202500005019229,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0166",
+    "SEI": 202500005026672,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 64,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0138",
+    "SEI": 202500036018223,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jan/28"
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0157",
+    "SEI": 202500005019229,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0157",
+    "SEI": 202500005019229,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0041",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0028",
+    "SEI": 202500036001214,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0166",
+    "SEI": 202500005026672,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 12,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0157",
+    "SEI": 202500005019229,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 21,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0041",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 35,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0109",
+    "SEI": 201400036000991,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "mai/24"
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0103",
+    "SEI": 202320920000816,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0103",
+    "SEI": 202320920000816,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0103",
+    "SEI": 202320920000816,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0028",
+    "SEI": 202500036001214,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0103",
+    "SEI": 202320920000816,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0103",
+    "SEI": 202320920000816,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0103",
+    "SEI": 202320920000816,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0103",
+    "SEI": 202320920000816,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0103",
+    "SEI": 202320920000816,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0103",
+    "SEI": 202320920000816,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 35,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0109",
+    "SEI": 201400036000991,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "mai/24"
+  },
+  {
+    "PROPOSTA": 26,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0100",
+    "SEI": 202500005018068,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "abr/28"
+  },
+  {
+    "PROPOSTA": 30,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0104",
+    "SEI": 202500036009059,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "out/27"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0021",
+    "SEI": 202400005022784,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0073",
+    "SEI": 202400036017865,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0073",
+    "SEI": 202400036017865,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0073",
+    "SEI": 202400036017865,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0073",
+    "SEI": 202400036017865,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0021",
+    "SEI": 202400005022784,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 24,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0044",
+    "SEI": 202500036001924,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0073",
+    "SEI": 202400036017865,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0156",
+    "SEI": 202100036014002,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 22,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0167",
+    "SEI": 202500005020819,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0078",
+    "SEI": 202300036009433,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0156",
+    "SEI": 202100036014002,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0073",
+    "SEI": 202400036017865,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0156",
+    "SEI": 202100036014002,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0012",
+    "SEI": 202200036011033,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/26"
+  },
+  {
+    "PROPOSTA": 22,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0167",
+    "SEI": 202500005020819,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0012",
+    "SEI": 202200036011033,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/26"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0012",
+    "SEI": 202200036011033,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/26"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Pavimentação / Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0073",
+    "SEI": 202400036017865,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0021",
+    "SEI": 202400005022784,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0156",
+    "SEI": 202100036014002,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0012",
+    "SEI": 202200036011033,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/26"
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0156",
+    "SEI": 202100036014002,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0021",
+    "SEI": 202400005022784,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 11,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0156",
+    "SEI": 202100036014002,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 42,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0116",
+    "SEI": 202300036014744,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/26"
+  },
+  {
+    "PROPOSTA": 42,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0116",
+    "SEI": 202300036014744,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/26"
+  },
+  {
+    "PROPOSTA": 31,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0105",
+    "SEI": 202500005028031,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "out/27"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0021",
+    "SEI": 202400005022784,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0021",
+    "SEI": 202400005022784,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0168",
+    "SEI": 202300036005087,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/27"
+  },
+  {
+    "PROPOSTA": 55,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0129",
+    "SEI": 201300036005578,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/25"
+  },
+  {
+    "PROPOSTA": 28,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0102",
+    "SEI": 202200036003803,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "mai/24"
+  },
+  {
+    "PROPOSTA": 20,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0040",
+    "SEI": 202500036004429,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 47,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0121",
+    "SEI": 202500005037917,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jan/29"
+  },
+  {
+    "PROPOSTA": 45,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0119",
+    "SEI": 201600036000043,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0021",
+    "SEI": 202400005022784,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 45,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0119",
+    "SEI": 201600036000043,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0087",
+    "SEI": 202500036014192,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "mai/27"
+  },
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0168",
+    "SEI": 202300036005087,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/27"
+  },
+  {
+    "PROPOSTA": 55,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0129",
+    "SEI": 201300036005578,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/25"
+  },
+  {
+    "PROPOSTA": 51,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0125",
+    "SEI": 202500036014373,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 20,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0040",
+    "SEI": 202500036004429,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 45,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0119",
+    "SEI": 201600036000043,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0087",
+    "SEI": 202500036014192,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "mai/27"
+  },
+  {
+    "PROPOSTA": 55,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0129",
+    "SEI": 201300036005578,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/25"
+  },
+  {
+    "PROPOSTA": 55,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0129",
+    "SEI": 201300036005578,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/25"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0075",
+    "SEI": 202100036006973,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "out/24"
+  },
+  {
+    "PROPOSTA": 38,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0183",
+    "SEI": 202400036001344,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "nov/24"
+  },
+  {
+    "PROPOSTA": 46,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0120",
+    "SEI": 202100036012855,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/24"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0075",
+    "SEI": 202100036006973,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "out/24"
+  },
+  {
+    "PROPOSTA": 30,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0175",
+    "SEI": 202500036010838,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/26"
+  },
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0168",
+    "SEI": 202300036005087,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/27"
+  },
+  {
+    "PROPOSTA": 46,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0120",
+    "SEI": 202100036012855,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/24"
+  },
+  {
+    "PROPOSTA": 20,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0040",
+    "SEI": 202500036004429,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Reforma /Ampliação / Adequação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0144",
+    "SEI": 202400036000148,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0146",
+    "SEI": 202600036001098,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0168",
+    "SEI": 202300036005087,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/27"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0146",
+    "SEI": 202600036001098,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0146",
+    "SEI": 202600036001098,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 46,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0120",
+    "SEI": 202100036012855,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/24"
+  },
+  {
+    "PROPOSTA": 1,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0146",
+    "SEI": 202600036001098,
+    "STATUS": "Obra Contratada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 20,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0040",
+    "SEI": 202500036004429,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0155",
+    "SEI": 202300036007760,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "out/24"
+  },
+  {
+    "PROPOSTA": 20,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0040",
+    "SEI": 202500036004429,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 22,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0096",
+    "SEI": 201300036005313,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 36,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0110",
+    "SEI": 202200036001314,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 36,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0110",
+    "SEI": 202200036001314,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0155",
+    "SEI": 202300036007760,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0155",
+    "SEI": 202300036007760,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 49,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0123",
+    "SEI": 202300047003281,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "set/29"
+  },
+  {
+    "PROPOSTA": 49,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0123",
+    "SEI": 202300047003281,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "set/29"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0155",
+    "SEI": 202300036007760,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0155",
+    "SEI": 202300036007760,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0155",
+    "SEI": 202300036007760,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 38,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0112",
+    "SEI": 201300036004787,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "out/24"
+  },
+  {
+    "PROPOSTA": 30,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0175",
+    "SEI": 202500036010838,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 54,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0128",
+    "SEI": 202500036018223,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jan/28"
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0155",
+    "SEI": 202300036007760,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "out/24"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0153",
+    "SEI": 202400036001306,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/27"
+  },
+  {
+    "PROPOSTA": 22,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0096",
+    "SEI": 201300036005313,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "dez/24"
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0153",
+    "SEI": 202400036001306,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/27"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0153",
+    "SEI": 202400036001306,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/27"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0153",
+    "SEI": 202400036001306,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/27"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0153",
+    "SEI": 202400036001306,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/27"
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 26,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0100",
+    "SEI": 202500005018068,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "abr/28"
+  },
+  {
+    "PROPOSTA": 8,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0153",
+    "SEI": 202400036001306,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/27"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0154",
+    "SEI": 202400036001325,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/26"
+  },
+  {
+    "PROPOSTA": 30,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0175",
+    "SEI": 202500036010838,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 39,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0113",
+    "SEI": 202100036006973,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "out/24"
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0160",
+    "SEI": 202100036014003,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/24"
+  },
+  {
+    "PROPOSTA": 26,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0100",
+    "SEI": 202500005018068,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "abr/28"
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 13,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0033",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0160",
+    "SEI": 202100036014003,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/24"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0083",
+    "SEI": 202100036010330,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/25"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0084",
+    "SEI": 202320920000812,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "nov/26"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0083",
+    "SEI": 202100036010330,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/25"
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0152",
+    "SEI": 201400036001323,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 54,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0128",
+    "SEI": 202500036018223,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jan/28"
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0160",
+    "SEI": 202100036014003,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "fev/24"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0084",
+    "SEI": 202320920000812,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "nov/26"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0084",
+    "SEI": 202320920000812,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "nov/26"
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0084",
+    "SEI": 202320920000812,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "nov/26"
+  },
+  {
+    "PROPOSTA": 3,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0012",
+    "SEI": 202200036011033,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/26"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0084",
+    "SEI": 202320920000812,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "nov/26"
+  },
+  {
+    "PROPOSTA": 31,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0176",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0084",
+    "SEI": 202320920000812,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "nov/26"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 32,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0177",
+    "SEI": 202500005007649,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 27,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0101",
+    "SEI": 202500036004823,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "jun/27"
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0022",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 57,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0131",
+    "SEI": 202500005003691,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0083",
+    "SEI": 202100036010330,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/25"
+  },
+  {
+    "PROPOSTA": 17,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0091",
+    "SEI": 201700036000271,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jan/24"
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0022",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0022",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 2,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0022",
+    "SEI": 202500036000340,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0079",
+    "SEI": 202400036012265,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0083",
+    "SEI": 202100036010330,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/25"
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0149",
+    "SEI": 202400036012265,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0083",
+    "SEI": 202100036010330,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/25"
+  },
+  {
+    "PROPOSTA": 28,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0173",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 35,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0180",
+    "SEI": 202400036001344,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 7,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0152",
+    "SEI": 201400036001323,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 4,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0149",
+    "SEI": 202400036012265,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0079",
+    "SEI": 202400036012265,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 39,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0184",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 35,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0180",
+    "SEI": 202400036001344,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 19,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0039",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 39,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0184",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 22,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0042",
+    "SEI": 202500036001924,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 39,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0184",
+    "SEI": 201400036001337,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 19,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0039",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 23,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0043",
+    "SEI": 202500036004429,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 32,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0177",
+    "SEI": 202500005007649,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 14,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0034",
+    "SEI": 202400005022779,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0026",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 15,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0035",
+    "SEI": 202500036003858,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0150",
+    "SEI": 202500005004747,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jun/26"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 14,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0159",
+    "SEI": 202500036013238,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "set/25"
+  },
+  {
+    "PROPOSTA": 14,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0159",
+    "SEI": 202500036013238,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "set/25"
+  },
+  {
+    "PROPOSTA": 14,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0159",
+    "SEI": 202500036013238,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "set/25"
+  },
+  {
+    "PROPOSTA": 14,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0034",
+    "SEI": 202400005022779,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 26,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0171",
+    "SEI": 202500036002347,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 19,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0093",
+    "SEI": 202500036004664,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jun/32"
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0150",
+    "SEI": 202500005004747,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jun/26"
+  },
+  {
+    "PROPOSTA": 5,
+    "SERVICO": "Restauração",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0150",
+    "SEI": 202500005004747,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jun/26"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 14,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0034",
+    "SEI": 202400005022779,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 40,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0114",
+    "SEI": 202320920000316,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jun/26"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0030",
+    "SEI": 202400005022735,
+    "STATUS": "Obra em Retomada",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 40,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0114",
+    "SEI": 202320920000316,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "jun/26"
+  },
+  {
+    "PROPOSTA": 10,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0019",
+    "SEI": 202200036007107,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 19,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0039",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 19,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0039",
+    "SEI": 202400036016891,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": null
+  },
+  {
+    "PROPOSTA": 24,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0098",
+    "SEI": 202320920000743,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "fev/27"
+  },
+  {
+    "PROPOSTA": 43,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0117",
+    "SEI": 202400036009795,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 43,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0117",
+    "SEI": 202400036009795,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "dez/25"
+  },
+  {
+    "PROPOSTA": 37,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0111",
+    "SEI": 202400036014783,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "abr/26"
+  },
+  {
+    "PROPOSTA": 9,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Obra",
+    "LINK_FUND": "DO_0083",
+    "SEI": 202100036010330,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "nov/25"
+  }
+]
