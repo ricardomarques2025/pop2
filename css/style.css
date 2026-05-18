@@ -600,6 +600,39 @@ select {
   font-weight: 600;
 }
 
+input[type="number"],
+input[type="text"],
+input[type="range"] {
+  width: 100%;
+  height: 42px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border: 1px solid #d7dde3;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+input[type="range"] {
+  padding: 0;
+  accent-color: #006600;
+}
+
+#printMapa {
+  height: 44px;
+  margin-top: 6px;
+  border: none;
+  border-radius: 14px;
+  background: #006600;
+  color: #ffffff;
+  font-weight: 900;
+}
+
+#printMapa:hover {
+  background: #004d00;
+}
+
 .contador {
   margin-top: 12px;
   padding: 12px;
@@ -713,6 +746,58 @@ select {
 
 .tabela-servico {
   width: 100%;
+}
+
+/* ===== ESCALA GRÁFICA DINÂMICA ===== */
+.leaflet-control-scale {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 0 !important;
+  font-weight: 600;
+  box-shadow: none;
+  bottom: 20px !important;
+  left: 20px !important;
+}
+
+.leaflet-control-scale-line {
+  border: 2px solid #333 !important;
+  border-top: none !important;
+  color: #333 !important;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ===== SÍMBOLO DE NORTE (ROSA DOS VENTOS) ===== */
+.north-arrow-control {
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  width: 68px;
+  height: 68px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.north-arrow-control:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.north-arrow-control svg {
+  display: block;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
+  transition: filter 0.2s ease;
+}
+
+.north-arrow-control:hover svg {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12));
+}
   border-collapse: collapse;
   font-size: 13px;
 }
@@ -787,6 +872,291 @@ select {
   padding: 7px 12px;
 }
 
+#printLegendBox,
+#printTitleBox,
+#printScaleText {
+  display: none;
+}
+
+.print-papel-personalizado {
+  display: none;
+}
+
+body:has(#printFormato option[value="personalizado"]:checked) #printPapelPersonalizadoCampos {
+  display: block;
+}
+
+body.modo-impressao.preparando-impressao {
+  overflow: hidden;
+  background: #ffffff;
+}
+
+body.modo-impressao.preparando-impressao #topbar,
+body.modo-impressao.preparando-impressao #sidebar-left,
+body.modo-impressao.preparando-impressao #sidebar-right,
+body.modo-impressao.preparando-impressao #painelTabela {
+  display: none;
+}
+
+body.modo-impressao.preparando-impressao #app {
+  display: block;
+  width: var(--print-page-width);
+  height: var(--print-page-height);
+  margin: 0;
+  padding: var(--print-margin);
+  background: #ffffff;
+}
+
+body.modo-impressao.preparando-impressao #centro-mapa,
+body.modo-impressao.preparando-impressao #map-wrap,
+body.modo-impressao.preparando-impressao #map {
+  width: calc(var(--print-page-width) - (2 * var(--print-margin)));
+  height: calc(var(--print-page-height) - (2 * var(--print-margin)));
+  min-height: 0;
+}
+
+body.modo-impressao.preparando-impressao #centro-mapa {
+  display: block;
+}
+
+body.modo-impressao.preparando-impressao #map-wrap {
+  position: relative;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+body.modo-impressao.preparando-impressao #printTitleBox,
+body.modo-impressao.preparando-impressao #printLegendBox,
+body.modo-impressao.preparando-impressao #printScaleText {
+  display: block;
+}
+
+body.modo-impressao.preparando-impressao .leaflet-control-zoom {
+  display: none !important;
+}
+
+body.modo-impressao.preparando-impressao #printTitleBox {
+  position: absolute;
+  top: 5mm;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1200;
+  padding: 2mm 3mm;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  color: #111827;
+  font-size: var(--print-title-font-size, 13pt);
+  font-weight: 900;
+  line-height: 1.2;
+  max-width: calc(100% - 40mm);
+  text-align: center;
+}
+
+body.modo-impressao.preparando-impressao #printLegendBox {
+  position: absolute;
+  right: 8mm;
+  bottom: 8mm;
+  z-index: 1200;
+  max-width: 86mm;
+  overflow: visible;
+  padding: 4mm;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(0, 0, 0, 0.24);
+  color: #111827;
+  font-size: 8pt;
+  line-height: 1.25;
+  transform: scale(var(--print-legend-scale, 1));
+  transform-origin: bottom right;
+}
+
+body.modo-impressao.preparando-impressao #printLegendBox .bloco {
+  margin: 0 0 3mm 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+body.modo-impressao.preparando-impressao #printLegendBox .subtitulo {
+  margin: 0 0 2mm 0;
+  padding: 0;
+  border: 0;
+  font-size: 8pt;
+  color: #111827;
+}
+
+body.modo-impressao.preparando-impressao #printLegendBox .legenda-item {
+  margin-bottom: 1.7mm;
+  font-size: 7.5pt;
+}
+
+body.modo-impressao.preparando-impressao #printScaleText {
+  position: absolute;
+  left: 18px;
+  bottom: 2px;
+  z-index: 1200;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.85);
+  color: #222222;
+  font-size: 8pt;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.legenda-localidade-simbolo {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  margin-right: 8px;
+  border: 1.5px solid #000000;
+  border-radius: 50%;
+  background: #ffffff;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html,
+  body {
+    width: var(--print-page-width);
+    height: var(--print-page-height);
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+  }
+
+  body.modo-impressao #topbar,
+  body.modo-impressao #sidebar-left,
+  body.modo-impressao #sidebar-right,
+  body.modo-impressao #painelTabela {
+    display: none !important;
+  }
+
+  body.modo-impressao #app {
+    display: block !important;
+    width: var(--print-page-width) !important;
+    height: var(--print-page-height) !important;
+    margin: 0 !important;
+    padding: var(--print-margin) !important;
+    background: #ffffff !important;
+  }
+
+  body.modo-impressao #centro-mapa,
+  body.modo-impressao #map-wrap,
+  body.modo-impressao #map {
+    width: calc(var(--print-page-width) - (2 * var(--print-margin))) !important;
+    height: calc(var(--print-page-height) - (2 * var(--print-margin))) !important;
+    min-height: 0 !important;
+  }
+
+  body.modo-impressao #centro-mapa {
+    display: block !important;
+  }
+
+  body.modo-impressao #map-wrap {
+    position: relative !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+  }
+
+  body.modo-impressao .leaflet-control-layers,
+  body.modo-impressao .leaflet-control-zoom {
+    display: none !important;
+  }
+
+  body.modo-impressao .leaflet-control-scale {
+    bottom: 18px !important;
+    left: 18px !important;
+  }
+
+  body.modo-impressao #printTitleBox {
+    display: block;
+    position: absolute;
+    top: 5mm;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1200;
+    padding: 2mm 3mm;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.22);
+    color: #111827;
+    font-size: var(--print-title-font-size, 13pt);
+    font-weight: 900;
+    line-height: 1.2;
+    max-width: calc(100% - 40mm);
+    text-align: center;
+  }
+
+  body.modo-impressao #printLegendBox {
+    display: block;
+    position: absolute;
+    right: 8mm;
+    bottom: 8mm;
+    z-index: 1200;
+    max-width: 86mm;
+    overflow: visible;
+    padding: 4mm;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(0, 0, 0, 0.24);
+    color: #111827;
+    font-size: 8pt;
+    line-height: 1.25;
+    transform: scale(var(--print-legend-scale, 1));
+    transform-origin: bottom right;
+  }
+
+  body.modo-impressao #printLegendBox .bloco {
+    margin: 0 0 3mm 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  body.modo-impressao #printLegendBox .subtitulo {
+    margin: 0 0 2mm 0;
+    padding: 0;
+    border: 0;
+    font-size: 8pt;
+    color: #111827;
+  }
+
+  body.modo-impressao #printLegendBox .legenda-item {
+    margin-bottom: 1.7mm;
+    font-size: 7.5pt;
+  }
+
+  body.modo-impressao #printScaleText {
+    display: block;
+    position: absolute;
+    left: 18px;
+    bottom: 2px;
+    z-index: 1200;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.85);
+    color: #222222;
+    font-size: 8pt;
+    font-weight: 400;
+    line-height: 1;
+  }
+}
+
 #painelTabelaConteudo {
   padding: 10px;
   max-height: 28vh;
@@ -807,8 +1177,8 @@ select {
 }
 
 .sre-escudo-circular {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background: #ffffff;
   border: 1.5px solid #000000;
   border-radius: 50%;
@@ -831,6 +1201,44 @@ select {
 }
 
 /* ===== RÓTULOS DAS LOCALIDADES ===== */
+
+.snv-escudo-federal {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+  transition: transform 0.1s ease;
+}
+
+.snv-escudo-federal svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+  overflow: visible;
+}
+
+.snv-escudo-federal path {
+  fill: #ffffff;
+  stroke: #000000;
+  stroke-width: 6;
+  stroke-linejoin: round;
+}
+
+.snv-escudo-federal text {
+  fill: #000000;
+  font-family: Arial, sans-serif;
+  font-size: 35px;
+  font-weight: 400;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.snv-escudo-federal:hover {
+  transform: scale(1.15);
+  z-index: 1000;
+}
 
 .localidade-label {
   transform: translate(10px, -120%);

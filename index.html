@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
@@ -98,6 +98,51 @@
 
       <button id="desligarTudo" type="button">Desligar Tudo</button>
       <button id="limparFiltro" type="button">Ligar Tudo / Limpar</button>
+
+      <div class="subtitulo">Impressão / PDF</div>
+      <label for="printFormato">Formato</label>
+      <select id="printFormato">
+        <option value="A4">A4</option>
+        <option value="A3">A3</option>
+        <option value="A2">A2</option>
+        <option value="A1">A1</option>
+        <option value="A0">A0</option>
+        <option value="personalizado">Personalizado</option>
+      </select>
+
+      <div id="printPapelPersonalizadoCampos" class="print-papel-personalizado">
+        <label for="printLarguraPersonalizada">Largura do papel (mm)</label>
+        <input id="printLarguraPersonalizada" type="number" min="50" max="3000" step="0.1" value="1000" />
+
+        <label for="printAlturaPersonalizada">Altura do papel (mm)</label>
+        <input id="printAlturaPersonalizada" type="number" min="50" max="3000" step="0.1" value="700" />
+      </div>
+
+      <label for="printOrientacao">Orientação</label>
+      <select id="printOrientacao">
+        <option value="landscape">Paisagem</option>
+        <option value="portrait">Retrato</option>
+      </select>
+
+      <label for="printMargem">Margem do mapa (mm)</label>
+      <input id="printMargem" type="number" min="5" max="40" step="1" value="12" />
+
+      <label for="printEscala">Enquadramento</label>
+      <select id="printEscala">
+        <option value="tela">Ajustar tela</option>
+        <option value="personalizada">Escala Personalizada</option>
+      </select>
+
+      <label for="printTituloCustom">Título do mapa</label>
+      <input id="printTituloCustom" type="text" placeholder="Deixe vazio para usar o título automático" />
+
+      <label id="printEscalaPersonalizadaLabel" for="printEscalaPersonalizada">Escala 1:</label>
+      <input id="printEscalaPersonalizada" type="text" inputmode="numeric" value="1000000" placeholder="Ex.: 1.000.000" />
+
+      <label for="rotulosDensidade">Rótulos e localidades: <span id="rotulosDensidadeValor">Automático</span></label>
+      <input id="rotulosDensidade" type="range" min="0" max="4" step="1" value="0" />
+
+      <button id="printMapa" type="button">Salvar mapa em PDF</button>
 
       <div class="contador">
         Municípios: <span id="countMunicipios">0</span><br>

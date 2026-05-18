@@ -88,6 +88,64 @@ L.control.layers(mapasBase, null, {
   collapsed: true
 }).addTo(map);
 
+// ---- ESCALA GRÁFICA DINÂMICA ----
+L.control.scale({
+  position: 'bottomleft',
+  maxWidth: 200,
+  metric: true,
+  imperial: false,
+  updateWhenIdle: false
+}).addTo(map);
+
+// ---- SÍMBOLO DE NORTE (ROSA DOS VENTOS) ----
+var NortheArrowControl = L.Control.extend({
+  options: {
+    position: 'topright'
+  },
+
+  onAdd: function(map) {
+    var container = L.DomUtil.create('div', 'north-arrow-control');
+    
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 100 120');
+    svg.setAttribute('width', '56');
+    svg.setAttribute('height', '66');
+    
+    var backgroundCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    backgroundCircle.setAttribute('cx', '50');
+    backgroundCircle.setAttribute('cy', '60');
+    backgroundCircle.setAttribute('r', '46');
+    backgroundCircle.setAttribute('fill', 'rgba(255, 255, 255, 0.82)');
+    
+    // Triângulo principal (norte) - preenchido
+    var mainTriangle = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    mainTriangle.setAttribute('points', '50,35 78,91 50,72 22,91');
+    mainTriangle.setAttribute('fill', '#1f2937');
+    
+    // Letra "N" no topo da seta
+    var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', '50');
+    text.setAttribute('y', '32');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('font-size', '43');
+    text.setAttribute('font-weight', 'bold');
+    text.setAttribute('fill', '#1f2937');
+    text.textContent = 'N';
+    
+    svg.appendChild(backgroundCircle);
+    svg.appendChild(mainTriangle);
+    svg.appendChild(text);
+    
+    container.appendChild(svg);
+    
+    L.DomEvent.disableClickPropagation(container);
+    
+    return container;
+  }
+});
+
+map.addControl(new NortheArrowControl());
+
   map.on('zoomend', function() {
     atualizarVisibilidadeRotulos();
     atualizarVisibilidadeRotulosSRE();
@@ -125,6 +183,7 @@ L.control.layers(mapasBase, null, {
   var snvFiltroAtivo = true;
   var localidadeFiltroAtivo = true;
   var municipioBaseFiltroAtivo = true;
+  var densidadeRotulos = 0;
 
     var obrasFundeinfraData = [];
   var obrasFundeinfraPorLink = {};
@@ -178,6 +237,9 @@ L.control.layers(mapasBase, null, {
         console.log('OBRAS_LINHAS_DOR carregado:', obrasDorData.length);
         preencherServicos();
         if (sreData && municipiosData) {
+          preencherRodovias();
+          preencherSREs();
+          preencherPropostas();
           aplicarFiltros();
         }
       })
@@ -380,16 +442,18 @@ L.control.layers(mapasBase, null, {
       var nmMun = valorSeguro(feature, 'NM_MUN');
       var rgPlan = valorSeguro(feature, 'RG_PLAN');
 
-      if (!valorSeguro(feature, 'LINK_FUND') || !dadosFundeinfraDaFeature(feature)) return;
       if (!sre) return;
       if (municipioSelecionado && nmMun && nmMun !== municipioSelecionado) return;
       if (!municipioSelecionado && rgSelecionada && rgPlan && rgPlan !== rgSelecionada) return;
       if (rodoviaSelecionada && rodovia !== rodoviaSelecionada) return;
-      if (sres.indexOf(sre) === -1) sres.push(sre);
+      adicionarUnico(sres, sre);
     }
 
     if (sreData && sreData.features) {
       sreData.features.forEach(considerarFeature);
+    }
+    if (sreBaseData && sreBaseData.features) {
+      sreBaseData.features.forEach(considerarFeature);
     }
 
     sres.sort(function(a,b){ return String(a).localeCompare(String(b), 'pt-BR'); });
@@ -414,23 +478,25 @@ L.control.layers(mapasBase, null, {
     select.innerHTML = '<option value="">Todas</option>';
 
     function considerarFeature(feature) {
-      var dados = dadosFundeinfraDaFeature(feature);
-      if (!valorSeguro(feature, 'LINK_FUND') || !dados) return;
+      var dadosFund = dadosFundeinfraDaFeature(feature);
+      var dadosDor = dadosDorDaFeature(feature);
 
-      var proposta = dados.PROPOSTA;
       var sre = nomeSREFeature(feature);
       var rodovia = nomeRodoviaFeature(feature);
       var nmMun = valorSeguro(feature, 'NM_MUN');
       var rgPlan = valorSeguro(feature, 'RG_PLAN');
 
-      if (proposta === null || proposta === undefined || String(proposta).trim() === '') return;
       if (municipioSelecionado && nmMun && nmMun !== municipioSelecionado) return;
       if (!municipioSelecionado && rgSelecionada && rgPlan && rgPlan !== rgSelecionada) return;
       if (rodoviaSelecionada && rodovia !== rodoviaSelecionada) return;
       if (sreSelecionado && sre !== sreSelecionado) return;
 
-      var chave = String(proposta);
-      if (propostas.indexOf(chave) === -1) propostas.push(chave);
+      if (servicosAtivos.FUNDEINFRA && dadosFund && dadosFund.PROPOSTA !== null && dadosFund.PROPOSTA !== undefined && String(dadosFund.PROPOSTA).trim() !== '') {
+        adicionarUnico(propostas, String(dadosFund.PROPOSTA));
+      }
+      if (servicosAtivos.DOR && dadosDor && dadosDor.PROPOSTA !== null && dadosDor.PROPOSTA !== undefined && String(dadosDor.PROPOSTA).trim() !== '') {
+        adicionarUnico(propostas, String(dadosDor.PROPOSTA));
+      }
     }
 
     if (sreData && sreData.features) {
@@ -476,8 +542,6 @@ L.control.layers(mapasBase, null, {
   }
 
   function obterFeaturesZoomServicos() {
-    if (!sreData || !sreData.features) return [];
-
     var rgSelecionada = document.getElementById('rgPlanSelect').value;
     var municipioSelecionado = document.getElementById('municipioSelect').value;
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
@@ -485,23 +549,34 @@ L.control.layers(mapasBase, null, {
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
 
     var feats = [];
-    for (var i = 0; i < sreData.features.length; i++) {
-      var f = sreData.features[i];
+    function considerarFeature(f, base) {
       var nmMun = valorSeguro(f, 'NM_MUN');
       var rgPlan = valorSeguro(f, 'RG_PLAN');
       var rodovia = nomeRodoviaFeature(f);
       var sre = nomeSREFeature(f);
 
-      if (municipioSelecionado && nmMun && nmMun !== municipioSelecionado) continue;
-      if (!municipioSelecionado && rgSelecionada && rgPlan && rgPlan !== rgSelecionada) continue;
-      if (rodoviaSelecionada && rodovia !== rodoviaSelecionada) continue;
-      if (sreSelecionado && sre !== sreSelecionado) continue;
+      if (municipioSelecionado && nmMun && nmMun !== municipioSelecionado) return;
+      if (!municipioSelecionado && rgSelecionada && rgPlan && rgPlan !== rgSelecionada) return;
+      if (rodoviaSelecionada && rodovia !== rodoviaSelecionada) return;
+      if (sreSelecionado && sre !== sreSelecionado) return;
       if (propostaSelecionada) {
-        var dados = dadosFundeinfraDaFeature(f);
-        if (!dados || String(dados.PROPOSTA) !== String(propostaSelecionada)) continue;
+        var dadosFund = dadosFundeinfraDaFeature(f);
+        var dadosDor = dadosDorDaFeature(f);
+        if ((!dadosFund || String(dadosFund.PROPOSTA) !== String(propostaSelecionada)) &&
+            (!dadosDor || String(dadosDor.PROPOSTA) !== String(propostaSelecionada))) return;
       }
 
       feats.push(f);
+    }
+
+    if (sreData && sreData.features) {
+      for (var i = 0; i < sreData.features.length; i++) considerarFeature(sreData.features[i]);
+    }
+    if (sreBaseData && sreBaseData.features && (rodoviaSelecionada || sreSelecionado) && !propostaSelecionada) {
+      for (var j = 0; j < sreBaseData.features.length; j++) considerarFeature(sreBaseData.features[j], true);
+    }
+    if (snvData && snvData.features && rodoviaSelecionada && !propostaSelecionada) {
+      for (var k = 0; k < snvData.features.length; k++) considerarFeature(snvData.features[k], true);
     }
     return feats;
   }
@@ -519,15 +594,20 @@ L.control.layers(mapasBase, null, {
       var nmMun = valorSeguro(feature, 'NM_MUN');
       var rgPlan = valorSeguro(feature, 'RG_PLAN');
 
-      if (!valorSeguro(feature, 'LINK_FUND') || !dadosFundeinfraDaFeature(feature)) return;
       if (!nome) return;
       if (municipioSelecionado && nmMun && nmMun !== municipioSelecionado) return;
       if (!municipioSelecionado && rgSelecionada && rgPlan && rgPlan !== rgSelecionada) return;
-      if (rodovias.indexOf(nome) === -1) rodovias.push(nome);
+      adicionarUnico(rodovias, nome);
     }
 
     if (sreData && sreData.features) {
       sreData.features.forEach(considerarFeature);
+    }
+    if (sreBaseData && sreBaseData.features) {
+      sreBaseData.features.forEach(considerarFeature);
+    }
+    if (snvData && snvData.features) {
+      snvData.features.forEach(considerarFeature);
     }
 
     rodovias.sort(function(a,b){ return String(a).localeCompare(String(b), 'pt-BR'); });
@@ -837,10 +917,37 @@ L.control.layers(mapasBase, null, {
     atualizarVisibilidadeRotulos();
   }
 
+  function valorDensidadeRotulos() {
+    return Math.max(0, Math.min(4, Number(densidadeRotulos) || 0));
+  }
+
+  function adicionarUnico(lista, valor) {
+    if (valor && lista.indexOf(valor) === -1) lista.push(valor);
+  }
+
+  function featureTemServicoAtivo(feature) {
+    var linkFund = valorSeguro(feature, 'LINK_FUND');
+    var linkDor = valorSeguro(feature, 'LINK_DOR');
+    return (
+      (servicosAtivos.FUNDEINFRA && linkFund && dadosFundeinfraDaFeature(feature)) ||
+      (servicosAtivos.DOR && linkDor && dadosDorDaFeature(feature))
+    );
+  }
+
+  function textoDensidadeRotulos(valor) {
+    return valor === 0 ? 'Automático' : String(valor);
+  }
+
+  function atualizarTextoDensidadeRotulos() {
+    var alvo = document.getElementById('rotulosDensidadeValor');
+    if (alvo) alvo.textContent = textoDensidadeRotulos(valorDensidadeRotulos());
+  }
+
     function atualizarVisibilidadeRotulos() {
     if (!localidadesLayer) return;
 
     var zoom = map.getZoom();
+    var densidade = valorDensidadeRotulos();
     var labels = [];
     var pontos = [];
 
@@ -876,9 +983,17 @@ L.control.layers(mapasBase, null, {
     var occupiedAreas = [];
 
     labels.forEach(function(label) {
+      var elLabel = label.layer.getElement();
+      if (!elLabel) return;
+
+      if (densidade === 4) {
+        elLabel.style.display = 'block';
+        return;
+      }
+
       // Goiânia fica sempre visível
       if (label.nomeLocalidade === 'Goiânia') {
-        label.layer.getElement().style.display = 'block';
+        elLabel.style.display = 'block';
         var labelRect = {
           left: label.pixelPos.x - 60,
           right: label.pixelPos.x + 60,
@@ -895,36 +1010,43 @@ L.control.layers(mapasBase, null, {
       } else {
         zoomNecessario = 12;
       }
+      zoomNecessario = zoomNecessario - densidade;
 
       if (zoom < zoomNecessario) {
-        label.layer.getElement().style.display = 'none';
+        elLabel.style.display = 'none';
         return;
       }
 
       // Verificar sobreposição
+      var folga = densidade === 3 ? 0.55 : densidade === 2 ? 0.7 : densidade === 1 ? 0.85 : 1;
       var labelRect = {
-        left: label.pixelPos.x - 60,
-        right: label.pixelPos.x + 60,
-        top: label.pixelPos.y - 18,
-        bottom: label.pixelPos.y + 6
+        left: label.pixelPos.x - (60 * folga),
+        right: label.pixelPos.x + (60 * folga),
+        top: label.pixelPos.y - (18 * folga),
+        bottom: label.pixelPos.y + (6 * folga)
       };
 
-      var overlaps = occupiedAreas.some(function(area) {
+      var overlaps = densidade < 3 && occupiedAreas.some(function(area) {
         return !(labelRect.right < area.left || labelRect.left > area.right ||
                  labelRect.bottom < area.top || labelRect.top > area.bottom);
       });
 
       if (!overlaps) {
-        label.layer.getElement().style.display = 'block';
+        elLabel.style.display = 'block';
         occupiedAreas.push(labelRect);
       } else {
-        label.layer.getElement().style.display = 'none';
+        elLabel.style.display = 'none';
       }
     });
 
     // Controlar visibilidade dos pontos (bolinhas brancas) com a MESMA lógica dos rótulos
     pontos.forEach(function(ponto) {
       if (!ponto.layer.getElement()) return;
+
+      if (densidade === 4) {
+        ponto.layer.getElement().style.display = 'block';
+        return;
+      }
 
       // Goiânia fica sempre visível
       if (ponto.nomeLocalidade === 'Goiânia') {
@@ -938,6 +1060,7 @@ L.control.layers(mapasBase, null, {
       } else {
         zoomNecessario = 12;
       }
+      zoomNecessario = zoomNecessario - densidade;
 
       if (zoom >= zoomNecessario) {
         ponto.layer.getElement().style.display = 'block';
@@ -947,15 +1070,26 @@ L.control.layers(mapasBase, null, {
     });
   }
 
-  function criarMarcadorLabel(latlng, texto, rodovia) {
+  function criarMarcadorLabel(latlng, texto, rodovia, tipo) {
+    var federal = tipo === 'federal';
+    var html = federal
+      ? '<div class="snv-escudo-federal">' +
+          '<svg viewBox="0 0 100 105" aria-hidden="true" focusable="false">' +
+            '<path d="M50 9 C39 21 28 22 16 15 L5 29 C16 42 16 56 9 70 C4 82 12 92 27 94 C38 95 46 97 50 103 C54 97 62 95 73 94 C88 92 96 82 91 70 C84 56 84 42 95 29 L84 15 C72 22 61 21 50 9 Z"></path>' +
+            '<text x="50" y="64">' + texto + '</text>' +
+          '</svg>' +
+        '</div>'
+      : '<div class="sre-escudo-circular">' + texto + '</div>';
+
     return L.marker(latlng, {
       icon: L.divIcon({
-        className: 'sre-label-escudo',
-        html: '<div class="sre-escudo-circular">' + texto + '</div>',
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+        className: federal ? 'sre-label-escudo snv-label-escudo' : 'sre-label-escudo',
+        html: html,
+        iconSize: federal ? [26, 26] : [18, 18],
+        iconAnchor: federal ? [13, 13] : [9, 9]
       }),
-      rodovia: rodovia
+      rodovia: rodovia,
+      tipoRotulo: tipo || 'estadual'
     });
   }
 
@@ -963,12 +1097,13 @@ L.control.layers(mapasBase, null, {
     if (!sreBaseLabelLayer && !snvLabelLayer) return;
 
     var zoom = map.getZoom();
+    var densidade = valorDensidadeRotulos();
     var labels = [];
 
     // --- COLETAR ÁREAS OCUPADAS PELOS RÓTULOS DE LOCALIDADES (prioridade) ---
     var occupiedAreas = [];
 
-    if (localidadesLayer && localidadeFiltroAtivo) {
+    if (localidadesLayer && localidadeFiltroAtivo && densidade < 3) {
       localidadesLayer.eachLayer(function(layer) {
         // Rótulos de localidades
         if (layer.options && layer.options.icon && layer.options.icon.options.className === 'localidade-label') {
@@ -1009,7 +1144,8 @@ L.control.layers(mapasBase, null, {
         labels.push({
           layer: layer,
           pixelPos: pixelPos,
-          rodovia: layer.options.rodovia || ''
+          rodovia: layer.options.rodovia || '',
+          tipoRotulo: layer.options.tipoRotulo || 'estadual'
         });
       });
     }
@@ -1022,12 +1158,21 @@ L.control.layers(mapasBase, null, {
         labels.push({
           layer: layer,
           pixelPos: pixelPos,
-          rodovia: layer.options.rodovia || ''
+          rodovia: layer.options.rodovia || '',
+          tipoRotulo: layer.options.tipoRotulo || 'federal'
         });
       });
     }
 
     labels.forEach(function(label) {
+      var elLabel = label.layer.getElement();
+      if (!elLabel) return;
+
+      if (densidade === 4) {
+        elLabel.style.display = 'block';
+        return;
+      }
+
       var zoomNecessario;
       if (zoom >= 10) {
         zoomNecessario = 9;
@@ -1036,36 +1181,33 @@ L.control.layers(mapasBase, null, {
       } else {
         zoomNecessario = 99;
       }
-
+      if (densidade > 0) {
+        zoomNecessario = Math.max(5, 9 - densidade);
+      }
       if (zoom < zoomNecessario) {
-        if (label.layer.getElement()) {
-          label.layer.getElement().style.display = 'none';
-        }
+        elLabel.style.display = 'none';
         return;
       }
 
       // Verificar sobreposição entre escudos e com labels de localidades
+      var metade = label.tipoRotulo === 'federal' ? 22 : 18;
+      var folga = densidade === 3 ? 0.55 : densidade === 2 ? 0.7 : densidade === 1 ? 0.85 : 1;
       var labelRect = {
-        left: label.pixelPos.x - 18,
-        right: label.pixelPos.x + 18,
-        top: label.pixelPos.y - 18,
-        bottom: label.pixelPos.y + 18
+        left: label.pixelPos.x - (metade * folga),
+        right: label.pixelPos.x + (metade * folga),
+        top: label.pixelPos.y - (metade * folga),
+        bottom: label.pixelPos.y + (metade * folga)
       };
 
-      var overlaps = occupiedAreas.some(function(area) {
+      var overlaps = densidade < 3 && occupiedAreas.some(function(area) {
         return !(labelRect.right < area.left || labelRect.left > area.right ||
                  labelRect.bottom < area.top || labelRect.top > area.bottom);
       });
-
       if (!overlaps) {
-        if (label.layer.getElement()) {
-          label.layer.getElement().style.display = 'block';
-        }
+        elLabel.style.display = 'block';
         occupiedAreas.push(labelRect);
       } else {
-        if (label.layer.getElement()) {
-          label.layer.getElement().style.display = 'none';
-        }
+        elLabel.style.display = 'none';
       }
     });
   }
@@ -1202,6 +1344,7 @@ L.control.layers(mapasBase, null, {
 
       var labelLayer = criarMarcadorLabel(latlng, ultimos3Digitos, rodovia);
       sreBaseLabelLayer.addLayer(labelLayer);
+
     });
 
     sreBaseLabelLayer.addTo(map);
@@ -1367,7 +1510,7 @@ L.control.layers(mapasBase, null, {
       var midCoord = coords[midIndex];
       var latlng = [midCoord[1], midCoord[0]];
 
-      var labelLayer = criarMarcadorLabel(latlng, ultimos3Digitos, rodovia);
+      var labelLayer = criarMarcadorLabel(latlng, ultimos3Digitos, rodovia, 'federal');
       snvLabelLayer.addLayer(labelLayer);
     });
 
@@ -2497,6 +2640,9 @@ L.control.layers(mapasBase, null, {
     botoesServico[iServ].addEventListener('click', function() {
       var chave = this.getAttribute('data-servico');
       servicosAtivos[chave] = !servicosAtivos[chave];
+      preencherRodovias();
+      preencherSREs();
+      preencherPropostas();
       aplicarFiltros();
     });
   }
@@ -2590,6 +2736,381 @@ L.control.layers(mapasBase, null, {
       toggleSidebar('sidebar-right', 'sidebar-right-collapsed', this);
     });
   }
+
+  // ===== IMPRESSAO / PDF =====
+
+  var FORMATOS_IMPRESSAO = {
+    A4: { largura: 210, altura: 297 },
+    A3: { largura: 297, altura: 420 },
+    A2: { largura: 420, altura: 594 },
+    A1: { largura: 594, altura: 841 },
+    A0: { largura: 841, altura: 1189 }
+  };
+
+  var estadoMapaAntesImpressao = null;
+
+  function dimensoesPapelImpressao() {
+    var formato = document.getElementById('printFormato').value || 'A4';
+    var orientacao = document.getElementById('printOrientacao').value || 'landscape';
+
+    if (formato === 'personalizado') {
+      var larguraPersonalizada = parseFloat(document.getElementById('printLarguraPersonalizada').value);
+      var alturaPersonalizada = parseFloat(document.getElementById('printAlturaPersonalizada').value);
+      if (!isFinite(larguraPersonalizada)) larguraPersonalizada = 1000;
+      if (!isFinite(alturaPersonalizada)) alturaPersonalizada = 700;
+
+      return {
+        formato: formato,
+        orientacao: orientacao,
+        largura: Math.max(50, Math.min(3000, larguraPersonalizada)),
+        altura: Math.max(50, Math.min(3000, alturaPersonalizada))
+      };
+    }
+
+    var base = FORMATOS_IMPRESSAO[formato] || FORMATOS_IMPRESSAO.A4;
+    var largura = orientacao === 'landscape' ? base.altura : base.largura;
+    var altura = orientacao === 'landscape' ? base.largura : base.altura;
+
+    return {
+      formato: formato,
+      orientacao: orientacao,
+      largura: largura,
+      altura: altura
+    };
+  }
+
+  function atualizarEstiloPaginaImpressao() {
+    var d = dimensoesPapelImpressao();
+    var margem = parseFloat(document.getElementById('printMargem').value);
+    if (!isFinite(margem)) margem = 12;
+    margem = Math.max(5, Math.min(40, margem));
+
+    document.documentElement.style.setProperty('--print-page-width', d.largura + 'mm');
+    document.documentElement.style.setProperty('--print-page-height', d.altura + 'mm');
+    document.documentElement.style.setProperty('--print-margin', margem + 'mm');
+    var larguraBaseA4 = d.orientacao === 'landscape' ? FORMATOS_IMPRESSAO.A4.altura : FORMATOS_IMPRESSAO.A4.largura;
+    var escalaTitulo = d.largura / larguraBaseA4;
+    document.documentElement.style.setProperty('--print-title-font-size', (13 * escalaTitulo).toFixed(2) + 'pt');
+    document.documentElement.style.setProperty('--print-legend-scale', d.largura <= larguraBaseA4 ? '0.6' : '1');
+
+    var style = document.getElementById('printPageStyle');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'printPageStyle';
+      document.head.appendChild(style);
+    }
+    style.textContent = '@page { size: ' + d.largura + 'mm ' + d.altura + 'mm; margin: 0; }';
+
+    return d;
+  }
+
+  function garantirElementosImpressao() {
+    var mapWrap = document.getElementById('map-wrap');
+    if (!mapWrap) return;
+
+    if (!document.getElementById('printTitleBox')) {
+      var titulo = document.createElement('div');
+      titulo.id = 'printTitleBox';
+      mapWrap.appendChild(titulo);
+    }
+
+    if (!document.getElementById('printLegendBox')) {
+      var legenda = document.createElement('div');
+      legenda.id = 'printLegendBox';
+      mapWrap.appendChild(legenda);
+    }
+
+    if (!document.getElementById('printScaleText')) {
+      var escala = document.createElement('div');
+      escala.id = 'printScaleText';
+      mapWrap.appendChild(escala);
+    }
+  }
+
+  function atualizarTituloImpressao() {
+    var destino = document.getElementById('printTitleBox');
+    if (!destino) return;
+
+    var tituloCustom = document.getElementById('printTituloCustom');
+    if (tituloCustom && tituloCustom.value.trim()) {
+      destino.textContent = tituloCustom.value.trim();
+      return;
+    }
+
+    var titulo = document.querySelector('.topbar-left strong');
+    var complemento = document.querySelector('.topbar-left span');
+    var area = document.querySelector('.topbar-right span');
+    var partes = [];
+
+    if (titulo && titulo.textContent.trim()) partes.push(titulo.textContent.trim());
+    if (complemento && complemento.textContent.trim()) {
+      partes.push(complemento.textContent.trim().replace(/^\s*-\s*/, ''));
+    }
+    if (area && area.textContent.trim() && area.textContent.trim() !== 'ESTADO DE GOIÁS') {
+      partes.push(area.textContent.trim());
+    }
+
+    destino.textContent = partes.join(' - ');
+  }
+
+  function atualizarLegendaImpressao() {
+    var destino = document.getElementById('printLegendBox');
+    var origem = document.getElementById('sidebar-right-content');
+    if (!destino || !origem) return;
+
+    destino.innerHTML = '';
+    var blocos = origem.querySelectorAll('.bloco');
+    for (var i = 0; i < blocos.length; i++) {
+      var bloco = blocos[i];
+      if (bloco.style.display === 'none') continue;
+      if (!bloco.textContent.trim()) continue;
+
+      var clone = bloco.cloneNode(true);
+      clone.removeAttribute('id');
+      var elementosComId = clone.querySelectorAll('[id]');
+      for (var j = 0; j < elementosComId.length; j++) {
+        elementosComId[j].removeAttribute('id');
+      }
+      destino.appendChild(clone);
+    }
+
+    if (localidadeFiltroAtivo && localidadesLayer && map.hasLayer(localidadesLayer)) {
+      var blocoLocalidade = document.createElement('div');
+      blocoLocalidade.className = 'bloco';
+      blocoLocalidade.innerHTML =
+        '<div class="subtitulo">Legenda — Localidades</div>' +
+        '<div class="legenda-item">' +
+          '<span class="legenda-localidade-simbolo"></span>' +
+          '<div class="legenda-texto"><b>Localidade</b></div>' +
+        '</div>';
+      destino.appendChild(blocoLocalidade);
+    }
+
+    destino.style.display = destino.children.length ? '' : 'none';
+  }
+
+  function estenderBoundsComLayer(bounds, layer) {
+    if (!layer || !map.hasLayer(layer)) return bounds;
+
+    if (typeof layer.getBounds === 'function') {
+      var lb = layer.getBounds();
+      if (lb && lb.isValid && lb.isValid()) {
+        return bounds ? bounds.extend(lb) : L.latLngBounds(lb.getSouthWest(), lb.getNorthEast());
+      }
+    }
+
+    if (typeof layer.getLatLng === 'function') {
+      var latlng = layer.getLatLng();
+      return bounds ? bounds.extend(latlng) : L.latLngBounds(latlng, latlng);
+    }
+
+    if (typeof layer.eachLayer === 'function') {
+      layer.eachLayer(function(subLayer) {
+        bounds = estenderBoundsComLayer(bounds, subLayer);
+      });
+    }
+
+    return bounds;
+  }
+
+  function obterBoundsGoiasImpressao() {
+    if (municipiosData && municipiosData.features && municipiosData.features.length) {
+      var boundsGoias = L.geoJSON(municipiosData).getBounds();
+      if (boundsGoias && boundsGoias.isValid && boundsGoias.isValid()) return boundsGoias;
+    }
+
+    return map.getBounds();
+  }
+
+  function lerDenominadorEscala() {
+    var campo = document.getElementById('printEscalaPersonalizada');
+    var texto = campo ? campo.value : '';
+    var somenteDigitos = String(texto).replace(/[^\d]/g, '');
+    var denominador = parseInt(somenteDigitos, 10);
+
+    if (!isFinite(denominador) || denominador <= 0) denominador = 1000000;
+    if (campo) campo.value = String(denominador).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+    return denominador;
+  }
+
+  function textoEscalaPersonalizada(denominador) {
+    return 'Escala 1:' + String(denominador).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function calcularZoomPorEscala(denominador, latCentro) {
+    var metrosPorPixelPapel = 0.0254 / 96;
+    var resolucaoAlvo = denominador * metrosPorPixelPapel;
+    var latitude = Math.max(-85, Math.min(85, latCentro || 0));
+    var resolucaoZoomZero = 156543.03392804097 * Math.cos(latitude * Math.PI / 180);
+    var zoom = Math.log(resolucaoZoomZero / resolucaoAlvo) / Math.LN2;
+    var minZoom = typeof map.getMinZoom === 'function' ? map.getMinZoom() : 0;
+    var maxZoom = typeof map.getMaxZoom === 'function' ? map.getMaxZoom() : 20;
+    if (!isFinite(minZoom)) minZoom = 0;
+    if (!isFinite(maxZoom)) maxZoom = 20;
+
+    return Math.max(minZoom, Math.min(maxZoom, zoom));
+  }
+
+  function aplicarEscalaPersonalizadaNoMapa() {
+    var boundsGoias = obterBoundsGoiasImpressao();
+    if (!boundsGoias || !boundsGoias.isValid || !boundsGoias.isValid()) return null;
+
+    var centroGoias = boundsGoias.getCenter();
+    var denominador = lerDenominadorEscala();
+    map.options.zoomSnap = 0;
+    map.invalidateSize(true);
+    map.setView(centroGoias, calcularZoomPorEscala(denominador, centroGoias.lat), { animate: false });
+    map.panTo(centroGoias, { animate: false });
+
+    return denominador;
+  }
+
+  function ajustarMapaParaImpressao(dimensoes) {
+    var modoEscala = document.getElementById('printEscala').value || 'tela';
+    var textoEscala = document.getElementById('printScaleText');
+
+    map.invalidateSize(true);
+
+    if (modoEscala === 'personalizada') {
+      var denominador = aplicarEscalaPersonalizadaNoMapa();
+      if (textoEscala) {
+        if (denominador) {
+          textoEscala.textContent = textoEscalaPersonalizada(denominador);
+          textoEscala.style.display = '';
+        } else {
+          textoEscala.textContent = '';
+          textoEscala.style.display = 'none';
+        }
+      }
+      return;
+    }
+
+    if (textoEscala) {
+      textoEscala.textContent = '';
+      textoEscala.style.display = 'none';
+    }
+    map.setView(estadoMapaAntesImpressao.center, estadoMapaAntesImpressao.zoom, { animate: false });
+  }
+
+  function atualizarCampoEscalaPersonalizada() {
+    var modo = document.getElementById('printEscala');
+    var label = document.getElementById('printEscalaPersonalizadaLabel');
+    var campo = document.getElementById('printEscalaPersonalizada');
+    var mostrar = modo && modo.value === 'personalizada';
+
+    if (label) label.style.display = mostrar ? '' : 'none';
+    if (campo) campo.style.display = mostrar ? '' : 'none';
+
+    if (mostrar) aplicarEscalaPersonalizadaNoMapa();
+  }
+
+  function atualizarCamposPapelPersonalizado() {
+    var formato = document.getElementById('printFormato');
+    var camposPersonalizados = document.getElementById('printPapelPersonalizadoCampos');
+    var mostrar = formato && formato.value === 'personalizado';
+
+    if (camposPersonalizados) {
+      camposPersonalizados.hidden = !mostrar;
+      camposPersonalizados.style.display = mostrar ? 'block' : 'none';
+    }
+  }
+
+  function sairModoImpressao() {
+    document.body.classList.remove('preparando-impressao');
+    document.body.classList.remove('modo-impressao');
+
+    if (estadoMapaAntesImpressao) {
+      map.options.zoomSnap = estadoMapaAntesImpressao.zoomSnap;
+      map.setView(estadoMapaAntesImpressao.center, estadoMapaAntesImpressao.zoom, { animate: false });
+      estadoMapaAntesImpressao = null;
+    }
+
+    setTimeout(function() {
+      map.invalidateSize(true);
+    }, 100);
+  }
+
+  function imprimirMapaAtual() {
+    garantirElementosImpressao();
+
+    estadoMapaAntesImpressao = {
+      center: map.getCenter(),
+      zoom: map.getZoom(),
+      zoomSnap: map.options.zoomSnap
+    };
+
+    atualizarLegendaImpressao();
+    atualizarTituloImpressao();
+    var dimensoes = atualizarEstiloPaginaImpressao();
+
+    document.body.classList.add('modo-impressao');
+    document.body.classList.add('preparando-impressao');
+
+    setTimeout(function() {
+      ajustarMapaParaImpressao(dimensoes);
+      setTimeout(function() {
+        map.invalidateSize(true);
+        ajustarMapaParaImpressao(dimensoes);
+        setTimeout(function() {
+          window.print();
+        }, 450);
+      }, 250);
+    }, 150);
+  }
+
+  var botaoPrintMapa = document.getElementById('printMapa');
+  if (botaoPrintMapa) {
+    botaoPrintMapa.addEventListener('click', imprimirMapaAtual);
+  }
+
+  var seletorPrintEscala = document.getElementById('printEscala');
+  if (seletorPrintEscala) {
+    seletorPrintEscala.addEventListener('change', atualizarCampoEscalaPersonalizada);
+    atualizarCampoEscalaPersonalizada();
+  }
+
+  var campoPrintEscalaPersonalizada = document.getElementById('printEscalaPersonalizada');
+  if (campoPrintEscalaPersonalizada) {
+    campoPrintEscalaPersonalizada.addEventListener('blur', function() {
+      if (document.getElementById('printEscala').value === 'personalizada') {
+        aplicarEscalaPersonalizadaNoMapa();
+      } else {
+        lerDenominadorEscala();
+      }
+    });
+
+    campoPrintEscalaPersonalizada.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (document.getElementById('printEscala').value === 'personalizada') {
+          aplicarEscalaPersonalizadaNoMapa();
+        } else {
+          lerDenominadorEscala();
+        }
+      }
+    });
+  }
+
+  var controleDensidadeRotulos = document.getElementById('rotulosDensidade');
+  if (controleDensidadeRotulos) {
+    densidadeRotulos = Number(controleDensidadeRotulos.value) || 0;
+    atualizarTextoDensidadeRotulos();
+    controleDensidadeRotulos.addEventListener('input', function() {
+      densidadeRotulos = Number(this.value) || 0;
+      atualizarTextoDensidadeRotulos();
+      atualizarVisibilidadeRotulos();
+      atualizarVisibilidadeRotulosSRE();
+    });
+  }
+
+  var seletorPrintFormato = document.getElementById('printFormato');
+  if (seletorPrintFormato) {
+    seletorPrintFormato.addEventListener('change', atualizarCamposPapelPersonalizado);
+    atualizarCamposPapelPersonalizado();
+  }
+
+  window.addEventListener('afterprint', sairModoImpressao);
 
   function fetchGeoJSON(nome, obrigatorio) {
     return fetch(nome)
