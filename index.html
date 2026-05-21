@@ -109,13 +109,14 @@
             <button class="filtro-btn anotacao-btn" id="drawTexto" type="button">Texto</button>
           </div>
           <div class="grid-anotacoes">
-            <button class="filtro-btn anotacao-btn" id="drawDesfazer" type="button">Desfazer</button>
+            <button class="filtro-btn anotacao-btn" id="drawPonto" type="button">Ponto</button>
             <button class="filtro-btn anotacao-btn" id="drawLimpar" type="button">Limpar</button>
           </div>
           <div class="grid-anotacoes">
             <button class="filtro-btn anotacao-btn" id="drawExportar" type="button">Exportar</button>
             <button class="filtro-btn anotacao-btn" id="drawImportar" type="button">Importar</button>
           </div>
+          <button class="filtro-btn anotacao-btn" id="toggleLegendaAnotacoes" type="button">Legenda das anotações</button>
           <div class="anotacao-opcoes">
             <label for="drawCorLinha">Cor das linhas/formas</label>
             <input id="drawCorLinha" type="color" value="#e11d48" />
@@ -125,6 +126,17 @@
 
             <label for="drawOpacidadePreenchimento">Opacidade do preenchimento: <span id="drawOpacidadeValor">14%</span></label>
             <input id="drawOpacidadePreenchimento" type="range" min="0" max="100" step="1" value="14" />
+
+            <label for="drawFormatoPonto">Formato do ponto</label>
+            <select id="drawFormatoPonto">
+              <option value="circulo">Círculo</option>
+              <option value="quadrado">Quadrado</option>
+              <option value="losango">Losango</option>
+              <option value="triangulo">Triângulo</option>
+            </select>
+
+            <label for="drawTamanhoPonto">Tamanho do ponto: <span id="drawTamanhoPontoValor">14 px</span></label>
+            <input id="drawTamanhoPonto" type="range" min="6" max="34" step="1" value="14" />
 
             <label for="drawCorTexto">Cor do texto</label>
             <input id="drawCorTexto" type="color" value="#111827" />
@@ -220,24 +232,33 @@
       <button id="toggleSidebarRight" type="button" class="sidebar-toggle-btn">»</button>
     </div>
     <div class="scroll-inner" id="sidebar-right-content">
-      <div class="bloco">
-        <div class="subtitulo">Legenda — FUNDEINFRA</div>
+      <div class="bloco legenda-titulo-geral" id="blocoLegendaTitulo">
+        <div class="subtitulo">LEGENDA</div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">FUNDEINFRA</div>
         <div id="legendaServicos"></div>
       </div>
 
-      <div class="bloco">
-        <div class="subtitulo">Legenda — DOR</div>
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DOR</div>
         <div id="legendaDor"></div>
       </div>
 
-      <div class="bloco" id="blocoLegendaRodEst">
-        <div class="subtitulo">Legenda — Rodovia Estadual</div>
+      <div class="bloco legenda-categoria" id="blocoLegendaRodEst">
+        <div class="subtitulo">Rodovia Estadual</div>
         <div id="legendaRodEst"></div>
       </div>
 
-      <div class="bloco" id="blocoLegendaRodFed">
-        <div class="subtitulo">Legenda — Rodovia Federal</div>
+      <div class="bloco legenda-categoria" id="blocoLegendaRodFed">
+        <div class="subtitulo">Rodovia Federal</div>
         <div id="legendaRodFed"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaAnotacoes" style="display: none;">
+        <div class="subtitulo">Anotações</div>
+        <div id="legendaAnotacoes"></div>
       </div>
     </div>
   </aside>

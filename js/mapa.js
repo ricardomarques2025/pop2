@@ -1,4 +1,8 @@
-var map = L.map('map').setView([-15.8, -49.0], 7);
+var map = L.map('map', {
+  zoomControl: false,
+  zoomSnap: 0.1,
+  zoomDelta: 0.1
+}).setView([-15.8, -49.0], 7);
 var originalCenter = map.getCenter();
 var originalZoom = map.getZoom();
 
@@ -22,6 +26,12 @@ var originalZoom = map.getZoom();
 
     map.createPane('anotacoesPane');
     map.getPane('anotacoesPane').style.zIndex = 850;
+
+    map.createPane('anotacoesTextoPane');
+    map.getPane('anotacoesTextoPane').style.zIndex = 950;
+
+    map.createPane('medicaoPane');
+    map.getPane('medicaoPane').style.zIndex = 875;
 
  const baseClaro = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
@@ -93,6 +103,221 @@ L.control.layers(mapasBase, null, {
   position: 'topleft',
   collapsed: true
 }).addTo(map);
+
+// ---- CONTROLE DE ZOOM POR VALOR ----
+var ZoomValorControl = L.Control.extend({
+  options: {
+    position: 'topleft'
+  },
+
+  onAdd: function(map) {
+    var container = L.DomUtil.create('div', 'leaflet-bar zoom-valor-control');
+    var label = L.DomUtil.create('label', '', container);
+
+    label.title = 'Definir zoom';
+    label.appendChild(document.createTextNode('Zoom'));
+    var input = L.DomUtil.create('input', '', label);
+    input.type = 'number';
+    input.min = map.getMinZoom();
+    input.max = map.getMaxZoom();
+    input.step = '0.1';
+    input.value = map.getZoom();
+
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.disableScrollPropagation(container);
+
+    function atualizarCampo() {
+      input.value = Number(map.getZoom().toFixed(1));
+    }
+
+    function aplicarZoom() {
+      var valor = parseFloat(input.value);
+      if (!isFinite(valor)) {
+        atualizarCampo();
+        return;
+      }
+      var minZoom = map.getMinZoom();
+      var maxZoom = map.getMaxZoom();
+      map.setZoom(Math.max(minZoom, Math.min(maxZoom, valor)));
+    }
+
+    L.DomEvent.on(input, 'change', aplicarZoom);
+    L.DomEvent.on(input, 'keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        aplicarZoom();
+        input.blur();
+      }
+    });
+    map.on('zoomend', atualizarCampo);
+
+    return container;
+  }
+});
+
+map.addControl(new ZoomValorControl());
+
+// ---- FERRAMENTA DE MEDIÇÃO ----
+var medicaoAtiva = false;
+var medicaoPontos = [];
+var medicaoLayer = L.layerGroup().addTo(map);
+var medicaoLinha = null;
+var medicaoTooltip = null;
+var medicaoBotao = null;
+
+function formatarDistanciaMedicao(metros) {
+  if (!isFinite(metros)) return '0 m';
+  if (metros >= 1000) return (metros / 1000).toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }) + ' km';
+  return metros.toLocaleString('pt-BR', {
+    maximumFractionDigits: 0
+  }) + ' m';
+}
+
+function distanciaTotalMedicao(pontos) {
+  var total = 0;
+  for (var i = 1; i < pontos.length; i++) {
+    total += pontos[i - 1].distanceTo(pontos[i]);
+  }
+  return total;
+}
+
+function atualizarBotaoMedicao() {
+  if (medicaoBotao) medicaoBotao.classList.toggle('ativo', medicaoAtiva);
+}
+
+function limparMedicao() {
+  medicaoPontos = [];
+  medicaoLayer.clearLayers();
+  medicaoLinha = null;
+  medicaoTooltip = null;
+}
+
+function atualizarDesenhoMedicao(pontoPreview) {
+  var pontosLinha = medicaoPontos.slice();
+  if (pontoPreview && pontosLinha.length) pontosLinha.push(pontoPreview);
+
+  if (medicaoLinha) medicaoLayer.removeLayer(medicaoLinha);
+  if (pontosLinha.length > 1) {
+    medicaoLinha = L.polyline(pontosLinha, {
+      pane: 'medicaoPane',
+      color: '#111827',
+      weight: 3,
+      opacity: 0.95,
+      dashArray: '8,6'
+    }).addTo(medicaoLayer);
+  }
+
+  if (medicaoTooltip) medicaoLayer.removeLayer(medicaoTooltip);
+  if (pontosLinha.length) {
+    var total = distanciaTotalMedicao(pontosLinha);
+    var texto = formatarDistanciaMedicao(total);
+    medicaoTooltip = L.marker(pontosLinha[pontosLinha.length - 1], {
+      pane: 'medicaoPane',
+      interactive: false,
+      icon: L.divIcon({
+        className: 'medicao-tooltip-icon',
+        html: '<span class="medicao-tooltip">' + texto + '</span>',
+        iconSize: [1, 1],
+        iconAnchor: [0, 0]
+      })
+    }).addTo(medicaoLayer);
+  }
+}
+
+function finalizarMedicao() {
+  medicaoAtiva = false;
+  map.dragging.enable();
+  map.doubleClickZoom.enable();
+  atualizarBotaoMedicao();
+  atualizarDesenhoMedicao();
+}
+
+function alternarMedicao() {
+  medicaoAtiva = !medicaoAtiva;
+  atualizarBotaoMedicao();
+
+  if (medicaoAtiva) {
+    if (typeof anotacaoFerramenta !== 'undefined' && anotacaoFerramenta) {
+      ativarFerramentaAnotacao(anotacaoFerramenta);
+    }
+    limparMedicao();
+    map.dragging.disable();
+    map.doubleClickZoom.disable();
+  } else {
+    finalizarMedicao();
+  }
+}
+
+function adicionarPontoMedicao(e) {
+  if (!medicaoAtiva) return;
+  if (e.originalEvent) {
+    L.DomEvent.preventDefault(e.originalEvent);
+    L.DomEvent.stopPropagation(e.originalEvent);
+  }
+  if (e.originalEvent && e.originalEvent.detail >= 2) {
+    finalizarMedicao();
+    return;
+  }
+
+  medicaoPontos.push(e.latlng);
+  L.circleMarker(e.latlng, {
+    pane: 'medicaoPane',
+    radius: 4,
+    color: '#111827',
+    weight: 2,
+    fillColor: '#ffffff',
+    fillOpacity: 1
+  }).addTo(medicaoLayer);
+  atualizarDesenhoMedicao();
+}
+
+function previewMedicao(e) {
+  if (!medicaoAtiva || !medicaoPontos.length) return;
+  atualizarDesenhoMedicao(e.latlng);
+}
+
+var MedicaoControl = L.Control.extend({
+  options: {
+    position: 'topleft'
+  },
+
+  onAdd: function(map) {
+    var container = L.DomUtil.create('div', 'leaflet-bar medicao-control');
+    medicaoBotao = L.DomUtil.create('button', 'medicao-btn', container);
+    medicaoBotao.type = 'button';
+    medicaoBotao.title = 'Medir distância';
+    medicaoBotao.textContent = 'Régua';
+
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.on(medicaoBotao, 'click', function(e) {
+      L.DomEvent.preventDefault(e);
+      alternarMedicao();
+    });
+
+    return container;
+  }
+});
+
+map.addControl(new MedicaoControl());
+map.on('click', adicionarPontoMedicao);
+map.on('mousemove', previewMedicao);
+map.on('dblclick', function(e) {
+  if (!medicaoAtiva) return;
+  if (e.originalEvent) {
+    L.DomEvent.preventDefault(e.originalEvent);
+    L.DomEvent.stopPropagation(e.originalEvent);
+  }
+  finalizarMedicao();
+});
+map.getContainer().addEventListener('contextmenu', function(e) {
+  if (!medicaoAtiva) return;
+  e.preventDefault();
+  e.stopPropagation();
+  finalizarMedicao();
+}, true);
 
 // ---- ESCALA GRÁFICA DINÂMICA ----
 L.control.scale({
@@ -193,6 +418,7 @@ map.addControl(new NortheArrowControl());
   var anotacaoInicio = null;
   var anotacaoPreview = null;
   var anotacaoLinhaPontos = [];
+  var legendaAnotacoesAtiva = false;
   var ANOTACOES_STORAGE_KEY = 'mapa_pop2_anotacoes_v1';
   var estiloAnotacao = {
     pane: 'anotacoesPane',
@@ -205,6 +431,10 @@ map.addControl(new NortheArrowControl());
   var estiloTextoAnotacao = {
     cor: '#111827',
     tamanho: 13
+  };
+  var estiloPontoAnotacao = {
+    formato: 'circulo',
+    tamanho: 14
   };
 
   function setStatusAnotacao(texto) {
@@ -242,13 +472,24 @@ map.addControl(new NortheArrowControl());
     };
   }
 
+  function lerEstiloPontoAnotacao() {
+    var tamanho = parseInt(valorCampo('drawTamanhoPonto', estiloPontoAnotacao.tamanho), 10);
+    if (!isFinite(tamanho)) tamanho = estiloPontoAnotacao.tamanho;
+    return {
+      formato: valorCampo('drawFormatoPonto', estiloPontoAnotacao.formato),
+      tamanho: Math.max(6, Math.min(34, tamanho))
+    };
+  }
+
   function atualizarIndicadoresEstiloAnotacao() {
     var espessuraValor = document.getElementById('drawEspessuraValor');
     var opacidadeValor = document.getElementById('drawOpacidadeValor');
+    var tamanhoPontoValor = document.getElementById('drawTamanhoPontoValor');
     var tamanhoValor = document.getElementById('drawTamanhoTextoValor');
     var estiloForma = lerEstiloFormaAnotacao();
     if (espessuraValor) espessuraValor.textContent = estiloForma.weight + ' px';
     if (opacidadeValor) opacidadeValor.textContent = Math.round(estiloForma.fillOpacity * 100) + '%';
+    if (tamanhoPontoValor) tamanhoPontoValor.textContent = lerEstiloPontoAnotacao().tamanho + ' px';
     if (tamanhoValor) tamanhoValor.textContent = lerEstiloTextoAnotacao().tamanho + ' px';
   }
 
@@ -260,6 +501,10 @@ map.addControl(new NortheArrowControl());
     return Object.assign({}, estiloTextoAnotacao, props && props.estiloTexto ? props.estiloTexto : {});
   }
 
+  function estiloPontoPorProps(props) {
+    return Object.assign({}, estiloPontoAnotacao, props && props.estiloPonto ? props.estiloPonto : {});
+  }
+
   function estiloFormaDaCamada(layer) {
     var opcoes = layer.options || {};
     return {
@@ -269,6 +514,114 @@ map.addControl(new NortheArrowControl());
       fillColor: opcoes.fillColor || opcoes.color || estiloAnotacao.fillColor,
       fillOpacity: opcoes.fillOpacity == null ? estiloAnotacao.fillOpacity : opcoes.fillOpacity
     };
+  }
+
+  function nomeTipoAnotacao(tipo) {
+    if (tipo === 'linha') return 'Linha';
+    if (tipo === 'ponto') return 'Ponto';
+    if (tipo === 'retangulo') return 'Retângulo';
+    if (tipo === 'circulo') return 'Círculo';
+    if (tipo === 'texto') return 'Texto';
+    return 'Anotação';
+  }
+
+  function solicitarNomeLegendaAnotacao(tipo, padrao) {
+    var nome = window.prompt('Nome para aparecer na legenda (' + nomeTipoAnotacao(tipo) + '):', padrao || '');
+    if (nome === null) return padrao || '';
+    nome = nome.trim();
+    if (nome) {
+      legendaAnotacoesAtiva = true;
+      atualizarBotaoLegendaAnotacoes();
+    }
+    return nome;
+  }
+
+  function atualizarBotaoLegendaAnotacoes() {
+    var botao = document.getElementById('toggleLegendaAnotacoes');
+    if (!botao) return;
+    botao.classList.toggle('ativo-filtro', legendaAnotacoesAtiva);
+    botao.textContent = legendaAnotacoesAtiva ? 'Legenda das anotações: ligada' : 'Legenda das anotações: desligada';
+  }
+
+  function estiloCssCor(cor, fallback) {
+    return String(cor || fallback || '#111827').replace(/[^#(),.%\w\s-]/g, '');
+  }
+
+  function corHexParaRgba(cor, opacidade) {
+    cor = String(cor || '#111827').trim();
+    opacidade = Math.max(0, Math.min(1, Number(opacidade)));
+    var match = cor.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (!match) return cor;
+    var hex = match[1];
+    if (hex.length === 3) {
+      hex = hex.split('').map(function(ch) { return ch + ch; }).join('');
+    }
+    var r = parseInt(hex.slice(0, 2), 16);
+    var g = parseInt(hex.slice(2, 4), 16);
+    var b = parseInt(hex.slice(4, 6), 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + opacidade.toFixed(2) + ')';
+  }
+
+  function classeFormatoPonto(formato) {
+    if (formato === 'quadrado') return ' anotacao-ponto-quadrado';
+    if (formato === 'losango') return ' anotacao-ponto-losango';
+    if (formato === 'triangulo') return ' anotacao-ponto-triangulo';
+    return ' anotacao-ponto-circulo';
+  }
+
+  function simboloLegendaAnotacao(tipo, extra) {
+    extra = extra || {};
+    var estilo = extra.estilo || {};
+    var estiloTexto = extra.estiloTexto || {};
+    var cor = estiloCssCor(estilo.color, estiloTexto.cor || '#111827');
+    var espessura = Math.max(1, Math.min(12, Number(estilo.weight) || 3));
+    var preenchimento = estiloCssCor(estilo.fillColor, cor);
+    var opacidade = estilo.fillOpacity == null ? 0.14 : Math.max(0, Math.min(1, Number(estilo.fillOpacity)));
+
+    if (tipo === 'linha') {
+      return '<span class="legenda-anotacao-simbolo"><span class="legenda-anotacao-linha" style="border-top-color:' + cor + ';border-top-width:' + espessura + 'px"></span></span>';
+    }
+    if (tipo === 'ponto') {
+      var ponto = extra.estiloPonto || {};
+      var tamanho = Math.max(8, Math.min(22, Number(ponto.tamanho) || 14));
+      return '<span class="legenda-anotacao-simbolo"><span class="anotacao-ponto-shape' + classeFormatoPonto(ponto.formato) + '" style="width:' + tamanho + 'px;height:' + tamanho + 'px;border-color:' + cor + ';border-width:' + espessura + 'px;background:' + corHexParaRgba(preenchimento, opacidade) + '"></span></span>';
+    }
+    if (tipo === 'retangulo') {
+      return '<span class="legenda-anotacao-simbolo"><span class="legenda-anotacao-retangulo" style="border-color:' + cor + ';border-width:' + espessura + 'px;background:' + corHexParaRgba(preenchimento, opacidade) + '"></span></span>';
+    }
+    if (tipo === 'circulo') {
+      return '<span class="legenda-anotacao-simbolo"><span class="legenda-anotacao-circulo" style="border-color:' + cor + ';border-width:' + espessura + 'px;background:' + corHexParaRgba(preenchimento, opacidade) + '"></span></span>';
+    }
+    return '<span class="legenda-anotacao-simbolo"><span class="legenda-anotacao-texto" style="color:' + cor + '">T</span></span>';
+  }
+
+  function renderizarLegendaAnotacoes() {
+    var bloco = document.getElementById('blocoLegendaAnotacoes');
+    var alvo = document.getElementById('legendaAnotacoes');
+    if (!bloco || !alvo) return;
+
+    alvo.innerHTML = '';
+    if (!legendaAnotacoesAtiva) {
+      bloco.style.display = 'none';
+      return;
+    }
+
+    var total = 0;
+    anotacoesLayer.eachLayer(function(layer) {
+      var extra = layer._anotacaoExtra || {};
+      if (layer._anotacaoTipo === 'texto') return;
+      var nome = String(extra.nomeLegenda || '').trim();
+      if (!nome) return;
+
+      var item = document.createElement('div');
+      item.className = 'legenda-item legenda-anotacao-item';
+      item.innerHTML = simboloLegendaAnotacao(layer._anotacaoTipo, extra) +
+        '<span class="legenda-texto">' + escaparHtml(nome) + '</span>';
+      alvo.appendChild(item);
+      total++;
+    });
+
+    bloco.style.display = total ? '' : 'none';
   }
 
   function nomeArquivoSeguroAnotacao(nome) {
@@ -291,6 +644,7 @@ map.addControl(new NortheArrowControl());
   function atualizarBotoesAnotacao() {
     var ids = {
       linha: 'drawLinha',
+      ponto: 'drawPonto',
       retangulo: 'drawRetangulo',
       circulo: 'drawCirculo',
       texto: 'drawTexto'
@@ -324,6 +678,24 @@ map.addControl(new NortheArrowControl());
     });
   }
 
+  function criarIconePontoAnotacao(estiloForma, estiloPonto) {
+    estiloForma = Object.assign({}, estiloAnotacao, estiloForma || {});
+    estiloPonto = Object.assign({}, estiloPontoAnotacao, estiloPonto || {});
+    var tamanho = Number(estiloPonto.tamanho || estiloPontoAnotacao.tamanho);
+    var borda = Number(estiloForma.weight || estiloAnotacao.weight);
+    var cor = estiloCssCor(estiloForma.color, '#e11d48');
+    var preenchimento = corHexParaRgba(estiloForma.fillColor || estiloForma.color, estiloForma.fillOpacity == null ? 0.14 : estiloForma.fillOpacity);
+    var style = 'width:' + tamanho + 'px;height:' + tamanho + 'px;' +
+      'border-color:' + cor + ';border-width:' + borda + 'px;' +
+      'background:' + preenchimento + ';';
+    return L.divIcon({
+      className: 'anotacao-ponto-icon',
+      html: '<span class="anotacao-ponto-shape' + classeFormatoPonto(estiloPonto.formato) + '" style="' + style + '"></span>',
+      iconSize: [tamanho + borda * 2, tamanho + borda * 2],
+      iconAnchor: [(tamanho + borda * 2) / 2, (tamanho + borda * 2) / 2]
+    });
+  }
+
   function configurarCamadaAnotacao(layer, tipo, extra) {
     layer._anotacaoTipo = tipo;
     layer._anotacaoExtra = extra || {};
@@ -345,6 +717,10 @@ map.addControl(new NortheArrowControl());
     } else {
       layer.on('click', function() {
         if (anotacaoFerramenta) return;
+        var nomeAtual = layer._anotacaoExtra.nomeLegenda || '';
+        var novoNome = solicitarNomeLegendaAnotacao(tipo, nomeAtual);
+        layer._anotacaoExtra.nomeLegenda = novoNome;
+        salvarAnotacoesLocal();
         if (window.confirm('Remover esta anotação?')) removerAnotacao(layer);
       });
     }
@@ -356,6 +732,7 @@ map.addControl(new NortheArrowControl());
     anotacoesLayer.addLayer(layer);
     anotacoesHistorico.push(layer);
     salvarAnotacoesLocal();
+    renderizarLegendaAnotacoes();
   }
 
   function removerAnotacao(layer) {
@@ -364,6 +741,7 @@ map.addControl(new NortheArrowControl());
       return item !== layer;
     });
     salvarAnotacoesLocal();
+    renderizarLegendaAnotacoes();
   }
 
   function latLngsParaCoords(latlngs) {
@@ -413,6 +791,15 @@ map.addControl(new NortheArrowControl());
           type: 'LineString',
           coordinates: latLngsParaCoords(layer.getLatLngs())
         }
+      };
+    }
+
+    if (tipo === 'ponto') {
+      var ponto = layer.getLatLng();
+      return {
+        type: 'Feature',
+        properties: props,
+        geometry: { type: 'Point', coordinates: [ponto.lng, ponto.lat] }
       };
     }
 
@@ -469,6 +856,7 @@ map.addControl(new NortheArrowControl());
     try {
       localStorage.setItem(ANOTACOES_STORAGE_KEY, JSON.stringify(exportarAnotacoesGeoJSON()));
       setStatusAnotacao(anotacoesLayer.getLayers().length + ' anotação(ões) salva(s) no navegador');
+      renderizarLegendaAnotacoes();
     } catch (erro) {
       setStatusAnotacao('Não foi possível salvar no navegador');
       console.warn('Falha ao salvar anotações:', erro);
@@ -485,6 +873,12 @@ map.addControl(new NortheArrowControl());
 
     if (tipo === 'linha' && geom.type === 'LineString') {
       layer = L.polyline(coordsParaLatLngs(geom.coordinates), estiloForma);
+    } else if (tipo === 'ponto' && geom.type === 'Point') {
+      layer = L.marker([geom.coordinates[1], geom.coordinates[0]], {
+        pane: 'anotacoesPane',
+        draggable: false,
+        icon: criarIconePontoAnotacao(estiloForma, estiloPontoPorProps(props))
+      });
     } else if (tipo === 'retangulo' && geom.type === 'Polygon') {
       layer = L.polygon(coordsParaLatLngs(geom.coordinates[0] || []), estiloForma);
     } else if (tipo === 'circulo' && geom.type === 'Polygon' && props.centro) {
@@ -497,7 +891,7 @@ map.addControl(new NortheArrowControl());
       }));
     } else if (tipo === 'texto' && geom.type === 'Point') {
       layer = L.marker([geom.coordinates[1], geom.coordinates[0]], {
-        pane: 'anotacoesPane',
+        pane: 'anotacoesTextoPane',
         draggable: true,
         icon: criarIconeTextoAnotacao(props.texto || '', estiloTextoPorProps(props))
       });
@@ -555,6 +949,7 @@ map.addControl(new NortheArrowControl());
     map.doubleClickZoom.disable();
 
     if (tipo === 'linha') setStatusAnotacao('Linha: clique nos pontos e dê duplo clique para finalizar');
+    if (tipo === 'ponto') setStatusAnotacao('Ponto: clique no local da anotação');
     if (tipo === 'retangulo') setStatusAnotacao('Retângulo: clique em dois cantos do retângulo');
     if (tipo === 'circulo') setStatusAnotacao('Círculo: clique no centro e depois no raio');
     if (tipo === 'texto') setStatusAnotacao('Texto: clique no local da anotação');
@@ -564,8 +959,10 @@ map.addControl(new NortheArrowControl());
     if (anotacaoLinhaPontos.length < 2) return;
     if (anotacaoPreview) map.removeLayer(anotacaoPreview);
     var estiloLinha = lerEstiloFormaAnotacao();
+    var nomeLegenda = solicitarNomeLegendaAnotacao('linha', '');
     adicionarAnotacao(L.polyline(anotacaoLinhaPontos, estiloLinha), 'linha', {
-      estilo: estiloFormaDaCamada({ options: estiloLinha })
+      estilo: estiloFormaDaCamada({ options: estiloLinha }),
+      nomeLegenda: nomeLegenda
     });
     limparPreviewAnotacao();
     ativarFerramentaAnotacao('linha');
@@ -583,12 +980,29 @@ map.addControl(new NortheArrowControl());
       if (texto && texto.trim()) {
         var estiloTexto = lerEstiloTextoAnotacao();
         adicionarAnotacao(L.marker(e.latlng, {
-          pane: 'anotacoesPane',
+          pane: 'anotacoesTextoPane',
           draggable: true,
           icon: criarIconeTextoAnotacao(texto.trim(), estiloTexto)
         }), 'texto', { texto: texto.trim(), estiloTexto: estiloTexto });
       }
       ativarFerramentaAnotacao('texto');
+      return;
+    }
+
+    if (anotacaoFerramenta === 'ponto') {
+      var estiloPontoForma = lerEstiloFormaAnotacao();
+      var estiloPonto = lerEstiloPontoAnotacao();
+      var nomeLegendaPonto = solicitarNomeLegendaAnotacao('ponto', '');
+      adicionarAnotacao(L.marker(e.latlng, {
+        pane: 'anotacoesPane',
+        draggable: false,
+        icon: criarIconePontoAnotacao(estiloPontoForma, estiloPonto)
+      }), 'ponto', {
+        estilo: estiloFormaDaCamada({ options: estiloPontoForma }),
+        estiloPonto: estiloPonto,
+        nomeLegenda: nomeLegendaPonto
+      });
+      ativarFerramentaAnotacao('ponto');
       return;
     }
 
@@ -613,8 +1027,10 @@ map.addControl(new NortheArrowControl());
     if (anotacaoFerramenta === 'retangulo') {
       if (anotacaoPreview) map.removeLayer(anotacaoPreview);
       var estiloRetangulo = lerEstiloFormaAnotacao();
+      var nomeLegendaRetangulo = solicitarNomeLegendaAnotacao('retangulo', '');
       adicionarAnotacao(L.rectangle(L.latLngBounds(anotacaoInicio, e.latlng), estiloRetangulo), 'retangulo', {
-        estilo: estiloFormaDaCamada({ options: estiloRetangulo })
+        estilo: estiloFormaDaCamada({ options: estiloRetangulo }),
+        nomeLegenda: nomeLegendaRetangulo
       });
       limparPreviewAnotacao();
       ativarFerramentaAnotacao('retangulo');
@@ -626,10 +1042,12 @@ map.addControl(new NortheArrowControl());
       if (raio > 0) {
         if (anotacaoPreview) map.removeLayer(anotacaoPreview);
         var estiloCirculo = lerEstiloFormaAnotacao();
+        var nomeLegendaCirculo = solicitarNomeLegendaAnotacao('circulo', '');
         adicionarAnotacao(L.circle(anotacaoInicio, Object.assign({}, estiloCirculo, {
           radius: raio
         })), 'circulo', {
-          estilo: estiloFormaDaCamada({ options: estiloCirculo })
+          estilo: estiloFormaDaCamada({ options: estiloCirculo }),
+          nomeLegenda: nomeLegendaCirculo
         });
       }
       limparPreviewAnotacao();
@@ -707,6 +1125,7 @@ map.addControl(new NortheArrowControl());
 
     var botoes = [
       ['drawLinha', 'linha'],
+      ['drawPonto', 'ponto'],
       ['drawRetangulo', 'retangulo'],
       ['drawCirculo', 'circulo'],
       ['drawTexto', 'texto']
@@ -718,15 +1137,6 @@ map.addControl(new NortheArrowControl());
       });
     });
 
-    var desfazer = document.getElementById('drawDesfazer');
-    if (desfazer) desfazer.addEventListener('click', function() {
-      var ultima = anotacoesHistorico.pop();
-      if (ultima) {
-        anotacoesLayer.removeLayer(ultima);
-        salvarAnotacoesLocal();
-      }
-    });
-
     var limpar = document.getElementById('drawLimpar');
     if (limpar) limpar.addEventListener('click', function() {
       if (!anotacoesLayer.getLayers().length) return;
@@ -734,12 +1144,23 @@ map.addControl(new NortheArrowControl());
       anotacoesLayer.clearLayers();
       anotacoesHistorico = [];
       salvarAnotacoesLocal();
+      renderizarLegendaAnotacoes();
     });
 
     var exportar = document.getElementById('drawExportar');
     if (exportar) exportar.addEventListener('click', exportarArquivoAnotacoes);
 
-    ['drawCorLinha', 'drawEspessuraLinha', 'drawOpacidadePreenchimento', 'drawCorTexto', 'drawTamanhoTexto'].forEach(function(id) {
+    var botaoLegendaAnotacoes = document.getElementById('toggleLegendaAnotacoes');
+    if (botaoLegendaAnotacoes) {
+      botaoLegendaAnotacoes.addEventListener('click', function() {
+        legendaAnotacoesAtiva = !legendaAnotacoesAtiva;
+        atualizarBotaoLegendaAnotacoes();
+        renderizarLegendaAnotacoes();
+      });
+      atualizarBotaoLegendaAnotacoes();
+    }
+
+    ['drawCorLinha', 'drawEspessuraLinha', 'drawOpacidadePreenchimento', 'drawFormatoPonto', 'drawTamanhoPonto', 'drawCorTexto', 'drawTamanhoTexto'].forEach(function(id) {
       var campo = document.getElementById(id);
       if (campo) campo.addEventListener('input', atualizarIndicadoresEstiloAnotacao);
     });
@@ -768,6 +1189,7 @@ map.addControl(new NortheArrowControl());
     }
 
     carregarAnotacoesLocal();
+    renderizarLegendaAnotacoes();
     if (!anotacoesLayer.getLayers().length) setStatusAnotacao('Sem ferramenta ativa');
   }
 
@@ -2709,23 +3131,23 @@ map.addControl(new NortheArrowControl());
   function criarLegendaLinha(tipo, cor) {
     if (tipo === 'dup') {
       return '<span class="legenda-linha-wrap">' +
-        '<span class="legenda-linha-dup-base" style="height:1px;background:' + cor + ';"></span>' +
-        '<span class="legenda-linha-dup-miolo" style="height:1px;"></span>' +
+        '<span class="legenda-linha-dup-base" style="height:5px;background:' + cor + ';"></span>' +
+        '<span class="legenda-linha-dup-miolo" style="height:2px;"></span>' +
       '</span>';
     }
     if (tipo === 'dashed-red') {
       return '<span class="legenda-linha-wrap">' +
-        '<span class="legenda-linha-eod-base" style="height:1px;background:' + cor + ';"></span>' +
-        '<span class="legenda-linha-eod-miolo" style="border-top:1px dashed ' + cor + '; background:transparent; height:0;"></span>' +
+        '<span class="legenda-linha-eod-base" style="height:5px;background:' + cor + ';"></span>' +
+        '<span class="legenda-linha-eod-miolo" style="border-top:2px dashed ' + cor + '; background:transparent; height:0;"></span>' +
       '</span>';
     }
     if (tipo === 'dashed-green') {
       return '<span class="legenda-linha-wrap">' +
-        '<span class="legenda-linha legenda-linha-tracejada" style="border-top-color:' + cor + '; border-top-width:1px;"></span>' +
+        '<span class="legenda-linha legenda-linha-tracejada" style="border-top-color:' + cor + '; border-top-width:3px;"></span>' +
       '</span>';
     }
     return '<span class="legenda-linha-wrap">' +
-      '<span class="legenda-linha" style="height:1px;background:' + cor + ';"></span>' +
+      '<span class="legenda-linha" style="height:4px;background:' + cor + ';"></span>' +
     '</span>';
   }
 
@@ -3850,6 +4272,13 @@ map.addControl(new NortheArrowControl());
     return formatoAte(dimensoes, 'A1');
   }
 
+  function legendaAmpliadaImpressao(dimensoes) {
+    return dimensoes.formato === 'A4' ||
+      dimensoes.formato === 'A3' ||
+      dimensoes.formato === 'A2' ||
+      dimensoes.formato === 'A1';
+  }
+
   function atualizarBotaoRotulosObrasPrint() {
     var botao = document.getElementById('toggleRotulosObrasPrint');
     if (!botao) return;
@@ -3877,7 +4306,9 @@ map.addControl(new NortheArrowControl());
     var escalaTitulo = d.largura / larguraBaseA4;
     var fatorTitulo = tituloAmpliadoImpressao(d) ? 1.2 : 1;
     document.documentElement.style.setProperty('--print-title-font-size', (13 * escalaTitulo * fatorTitulo).toFixed(2) + 'pt');
-    document.documentElement.style.setProperty('--print-legend-scale', d.largura <= larguraBaseA4 ? '0.6' : '1');
+    var escalaLegenda = d.largura <= larguraBaseA4 ? 0.6 : 1;
+    if (legendaAmpliadaImpressao(d)) escalaLegenda *= 1.5;
+    document.documentElement.style.setProperty('--print-legend-scale', escalaLegenda.toFixed(2));
 
     var style = document.getElementById('printPageStyle');
     if (!style) {
@@ -4007,9 +4438,9 @@ map.addControl(new NortheArrowControl());
 
     if (localidadeFiltroAtivo && localidadesLayer && map.hasLayer(localidadesLayer)) {
       var blocoLocalidade = document.createElement('div');
-      blocoLocalidade.className = 'bloco';
+      blocoLocalidade.className = 'bloco legenda-categoria';
       blocoLocalidade.innerHTML =
-        '<div class="subtitulo">Legenda — Localidades</div>' +
+        '<div class="subtitulo">Localidades</div>' +
         '<div class="legenda-item">' +
           '<span class="legenda-localidade-simbolo"></span>' +
           '<div class="legenda-texto"><b>Localidade</b></div>' +

@@ -176,6 +176,7 @@
       width: max-content !important;
       height: auto !important;
       overflow: visible !important;
+      z-index: 10000 !important;
     }
 
     .anotacao-texto {
@@ -192,6 +193,35 @@
       white-space: nowrap;
       overflow-wrap: normal;
       box-shadow: 0 1px 4px rgba(0,0,0,0.22);
+    }
+
+    .anotacao-ponto-icon {
+      background: none !important;
+      border: none !important;
+    }
+
+    .anotacao-ponto-shape {
+      display: block;
+      box-sizing: border-box;
+      border-style: solid;
+    }
+
+    .anotacao-ponto-circulo {
+      border-radius: 50%;
+    }
+
+    .anotacao-ponto-quadrado {
+      border-radius: 2px;
+    }
+
+    .anotacao-ponto-losango {
+      transform: rotate(45deg);
+      border-radius: 2px;
+    }
+
+    .anotacao-ponto-triangulo {
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      border-radius: 0;
     }
 
     .filtro-btn {
@@ -307,9 +337,61 @@
       margin-top: 2px;
     }
 
-    .legenda-texto {
-      flex: 1;
-    }
+.legenda-texto {
+  flex: 1;
+}
+
+.legenda-titulo-geral {
+  padding-bottom: 8px;
+}
+
+.legenda-titulo-geral .subtitulo {
+  margin-bottom: 0;
+  color: #111827;
+  font-size: 14px;
+  text-align: left;
+  letter-spacing: 0.4px;
+}
+
+.legenda-categoria > .subtitulo {
+  display: block;
+}
+
+.legenda-anotacao-simbolo {
+  width: 42px;
+  min-width: 42px;
+  height: 16px;
+  margin-right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.legenda-anotacao-linha {
+  width: 34px;
+  height: 0;
+  border-top-style: solid;
+}
+
+.legenda-anotacao-retangulo {
+  width: 24px;
+  height: 13px;
+  border-style: solid;
+}
+
+.legenda-anotacao-circulo {
+  width: 16px;
+  height: 16px;
+  border-style: solid;
+  border-radius: 50%;
+}
+
+.legenda-anotacao-texto {
+  color: #111827;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+}
 
     .scroll-inner {
       padding-right: 8px;
@@ -866,6 +948,32 @@ input[type="range"] {
 }
 
 /* ===== ESCALA GRÁFICA DINÂMICA ===== */
+.leaflet-top.leaflet-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.leaflet-top.leaflet-left .leaflet-control {
+  margin-top: 10px;
+  margin-left: 0;
+}
+
+.leaflet-top.leaflet-left .leaflet-control:first-child {
+  margin-left: 10px;
+}
+
+.leaflet-control-layers,
+.zoom-valor-control,
+.medicao-control {
+  height: 34px;
+}
+
+.leaflet-control-layers-toggle {
+  width: 34px !important;
+  height: 34px !important;
+}
+
 .leaflet-control-scale {
   background: transparent !important;
   border: none !important;
@@ -886,6 +994,88 @@ input[type="range"] {
 }
 
 /* ===== SÍMBOLO DE NORTE (ROSA DOS VENTOS) ===== */
+.zoom-valor-control,
+.medicao-control {
+  overflow: hidden;
+  border: 2px solid rgba(0,0,0,0.2) !important;
+  border-radius: 4px !important;
+  background: #ffffff;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.25);
+}
+
+.zoom-valor-control label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  margin: 0;
+  padding: 4px 8px;
+  color: #1f2937;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  background: #ffffff;
+}
+
+.zoom-valor-control input {
+  width: 64px;
+  height: 22px;
+  margin: 0;
+  padding: 2px 4px;
+  border: 1px solid #cfd6dd;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  background: #f9fafb;
+}
+
+.medicao-btn {
+  width: auto;
+  min-width: 58px;
+  min-height: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #ffffff;
+  color: #1f2937;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 34px;
+}
+
+.medicao-btn:hover,
+.medicao-btn.ativo {
+  background: #f3f4f6;
+  color: #005f22;
+}
+
+.medicao-tooltip-icon {
+  width: max-content !important;
+  height: auto !important;
+  background: none !important;
+  border: none !important;
+  overflow: visible !important;
+}
+
+.medicao-tooltip {
+  display: inline-block;
+  width: max-content;
+  padding: 4px 7px;
+  border: 1px solid #111827;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.22);
+}
+
 .north-arrow-control {
   background: transparent;
   border: none;
@@ -1056,7 +1246,9 @@ body.modo-impressao.preparando-impressao #printStampBox {
   display: block;
 }
 
-body.modo-impressao.preparando-impressao .leaflet-control-zoom {
+body.modo-impressao.preparando-impressao .leaflet-control-zoom,
+body.modo-impressao.preparando-impressao .zoom-valor-control,
+body.modo-impressao.preparando-impressao .medicao-control {
   display: none !important;
 }
 
@@ -1330,7 +1522,9 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
   }
 
   body.modo-impressao .leaflet-control-layers,
-  body.modo-impressao .leaflet-control-zoom {
+  body.modo-impressao .leaflet-control-zoom,
+  body.modo-impressao .zoom-valor-control,
+  body.modo-impressao .medicao-control {
     display: none !important;
   }
 
