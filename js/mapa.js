@@ -11,11 +11,17 @@ var originalZoom = map.getZoom();
     map.createPane('servicosPane');
     map.getPane('servicosPane').style.zIndex = 500;
 
+    map.createPane('rotulosServicosPane');
+    map.getPane('rotulosServicosPane').style.zIndex = 900;
+
     map.createPane('localidadesPane');
     map.getPane('localidadesPane').style.zIndex = 550;
 
     map.createPane('oaePane');
     map.getPane('oaePane').style.zIndex = 600;
+
+    map.createPane('anotacoesPane');
+    map.getPane('anotacoesPane').style.zIndex = 850;
 
  const baseClaro = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
@@ -149,6 +155,7 @@ map.addControl(new NortheArrowControl());
   map.on('zoomend', function() {
     atualizarVisibilidadeRotulos();
     atualizarVisibilidadeRotulosSRE();
+    atualizarVisibilidadeRotulosObras();
   });
 
   var municipiosData = null;
@@ -167,7 +174,9 @@ map.addControl(new NortheArrowControl());
   var snvLabelLayer = null;
   var oaeLayer = null;
   var snvLayer = null;
+  var obrasLabelLayer = null;
   var regraLayers = [];
+  var rotulosObrasPrintAtivos = false;
 
   var programaAtivo = '';
   var programas = [];
@@ -178,6 +187,592 @@ map.addControl(new NortheArrowControl());
     };
     var servicoFiltroAtivo = '';
 
+  var anotacoesLayer = L.featureGroup().addTo(map);
+  var anotacoesHistorico = [];
+  var anotacaoFerramenta = null;
+  var anotacaoInicio = null;
+  var anotacaoPreview = null;
+  var anotacaoLinhaPontos = [];
+  var ANOTACOES_STORAGE_KEY = 'mapa_pop2_anotacoes_v1';
+  var estiloAnotacao = {
+    pane: 'anotacoesPane',
+    color: '#e11d48',
+    weight: 4,
+    opacity: 0.95,
+    fillColor: '#f43f5e',
+    fillOpacity: 0.14
+  };
+  var estiloTextoAnotacao = {
+    cor: '#111827',
+    tamanho: 13
+  };
+
+  function setStatusAnotacao(texto) {
+    var status = document.getElementById('drawStatus');
+    if (status) status.textContent = texto;
+  }
+
+  function valorCampo(id, padrao) {
+    var campo = document.getElementById(id);
+    return campo && campo.value ? campo.value : padrao;
+  }
+
+  function lerEstiloFormaAnotacao() {
+    var cor = valorCampo('drawCorLinha', estiloAnotacao.color);
+    var espessura = parseInt(valorCampo('drawEspessuraLinha', estiloAnotacao.weight), 10);
+    var opacidadePreenchimento = parseInt(valorCampo('drawOpacidadePreenchimento', estiloAnotacao.fillOpacity * 100), 10);
+    if (!isFinite(espessura)) espessura = estiloAnotacao.weight;
+    if (!isFinite(opacidadePreenchimento)) opacidadePreenchimento = estiloAnotacao.fillOpacity * 100;
+    return {
+      pane: 'anotacoesPane',
+      color: cor,
+      weight: Math.max(1, Math.min(12, espessura)),
+      opacity: 0.95,
+      fillColor: cor,
+      fillOpacity: Math.max(0, Math.min(100, opacidadePreenchimento)) / 100
+    };
+  }
+
+  function lerEstiloTextoAnotacao() {
+    var tamanho = parseInt(valorCampo('drawTamanhoTexto', estiloTextoAnotacao.tamanho), 10);
+    if (!isFinite(tamanho)) tamanho = estiloTextoAnotacao.tamanho;
+    return {
+      cor: valorCampo('drawCorTexto', estiloTextoAnotacao.cor),
+      tamanho: Math.max(8, Math.min(36, tamanho))
+    };
+  }
+
+  function atualizarIndicadoresEstiloAnotacao() {
+    var espessuraValor = document.getElementById('drawEspessuraValor');
+    var opacidadeValor = document.getElementById('drawOpacidadeValor');
+    var tamanhoValor = document.getElementById('drawTamanhoTextoValor');
+    var estiloForma = lerEstiloFormaAnotacao();
+    if (espessuraValor) espessuraValor.textContent = estiloForma.weight + ' px';
+    if (opacidadeValor) opacidadeValor.textContent = Math.round(estiloForma.fillOpacity * 100) + '%';
+    if (tamanhoValor) tamanhoValor.textContent = lerEstiloTextoAnotacao().tamanho + ' px';
+  }
+
+  function estiloFormaPorProps(props) {
+    return Object.assign({}, estiloAnotacao, props && props.estilo ? props.estilo : {});
+  }
+
+  function estiloTextoPorProps(props) {
+    return Object.assign({}, estiloTextoAnotacao, props && props.estiloTexto ? props.estiloTexto : {});
+  }
+
+  function estiloFormaDaCamada(layer) {
+    var opcoes = layer.options || {};
+    return {
+      color: opcoes.color || estiloAnotacao.color,
+      weight: opcoes.weight || estiloAnotacao.weight,
+      opacity: opcoes.opacity == null ? estiloAnotacao.opacity : opcoes.opacity,
+      fillColor: opcoes.fillColor || opcoes.color || estiloAnotacao.fillColor,
+      fillOpacity: opcoes.fillOpacity == null ? estiloAnotacao.fillOpacity : opcoes.fillOpacity
+    };
+  }
+
+  function nomeArquivoSeguroAnotacao(nome) {
+    return String(nome || '')
+      .trim()
+      .replace(/[\\/:*?"<>|]+/g, '_')
+      .replace(/\s+/g, '_')
+      .replace(/^_+|_+$/g, '');
+  }
+
+  function limparPreviewAnotacao() {
+    if (anotacaoPreview) {
+      map.removeLayer(anotacaoPreview);
+      anotacaoPreview = null;
+    }
+    anotacaoInicio = null;
+    anotacaoLinhaPontos = [];
+  }
+
+  function atualizarBotoesAnotacao() {
+    var ids = {
+      linha: 'drawLinha',
+      retangulo: 'drawRetangulo',
+      circulo: 'drawCirculo',
+      texto: 'drawTexto'
+    };
+    Object.keys(ids).forEach(function(chave) {
+      var botao = document.getElementById(ids[chave]);
+      if (botao) botao.classList.toggle('ativo-filtro', anotacaoFerramenta === chave);
+    });
+  }
+
+  function escaparHtml(valor) {
+    return String(valor || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function criarIconeTextoAnotacao(texto, estiloTexto) {
+    estiloTexto = Object.assign({}, estiloTextoAnotacao, estiloTexto || {});
+    var tamanho = Number(estiloTexto.tamanho || estiloTextoAnotacao.tamanho);
+    var style = 'color:' + escaparHtml(estiloTexto.cor) + ';' +
+      'font-size:' + tamanho + 'px;' +
+      'border-color:' + escaparHtml(estiloTexto.cor) + ';';
+    return L.divIcon({
+      className: 'anotacao-texto-icon',
+      html: '<span class="anotacao-texto" style="' + style + '">' + escaparHtml(texto) + '</span>',
+      iconSize: [1, 1],
+      iconAnchor: [0, 0]
+    });
+  }
+
+  function configurarCamadaAnotacao(layer, tipo, extra) {
+    layer._anotacaoTipo = tipo;
+    layer._anotacaoExtra = extra || {};
+    if (tipo === 'texto') {
+      layer.on('dragend', salvarAnotacoesLocal);
+      layer.on('click', function() {
+        var textoAtual = layer._anotacaoExtra.texto || '';
+        var novoTexto = window.prompt('Texto da anotação:', textoAtual);
+        if (novoTexto === null) return;
+        novoTexto = novoTexto.trim();
+        if (!novoTexto) {
+          removerAnotacao(layer);
+          return;
+        }
+        layer._anotacaoExtra.texto = novoTexto;
+        layer.setIcon(criarIconeTextoAnotacao(novoTexto, estiloTextoPorProps(layer._anotacaoExtra)));
+        salvarAnotacoesLocal();
+      });
+    } else {
+      layer.on('click', function() {
+        if (anotacaoFerramenta) return;
+        if (window.confirm('Remover esta anotação?')) removerAnotacao(layer);
+      });
+    }
+    return layer;
+  }
+
+  function adicionarAnotacao(layer, tipo, extra) {
+    configurarCamadaAnotacao(layer, tipo, extra);
+    anotacoesLayer.addLayer(layer);
+    anotacoesHistorico.push(layer);
+    salvarAnotacoesLocal();
+  }
+
+  function removerAnotacao(layer) {
+    anotacoesLayer.removeLayer(layer);
+    anotacoesHistorico = anotacoesHistorico.filter(function(item) {
+      return item !== layer;
+    });
+    salvarAnotacoesLocal();
+  }
+
+  function latLngsParaCoords(latlngs) {
+    return latlngs.map(function(latlng) {
+      return [latlng.lng, latlng.lat];
+    });
+  }
+
+  function coordsParaLatLngs(coords) {
+    return coords.map(function(coord) {
+      return [coord[1], coord[0]];
+    });
+  }
+
+  function coordenadasCirculoAproximado(centro, raioMetros) {
+    var pontos = [];
+    var lat1 = centro.lat * Math.PI / 180;
+    var lng1 = centro.lng * Math.PI / 180;
+    var distanciaAngular = raioMetros / 6378137;
+
+    for (var i = 0; i <= 72; i++) {
+      var bearing = (i * 5) * Math.PI / 180;
+      var lat2 = Math.asin(
+        Math.sin(lat1) * Math.cos(distanciaAngular) +
+        Math.cos(lat1) * Math.sin(distanciaAngular) * Math.cos(bearing)
+      );
+      var lng2 = lng1 + Math.atan2(
+        Math.sin(bearing) * Math.sin(distanciaAngular) * Math.cos(lat1),
+        Math.cos(distanciaAngular) - Math.sin(lat1) * Math.sin(lat2)
+      );
+      pontos.push([lng2 * 180 / Math.PI, lat2 * 180 / Math.PI]);
+    }
+
+    return [pontos];
+  }
+
+  function camadaAnotacaoParaFeature(layer) {
+    var tipo = layer._anotacaoTipo;
+    var props = Object.assign({ tipo: tipo }, layer._anotacaoExtra || {});
+
+    if (tipo === 'linha') {
+      props.estilo = estiloFormaDaCamada(layer);
+      return {
+        type: 'Feature',
+        properties: props,
+        geometry: {
+          type: 'LineString',
+          coordinates: latLngsParaCoords(layer.getLatLngs())
+        }
+      };
+    }
+
+    if (tipo === 'retangulo') {
+      var polygon = layer.toGeoJSON().geometry.coordinates;
+      props.estilo = estiloFormaDaCamada(layer);
+      return {
+        type: 'Feature',
+        properties: props,
+        geometry: { type: 'Polygon', coordinates: polygon }
+      };
+    }
+
+    if (tipo === 'circulo') {
+      var centro = layer.getLatLng();
+      props.raio = layer.getRadius();
+      props.centro = [centro.lng, centro.lat];
+      props.estilo = estiloFormaDaCamada(layer);
+      return {
+        type: 'Feature',
+        properties: props,
+        geometry: {
+          type: 'Polygon',
+          coordinates: coordenadasCirculoAproximado(centro, props.raio)
+        }
+      };
+    }
+
+    if (tipo === 'texto') {
+      var pos = layer.getLatLng();
+      return {
+        type: 'Feature',
+        properties: props,
+        geometry: { type: 'Point', coordinates: [pos.lng, pos.lat] }
+      };
+    }
+
+    return null;
+  }
+
+  function exportarAnotacoesGeoJSON() {
+    var features = [];
+    anotacoesLayer.eachLayer(function(layer) {
+      var feature = camadaAnotacaoParaFeature(layer);
+      if (feature) features.push(feature);
+    });
+    return {
+      type: 'FeatureCollection',
+      features: features
+    };
+  }
+
+  function salvarAnotacoesLocal() {
+    try {
+      localStorage.setItem(ANOTACOES_STORAGE_KEY, JSON.stringify(exportarAnotacoesGeoJSON()));
+      setStatusAnotacao(anotacoesLayer.getLayers().length + ' anotação(ões) salva(s) no navegador');
+    } catch (erro) {
+      setStatusAnotacao('Não foi possível salvar no navegador');
+      console.warn('Falha ao salvar anotações:', erro);
+    }
+  }
+
+  function criarLayerDeFeatureAnotacao(feature) {
+    if (!feature || !feature.geometry) return null;
+    var props = feature.properties || {};
+    var tipo = props.tipo;
+    var geom = feature.geometry;
+    var layer = null;
+    var estiloForma = estiloFormaPorProps(props);
+
+    if (tipo === 'linha' && geom.type === 'LineString') {
+      layer = L.polyline(coordsParaLatLngs(geom.coordinates), estiloForma);
+    } else if (tipo === 'retangulo' && geom.type === 'Polygon') {
+      layer = L.polygon(coordsParaLatLngs(geom.coordinates[0] || []), estiloForma);
+    } else if (tipo === 'circulo' && geom.type === 'Polygon' && props.centro) {
+      layer = L.circle([props.centro[1], props.centro[0]], Object.assign({}, estiloForma, {
+        radius: Number(props.raio) || 1000
+      }));
+    } else if (tipo === 'circulo' && geom.type === 'Point') {
+      layer = L.circle([geom.coordinates[1], geom.coordinates[0]], Object.assign({}, estiloForma, {
+        radius: Number(props.raio) || 1000
+      }));
+    } else if (tipo === 'texto' && geom.type === 'Point') {
+      layer = L.marker([geom.coordinates[1], geom.coordinates[0]], {
+        pane: 'anotacoesPane',
+        draggable: true,
+        icon: criarIconeTextoAnotacao(props.texto || '', estiloTextoPorProps(props))
+      });
+    }
+
+    if (!layer) return null;
+    return configurarCamadaAnotacao(layer, tipo, props);
+  }
+
+  function carregarAnotacoesGeoJSON(geojson, substituir) {
+    if (!geojson || geojson.type !== 'FeatureCollection' || !Array.isArray(geojson.features)) {
+      setStatusAnotacao('Arquivo de anotações inválido');
+      return;
+    }
+
+    if (substituir) {
+      anotacoesLayer.clearLayers();
+      anotacoesHistorico = [];
+    }
+
+    geojson.features.forEach(function(feature) {
+      var layer = criarLayerDeFeatureAnotacao(feature);
+      if (layer) {
+        anotacoesLayer.addLayer(layer);
+        anotacoesHistorico.push(layer);
+      }
+    });
+    salvarAnotacoesLocal();
+  }
+
+  function carregarAnotacoesLocal() {
+    try {
+      var bruto = localStorage.getItem(ANOTACOES_STORAGE_KEY);
+      if (!bruto) return;
+      carregarAnotacoesGeoJSON(JSON.parse(bruto), true);
+    } catch (erro) {
+      setStatusAnotacao('Não foi possível recuperar as anotações salvas');
+      console.warn('Falha ao carregar anotações:', erro);
+    }
+  }
+
+  function ativarFerramentaAnotacao(tipo) {
+    limparPreviewAnotacao();
+    anotacaoFerramenta = anotacaoFerramenta === tipo ? null : tipo;
+    atualizarBotoesAnotacao();
+
+    if (!anotacaoFerramenta) {
+      map.dragging.enable();
+      map.doubleClickZoom.enable();
+      setStatusAnotacao('Sem ferramenta ativa');
+      return;
+    }
+
+    map.dragging.disable();
+    map.doubleClickZoom.disable();
+
+    if (tipo === 'linha') setStatusAnotacao('Linha: clique nos pontos e dê duplo clique para finalizar');
+    if (tipo === 'retangulo') setStatusAnotacao('Retângulo: clique em dois cantos do retângulo');
+    if (tipo === 'circulo') setStatusAnotacao('Círculo: clique no centro e depois no raio');
+    if (tipo === 'texto') setStatusAnotacao('Texto: clique no local da anotação');
+  }
+
+  function finalizarLinhaAnotacao() {
+    if (anotacaoLinhaPontos.length < 2) return;
+    if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+    var estiloLinha = lerEstiloFormaAnotacao();
+    adicionarAnotacao(L.polyline(anotacaoLinhaPontos, estiloLinha), 'linha', {
+      estilo: estiloFormaDaCamada({ options: estiloLinha })
+    });
+    limparPreviewAnotacao();
+    ativarFerramentaAnotacao('linha');
+  }
+
+  function processarCliqueAnotacao(e) {
+    if (!anotacaoFerramenta) return;
+    if (e.originalEvent) {
+      L.DomEvent.preventDefault(e.originalEvent);
+      L.DomEvent.stopPropagation(e.originalEvent);
+    }
+
+    if (anotacaoFerramenta === 'texto') {
+      var texto = window.prompt('Texto da anotação:');
+      if (texto && texto.trim()) {
+        var estiloTexto = lerEstiloTextoAnotacao();
+        adicionarAnotacao(L.marker(e.latlng, {
+          pane: 'anotacoesPane',
+          draggable: true,
+          icon: criarIconeTextoAnotacao(texto.trim(), estiloTexto)
+        }), 'texto', { texto: texto.trim(), estiloTexto: estiloTexto });
+      }
+      ativarFerramentaAnotacao('texto');
+      return;
+    }
+
+    if (anotacaoFerramenta === 'linha') {
+      if (e.originalEvent && e.originalEvent.detail >= 2) {
+        finalizarLinhaAnotacao();
+        return;
+      }
+      anotacaoLinhaPontos.push(e.latlng);
+      if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+      anotacaoPreview = L.polyline(anotacaoLinhaPontos, Object.assign({}, lerEstiloFormaAnotacao(), {
+        dashArray: '6,6'
+      })).addTo(map);
+      return;
+    }
+
+    if (!anotacaoInicio) {
+      anotacaoInicio = e.latlng;
+      return;
+    }
+
+    if (anotacaoFerramenta === 'retangulo') {
+      if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+      var estiloRetangulo = lerEstiloFormaAnotacao();
+      adicionarAnotacao(L.rectangle(L.latLngBounds(anotacaoInicio, e.latlng), estiloRetangulo), 'retangulo', {
+        estilo: estiloFormaDaCamada({ options: estiloRetangulo })
+      });
+      limparPreviewAnotacao();
+      ativarFerramentaAnotacao('retangulo');
+      return;
+    }
+
+    if (anotacaoFerramenta === 'circulo') {
+      var raio = anotacaoInicio.distanceTo(e.latlng);
+      if (raio > 0) {
+        if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+        var estiloCirculo = lerEstiloFormaAnotacao();
+        adicionarAnotacao(L.circle(anotacaoInicio, Object.assign({}, estiloCirculo, {
+          radius: raio
+        })), 'circulo', {
+          estilo: estiloFormaDaCamada({ options: estiloCirculo })
+        });
+      }
+      limparPreviewAnotacao();
+      ativarFerramentaAnotacao('circulo');
+    }
+  }
+
+  function processarMousemoveAnotacao(e) {
+    if (!anotacaoFerramenta) return;
+
+    if (anotacaoFerramenta === 'linha' && anotacaoLinhaPontos.length) {
+      if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+      anotacaoPreview = L.polyline(anotacaoLinhaPontos.concat([e.latlng]), Object.assign({}, lerEstiloFormaAnotacao(), {
+        dashArray: '6,6'
+      })).addTo(map);
+      return;
+    }
+
+    if (!anotacaoInicio) return;
+    if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+
+    if (anotacaoFerramenta === 'retangulo') {
+      anotacaoPreview = L.rectangle(L.latLngBounds(anotacaoInicio, e.latlng), Object.assign({}, lerEstiloFormaAnotacao(), {
+        dashArray: '6,6'
+      })).addTo(map);
+    }
+
+    if (anotacaoFerramenta === 'circulo') {
+      anotacaoPreview = L.circle(anotacaoInicio, Object.assign({}, lerEstiloFormaAnotacao(), {
+        radius: anotacaoInicio.distanceTo(e.latlng),
+        dashArray: '6,6'
+      })).addTo(map);
+    }
+  }
+
+  function exportarArquivoAnotacoes() {
+    var data = new Date().toISOString().slice(0, 10);
+    var nomePadrao = 'anotacoes_mapa_pop2_' + data;
+    var nomeInformado = window.prompt('Nome do arquivo GeoJSON:', nomePadrao);
+    if (nomeInformado === null) return;
+    var nomeArquivo = nomeArquivoSeguroAnotacao(nomeInformado) || nomePadrao;
+    if (!/\.geojson$/i.test(nomeArquivo)) nomeArquivo += '.geojson';
+
+    var blob = new Blob([JSON.stringify(exportarAnotacoesGeoJSON(), null, 2)], {
+      type: 'application/geo+json'
+    });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = nomeArquivo;
+    document.body.appendChild(link);
+    link.click();
+    URL.revokeObjectURL(link.href);
+    document.body.removeChild(link);
+    setStatusAnotacao('Anotações exportadas em GeoJSON');
+  }
+
+  function inicializarAnotacoes() {
+    map.on('click', processarCliqueAnotacao);
+    map.on('mousemove', processarMousemoveAnotacao);
+    map.on('dblclick', function(e) {
+      if (anotacaoFerramenta === 'linha') {
+        if (e.originalEvent) {
+          L.DomEvent.preventDefault(e.originalEvent);
+          L.DomEvent.stopPropagation(e.originalEvent);
+        }
+        finalizarLinhaAnotacao();
+      }
+    });
+    map.getContainer().addEventListener('contextmenu', function(e) {
+      if (!anotacaoFerramenta) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (anotacaoFerramenta === 'linha') finalizarLinhaAnotacao();
+    }, true);
+
+    var botoes = [
+      ['drawLinha', 'linha'],
+      ['drawRetangulo', 'retangulo'],
+      ['drawCirculo', 'circulo'],
+      ['drawTexto', 'texto']
+    ];
+    botoes.forEach(function(item) {
+      var botao = document.getElementById(item[0]);
+      if (botao) botao.addEventListener('click', function() {
+        ativarFerramentaAnotacao(item[1]);
+      });
+    });
+
+    var desfazer = document.getElementById('drawDesfazer');
+    if (desfazer) desfazer.addEventListener('click', function() {
+      var ultima = anotacoesHistorico.pop();
+      if (ultima) {
+        anotacoesLayer.removeLayer(ultima);
+        salvarAnotacoesLocal();
+      }
+    });
+
+    var limpar = document.getElementById('drawLimpar');
+    if (limpar) limpar.addEventListener('click', function() {
+      if (!anotacoesLayer.getLayers().length) return;
+      if (!window.confirm('Limpar todas as anotações salvas neste navegador?')) return;
+      anotacoesLayer.clearLayers();
+      anotacoesHistorico = [];
+      salvarAnotacoesLocal();
+    });
+
+    var exportar = document.getElementById('drawExportar');
+    if (exportar) exportar.addEventListener('click', exportarArquivoAnotacoes);
+
+    ['drawCorLinha', 'drawEspessuraLinha', 'drawOpacidadePreenchimento', 'drawCorTexto', 'drawTamanhoTexto'].forEach(function(id) {
+      var campo = document.getElementById(id);
+      if (campo) campo.addEventListener('input', atualizarIndicadoresEstiloAnotacao);
+    });
+    atualizarIndicadoresEstiloAnotacao();
+
+    var importar = document.getElementById('drawImportar');
+    var arquivo = document.getElementById('drawImportArquivo');
+    if (importar && arquivo) {
+      importar.addEventListener('click', function() { arquivo.click(); });
+      arquivo.addEventListener('change', function() {
+        var file = arquivo.files && arquivo.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function() {
+          try {
+            carregarAnotacoesGeoJSON(JSON.parse(reader.result), true);
+            setStatusAnotacao('Anotações importadas e salvas no navegador');
+          } catch (erro) {
+            setStatusAnotacao('Não foi possível importar o arquivo');
+            console.warn('Falha ao importar anotações:', erro);
+          }
+          arquivo.value = '';
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    carregarAnotacoesLocal();
+    if (!anotacoesLayer.getLayers().length) setStatusAnotacao('Sem ferramenta ativa');
+  }
+
+  inicializarAnotacoes();
+
   var oaeFiltroAtivo = false;
   var sreBaseFiltroAtivo = true;
   var snvFiltroAtivo = true;
@@ -185,7 +780,7 @@ map.addControl(new NortheArrowControl());
   var municipioBaseFiltroAtivo = true;
   var densidadeRotulos = 0;
 
-    var obrasFundeinfraData = [];
+  var obrasFundeinfraData = [];
   var obrasFundeinfraPorLink = {};
   var obrasDorData = [];
   var obrasDorPorLink = {};
@@ -228,9 +823,11 @@ map.addControl(new NortheArrowControl());
 
         for (var i = 0; i < obrasDorData.length; i++) {
           var item = obrasDorData[i];
-          var link = item && item.LINK_FUND;
-          if (link && !obrasDorPorLink[String(link)]) {
-            obrasDorPorLink[String(link)] = item;
+          var link = item && (item.LINK_DOR || item.LINK_FUND);
+          if (link) {
+            var chave = String(link);
+            if (!obrasDorPorLink[chave]) obrasDorPorLink[chave] = [];
+            obrasDorPorLink[chave].push(item);
           }
         }
 
@@ -273,6 +870,10 @@ map.addControl(new NortheArrowControl());
       map.removeLayer(regraLayers[i]);
     }
     regraLayers = [];
+    if (obrasLabelLayer) {
+      map.removeLayer(obrasLabelLayer);
+      obrasLabelLayer = null;
+    }
   }
 
 
@@ -479,7 +1080,7 @@ map.addControl(new NortheArrowControl());
 
     function considerarFeature(feature) {
       var dadosFund = dadosFundeinfraDaFeature(feature);
-      var dadosDor = dadosDorDaFeature(feature);
+      var dadosDorTodos = dadosDorDaFeatureTodos(feature);
 
       var sre = nomeSREFeature(feature);
       var rodovia = nomeRodoviaFeature(feature);
@@ -494,8 +1095,13 @@ map.addControl(new NortheArrowControl());
       if (servicosAtivos.FUNDEINFRA && dadosFund && dadosFund.PROPOSTA !== null && dadosFund.PROPOSTA !== undefined && String(dadosFund.PROPOSTA).trim() !== '') {
         adicionarUnico(propostas, String(dadosFund.PROPOSTA));
       }
-      if (servicosAtivos.DOR && dadosDor && dadosDor.PROPOSTA !== null && dadosDor.PROPOSTA !== undefined && String(dadosDor.PROPOSTA).trim() !== '') {
-        adicionarUnico(propostas, String(dadosDor.PROPOSTA));
+      if (servicosAtivos.DOR) {
+        for (var i = 0; i < dadosDorTodos.length; i++) {
+          var dadosDor = dadosDorTodos[i];
+          if (dadosDor.PROPOSTA !== null && dadosDor.PROPOSTA !== undefined && String(dadosDor.PROPOSTA).trim() !== '') {
+            adicionarUnico(propostas, String(dadosDor.PROPOSTA));
+          }
+        }
       }
     }
 
@@ -561,9 +1167,9 @@ map.addControl(new NortheArrowControl());
       if (sreSelecionado && sre !== sreSelecionado) return;
       if (propostaSelecionada) {
         var dadosFund = dadosFundeinfraDaFeature(f);
-        var dadosDor = dadosDorDaFeature(f);
+        var dadosDorFiltrados = dadosDorDaFeatureFiltrados(f, '', propostaSelecionada);
         if ((!dadosFund || String(dadosFund.PROPOSTA) !== String(propostaSelecionada)) &&
-            (!dadosDor || String(dadosDor.PROPOSTA) !== String(propostaSelecionada))) return;
+            !dadosDorFiltrados.length) return;
       }
 
       feats.push(f);
@@ -1564,9 +2170,29 @@ map.addControl(new NortheArrowControl());
   }
 
   function dadosDorDaFeature(feature) {
+    var dados = dadosDorDaFeatureTodos(feature);
+    return dados.length ? dados[0] : null;
+  }
+
+  function dadosDorDaFeatureTodos(feature) {
     var link = valorSeguro(feature, 'LINK_DOR');
-    if (!link) return null;
-    return obrasDorPorLink[String(link)] || null;
+    if (!link) return [];
+    var dados = obrasDorPorLink[String(link)] || [];
+    return Array.isArray(dados) ? dados : [dados];
+  }
+
+  function dadosDorDaFeatureFiltrados(feature, servico, proposta) {
+    var todos = dadosDorDaFeatureTodos(feature);
+    var filtrados = [];
+
+    for (var i = 0; i < todos.length; i++) {
+      var item = todos[i];
+      if (servico && item.SERVICO !== servico) continue;
+      if (proposta && String(item.PROPOSTA) !== String(proposta)) continue;
+      filtrados.push(item);
+    }
+
+    return filtrados;
   }
 
     function estiloDor(dados) {
@@ -1607,10 +2233,317 @@ map.addControl(new NortheArrowControl());
     };
   }
 
+  function coordenadasLinhaPrincipal(geometry) {
+    if (!geometry || !geometry.coordinates) return null;
+    if (geometry.type === 'LineString') return geometry.coordinates;
+    if (geometry.type === 'MultiLineString') {
+      var maior = null;
+      for (var i = 0; i < geometry.coordinates.length; i++) {
+        var linha = geometry.coordinates[i];
+        if (!maior || (linha && linha.length > maior.length)) maior = linha;
+      }
+      return maior;
+    }
+    return null;
+  }
+
+  function pontoMedioLinha(feature) {
+    var coords = coordenadasLinhaPrincipal(feature && feature.geometry);
+    if (!coords || coords.length < 2) return null;
+    var midIndex = Math.floor(coords.length / 2);
+    var midCoord = coords[midIndex];
+    if (!midCoord || midCoord.length < 2) return null;
+    return [midCoord[1], midCoord[0]];
+  }
+
+  function segmentoMedioLinha(feature) {
+    var coords = coordenadasLinhaPrincipal(feature && feature.geometry);
+    if (!coords || coords.length < 2) return null;
+    var midIndex = Math.floor(coords.length / 2);
+    var anterior = coords[Math.max(0, midIndex - 1)];
+    var proximo = coords[Math.min(coords.length - 1, midIndex + 1)];
+    if (!anterior || !proximo || anterior.length < 2 || proximo.length < 2) return null;
+    return {
+      a: [anterior[1], anterior[0]],
+      b: [proximo[1], proximo[0]]
+    };
+  }
+
+  function anguloSegmentoMedio(feature) {
+    var segmento = segmentoMedioLinha(feature);
+    if (!segmento) return 0;
+    var pontoA = map.latLngToLayerPoint(segmento.a);
+    var pontoB = map.latLngToLayerPoint(segmento.b);
+    return Math.atan2(pontoB.y - pontoA.y, pontoB.x - pontoA.x) * 180 / Math.PI;
+  }
+
+  function siglaOrigemEtapa(dados, origem, link) {
+    var linkTxt = String(link || '');
+    var prefixo = linkTxt.split('_')[0];
+    if (prefixo && prefixo.length <= 3) {
+      return prefixo.charAt(0).toUpperCase() + prefixo.slice(1).toLowerCase();
+    }
+
+    if (origem === 'DOR') return 'Do';
+
+    var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
+    if (etapa.indexOf('projeto') >= 0) return 'Fp';
+    return 'Fo';
+  }
+
+  function criarRotuloObra(latlng, dados, origem, link, cor, angulo) {
+    var sigla = siglaOrigemEtapa(dados, origem, link);
+    var proposta = dados && dados.PROPOSTA !== null && dados.PROPOSTA !== undefined ? String(dados.PROPOSTA) : '';
+    var titulo = origem + ' - ' + ((dados && dados.SERVICO) || 'Servico') + ' - ' + ((dados && dados.ETAPA) || 'Etapa');
+    var anguloOffset = isFinite(angulo) ? angulo + 90 : 0;
+
+    return L.marker(latlng, {
+      pane: 'rotulosServicosPane',
+      interactive: false,
+      anguloLinhaObra: isFinite(angulo) ? angulo : 0,
+      anguloOffsetObra: anguloOffset,
+      icon: L.divIcon({
+        className: 'obra-label-icon',
+        html:
+          '<div class="obra-label-chamada" style="background:' + cor + ';"></div>' +
+          '<div class="obra-label-offset">' +
+          '<div class="obra-label" title="' + escapeHtml(titulo) + '">' +
+            '<div class="obra-label-top">' + escapeHtml(sigla) + '</div>' +
+            '<div class="obra-label-bottom" style="background:' + cor + ';">' + escapeHtml(proposta) + '</div>' +
+          '</div>' +
+          '</div>',
+        iconSize: [42, 46],
+        iconAnchor: [21, 23]
+      })
+    });
+  }
+
+  function adicionarRotuloObra(grupo, feature, dados, origem, link, cor) {
+    var latlng = pontoMedioLinha(feature);
+    if (!latlng) return;
+    grupo.addLayer(criarRotuloObra(latlng, dados, origem, link, cor, anguloSegmentoMedio(feature)));
+  }
+
+  function retangulosOcupadosRotulosBase() {
+    var ocupados = [];
+
+    if (localidadesLayer && localidadeFiltroAtivo) {
+      localidadesLayer.eachLayer(function(layer) {
+        var el = layer.getElement && layer.getElement();
+        if (!el || el.style.display === 'none') return;
+
+        var p = map.latLngToContainerPoint(layer.getLatLng());
+        if (layer.options && layer.options.icon && layer.options.icon.options.className === 'localidade-label') {
+          ocupados.push({
+            left: p.x - 66,
+            right: p.x + 66,
+            top: p.y - 22,
+            bottom: p.y + 10,
+            tipo: 'base'
+          });
+        } else if (layer instanceof L.CircleMarker) {
+          ocupados.push({
+            left: p.x - 8,
+            right: p.x + 8,
+            top: p.y - 8,
+            bottom: p.y + 8,
+            tipo: 'base'
+          });
+        }
+      });
+    }
+
+    function adicionarEscudos(layerGroup) {
+      if (!layerGroup) return;
+      layerGroup.eachLayer(function(layer) {
+        var el = layer.getElement && layer.getElement();
+        if (!el || el.style.display === 'none') return;
+
+        var p = map.latLngToContainerPoint(layer.getLatLng());
+        var metade = layer.options && layer.options.tipoRotulo === 'federal' ? 24 : 20;
+        ocupados.push({
+          left: p.x - metade,
+          right: p.x + metade,
+          top: p.y - metade,
+          bottom: p.y + metade,
+          tipo: 'base'
+        });
+      });
+    }
+
+    adicionarEscudos(sreBaseLabelLayer);
+    adicionarEscudos(snvLabelLayer);
+
+    return ocupados;
+  }
+
+  function retangulosSobrepostos(a, b) {
+    return !(a.right < b.left || a.left > b.right ||
+             a.bottom < b.top || a.top > b.bottom);
+  }
+
+  function pontoDentroRetangulo(p, r) {
+    return p.x >= r.left && p.x <= r.right && p.y >= r.top && p.y <= r.bottom;
+  }
+
+  function orientacaoSegmento(a, b, c) {
+    return (b.y - a.y) * (c.x - b.x) - (b.x - a.x) * (c.y - b.y);
+  }
+
+  function segmentosCruzam(a, b, c, d) {
+    var o1 = orientacaoSegmento(a, b, c);
+    var o2 = orientacaoSegmento(a, b, d);
+    var o3 = orientacaoSegmento(c, d, a);
+    var o4 = orientacaoSegmento(c, d, b);
+    return ((o1 > 0 && o2 < 0) || (o1 < 0 && o2 > 0)) &&
+      ((o3 > 0 && o4 < 0) || (o3 < 0 && o4 > 0));
+  }
+
+  function segmentoCruzaRetangulo(a, b, r, margem) {
+    var rect = {
+      left: r.left - margem,
+      right: r.right + margem,
+      top: r.top - margem,
+      bottom: r.bottom + margem
+    };
+
+    if (pontoDentroRetangulo(a, rect) || pontoDentroRetangulo(b, rect)) return true;
+
+    var tl = { x: rect.left, y: rect.top };
+    var tr = { x: rect.right, y: rect.top };
+    var br = { x: rect.right, y: rect.bottom };
+    var bl = { x: rect.left, y: rect.bottom };
+    return segmentosCruzam(a, b, tl, tr) ||
+      segmentosCruzam(a, b, tr, br) ||
+      segmentosCruzam(a, b, br, bl) ||
+      segmentosCruzam(a, b, bl, tl);
+  }
+
+  function atualizarVisibilidadeRotulosObras() {
+    if (!obrasLabelLayer) return;
+    var mostrar = document.body.classList.contains('modo-impressao') &&
+      rotulosObrasPrintAtivos;
+    var ocupados = retangulosOcupadosRotulosBase();
+
+    obrasLabelLayer.eachLayer(function(layer) {
+      var el = layer.getElement && layer.getElement();
+      if (!el) return;
+
+      el.style.display = mostrar ? 'block' : 'none';
+      if (!mostrar) return;
+
+      var offsetEl = el.querySelector('.obra-label-offset');
+      var chamadaEl = el.querySelector('.obra-label-chamada');
+      if (!offsetEl) return;
+
+      var base = map.latLngToContainerPoint(layer.getLatLng());
+      var anguloLinha = layer.options.anguloLinhaObra || 0;
+      var anguloPerp = layer.options.anguloOffsetObra || 90;
+      var radPerp = anguloPerp * Math.PI / 180;
+      var radLinha = anguloLinha * Math.PI / 180;
+      var largura = 50;
+      var altura = 54;
+      var raioRotulo = 21;
+      var folga = 5;
+      var distanciaInicial = 24;
+      var distancias = [distanciaInicial, 29, 34, 40, 47, 55, 64, 74, 86, 100, 116];
+      var deslocamentos = [0, 14, -14, 28, -28, 42, -42, 56, -56, 72, -72, 90, -90];
+      var angulosRadiais = [90, -90, 67, -67, 112, -112, 45, -45, 135, -135];
+      var melhor = null;
+
+      function avaliarCandidato(cx, cy, prioridade, distancia, deslocamento) {
+        var rect = {
+          left: cx - largura / 2 - folga,
+          right: cx + largura / 2 + folga,
+          top: cy - altura / 2 - folga,
+          bottom: cy + altura / 2 + folga
+        };
+        var centro = { x: cx, y: cy };
+        var pontuacao = prioridade + distancia * 1.8 + Math.abs(deslocamento) * 0.7;
+        var temSobreposicao = false;
+
+        for (var oi = 0; oi < ocupados.length; oi++) {
+          var area = ocupados[oi];
+          if (retangulosSobrepostos(rect, area)) {
+            temSobreposicao = true;
+            pontuacao += area.tipo === 'base' ? 50000 : 120000;
+          }
+          if (segmentoCruzaRetangulo(base, centro, area, area.tipo === 'base' ? 5 : 2)) {
+            pontuacao += area.tipo === 'base' ? 8000 : 4500;
+          }
+        }
+
+        if (temSobreposicao) pontuacao += 20000;
+
+        if (!melhor || pontuacao < melhor.pontuacao) {
+          melhor = {
+            pontuacao: pontuacao,
+            rect: rect,
+            dx: cx - base.x,
+            dy: cy - base.y
+          };
+        }
+      }
+
+      for (var di = 0; di < distancias.length; di++) {
+        for (var li = 0; li < deslocamentos.length; li++) {
+          for (var ladoTentativa = 0; ladoTentativa < 2; ladoTentativa++) {
+            var lado = ladoTentativa === 0 ? 1 : -1;
+            var distanciaPerp = distancias[di];
+            var deslocamentoLinha = deslocamentos[li];
+            avaliarCandidato(
+              base.x + Math.cos(radPerp) * distanciaPerp * lado + Math.cos(radLinha) * deslocamentoLinha,
+              base.y + Math.sin(radPerp) * distanciaPerp * lado + Math.sin(radLinha) * deslocamentoLinha,
+              ladoTentativa * 8,
+              distanciaPerp,
+              deslocamentoLinha
+            );
+          }
+        }
+      }
+
+      for (var ai = 0; ai < angulosRadiais.length; ai++) {
+        var rad = (anguloLinha + angulosRadiais[ai]) * Math.PI / 180;
+        for (var ri = 0; ri < 6; ri++) {
+          avaliarCandidato(
+            base.x + Math.cos(rad) * distancias[ri],
+            base.y + Math.sin(rad) * distancias[ri],
+            18 + Math.abs(90 - Math.abs(angulosRadiais[ai])) * 0.25,
+            distancias[ri],
+            0
+          );
+        }
+      }
+
+      var escolhido = melhor || {
+        rect: {
+          left: base.x - largura / 2,
+          right: base.x + largura / 2,
+          top: base.y - altura / 2,
+          bottom: base.y + altura / 2
+        },
+        dx: Math.cos(radPerp) * distanciaInicial,
+        dy: Math.sin(radPerp) * distanciaInicial
+      };
+
+      offsetEl.style.transform =
+        'translate(' + escolhido.dx.toFixed(1) + 'px, ' + escolhido.dy.toFixed(1) + 'px)';
+      if (chamadaEl) {
+        var comprimentoCentro = Math.sqrt(escolhido.dx * escolhido.dx + escolhido.dy * escolhido.dy);
+        var comprimentoLinha = Math.max(0, comprimentoCentro - raioRotulo);
+        var anguloChamada = Math.atan2(escolhido.dy, escolhido.dx) * 180 / Math.PI;
+        chamadaEl.style.display = comprimentoLinha > 6 ? 'block' : 'none';
+        chamadaEl.style.width = comprimentoLinha.toFixed(1) + 'px';
+        chamadaEl.style.transform = 'rotate(' + anguloChamada.toFixed(2) + 'deg)';
+      }
+      ocupados.push(escolhido.rect);
+    });
+  }
+
     function construirPopupLinha(feature) {
       var p = feature.properties || {};
       var dadosFund = dadosFundeinfraDaFeature(feature);
-      var dadosDor = dadosDorDaFeature(feature);
+      var dadosDorTodos = dadosDorDaFeatureTodos(feature);
 
       var html = '';
       html += '<b>SRE:</b> ' + escapeHtml(p.sre || p.SRE || '') + '<br>';
@@ -1628,7 +2561,25 @@ map.addControl(new NortheArrowControl());
         html += '<b>Conclusão:</b> ' + escapeHtml(dadosFund.CONCLUSAO || '');
       }
 
-      if (dadosDor) {
+      if (dadosDorTodos.length) {
+        html += '<br><br><b>-- DOR --</b><br>';
+        for (var i = 0; i < dadosDorTodos.length; i++) {
+          var dadosDor = dadosDorTodos[i];
+          if (dadosDorTodos.length > 1) {
+            if (i > 0) html += '<br>';
+            html += '<b>Registro ' + (i + 1) + '</b><br>';
+          }
+          html += '<b>Proposta:</b> ' + escapeHtml(dadosDor.PROPOSTA || '') + '<br>';
+          html += '<b>Servico:</b> ' + escapeHtml(dadosDor.SERVICO || '') + '<br>';
+          html += '<b>Etapa:</b> ' + escapeHtml(dadosDor.ETAPA || '') + '<br>';
+          html += '<b>Status:</b> ' + escapeHtml(dadosDor.STATUS || '') + '<br>';
+          html += '<b>SEI:</b> ' + escapeHtml(dadosDor.SEI || '') + '<br>';
+          html += '<b>Conclusao:</b> ' + escapeHtml(dadosDor.CONCLUSAO || '');
+          if (i < dadosDorTodos.length - 1) html += '<br>';
+        }
+      }
+
+      if (false) {
         html += '<br><br><b>— DOR —</b><br>';
         html += '<b>Proposta:</b> ' + escapeHtml(dadosDor.PROPOSTA || '') + '<br>';
         html += '<b>Serviço:</b> ' + escapeHtml(dadosDor.SERVICO || '') + '<br>';
@@ -1642,7 +2593,24 @@ map.addControl(new NortheArrowControl());
     }
 
     function construirLayerNormal(features, cor, espessura) {
-      return L.geoJSON({
+      var sombra = L.geoJSON({
+        type: 'FeatureCollection',
+        features: features
+      }, {
+        pane: 'servicosPane',
+        interactive: false,
+        style: function() {
+          return {
+            color: '#111827',
+            weight: espessura + 5,
+            opacity: 0.24,
+            lineCap: 'round',
+            lineJoin: 'round'
+          };
+        }
+      });
+
+      var linha = L.geoJSON({
         type: 'FeatureCollection',
         features: features
       }, {
@@ -1651,7 +2619,9 @@ map.addControl(new NortheArrowControl());
           return {
             color: cor,
             weight: espessura,
-            opacity: 0.95
+            opacity: 0.95,
+            lineCap: 'round',
+            lineJoin: 'round'
           };
         },
         onEachFeature: function(feature, layer) {
@@ -1662,11 +2632,30 @@ map.addControl(new NortheArrowControl());
           });
         }
       });
+
+      return L.layerGroup([sombra, linha]);
     }
 
     function construirLayerLinhaBranca(features, cor, espessura) {
       var pesoBase = 9;
-      var pesoTopo = 4.5;
+      var pesoTopo = 3;
+
+      var sombra = L.geoJSON({
+        type: 'FeatureCollection',
+        features: features
+      }, {
+        pane: 'servicosPane',
+        interactive: false,
+        style: function() {
+          return {
+            color: '#111827',
+            weight: pesoBase + 5,
+            opacity: 0.24,
+            lineCap: 'round',
+            lineJoin: 'round'
+          };
+        }
+      });
 
       var base = L.geoJSON({
         type: 'FeatureCollection',
@@ -1677,7 +2666,9 @@ map.addControl(new NortheArrowControl());
           return {
             color: cor,
             weight: pesoBase,
-            opacity: 0.95
+            opacity: 0.95,
+            lineCap: 'round',
+            lineJoin: 'round'
           };
         },
         onEachFeature: function(feature, layer) {
@@ -1698,7 +2689,9 @@ map.addControl(new NortheArrowControl());
           return {
             color: '#ffffff',
             weight: pesoTopo,
-            opacity: 1
+            opacity: 1,
+            lineCap: 'round',
+            lineJoin: 'round'
           };
         },
         onEachFeature: function(feature, layer) {
@@ -1710,7 +2703,7 @@ map.addControl(new NortheArrowControl());
         }
       });
 
-      return L.layerGroup([base, topo]);
+      return L.layerGroup([sombra, base, topo]);
     }
   
   function criarLegendaLinha(tipo, cor) {
@@ -1969,16 +2962,12 @@ map.addControl(new NortheArrowControl());
         var fd = sreData.features[d];
         var linkDor = valorSeguro(fd, 'LINK_DOR');
         if (!linkDor) continue;
-        var dadosD = dadosDorDaFeature(fd);
-        if (!dadosD) continue;
-        if (servicoFiltroAtivo && dadosD.SERVICO !== servicoFiltroAtivo) continue;
+        var dadosDFiltrados = dadosDorDaFeatureFiltrados(fd, servicoFiltroAtivo, propostaSelecionada);
+        if (!dadosDFiltrados.length) continue;
         // Se já tem LINK_FUND e FUNDEINFRA está ativo, pula (prioridade FUNDEINFRA)
         if (servicosAtivos.FUNDEINFRA && valorSeguro(fd, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fd, 'LINK_FUND'))]) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(fd) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(fd) !== sreSelecionado) continue;
-        if (propostaSelecionada) {
-          if (!dadosD || String(dadosD.PROPOSTA) !== String(propostaSelecionada)) continue;
-        }
         linhasBase.push(fd);
       }
     }
@@ -2001,7 +2990,7 @@ map.addControl(new NortheArrowControl());
         estilo = estiloFundeinfra(dados);
         chaveId = 'FUND_' + String(linkFund) + '_' + k;
       } else if (linkDor && dadosDorDaFeature(feat) && servicosAtivos.DOR) {
-        dados = dadosDorDaFeature(feat);
+        dados = dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, propostaSelecionada)[0] || dadosDorDaFeature(feat);
         estilo = estiloDor(dados);
         chaveId = 'DOR_' + String(linkDor) + '_' + k;
       } else if (linkFund && dadosFundeinfraDaFeature(feat)) {
@@ -2009,7 +2998,7 @@ map.addControl(new NortheArrowControl());
         estilo = estiloFundeinfra(dados);
         chaveId = 'FUND_' + String(linkFund) + '_' + k;
       } else if (linkDor && dadosDorDaFeature(feat)) {
-        dados = dadosDorDaFeature(feat);
+        dados = dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, propostaSelecionada)[0] || dadosDorDaFeature(feat);
         estilo = estiloDor(dados);
         chaveId = 'DOR_' + String(linkDor) + '_' + k;
       } else {
@@ -2041,6 +3030,39 @@ map.addControl(new NortheArrowControl());
       regraLayers.push(camada);
     });
 
+    obrasLabelLayer = L.layerGroup();
+    var rotulosIncluidos = {};
+    for (var rl = 0; rl < linhasBase.length; rl++) {
+      var featRotulo = linhasBase[rl];
+      var linkFundRotulo = valorSeguro(featRotulo, 'LINK_FUND');
+      var linkDorRotulo = valorSeguro(featRotulo, 'LINK_DOR');
+      var dadosRotulo = null;
+      var estiloRotulo = null;
+      var origemRotulo = '';
+      var linkRotulo = '';
+
+      if (linkFundRotulo && dadosFundeinfraDaFeature(featRotulo) && servicosAtivos.FUNDEINFRA) {
+        dadosRotulo = dadosFundeinfraDaFeature(featRotulo);
+        estiloRotulo = estiloFundeinfra(dadosRotulo);
+        origemRotulo = 'FUNDEINFRA';
+        linkRotulo = linkFundRotulo;
+      } else if (linkDorRotulo && dadosDorDaFeature(featRotulo) && servicosAtivos.DOR) {
+        dadosRotulo = dadosDorDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, propostaSelecionada)[0] || dadosDorDaFeature(featRotulo);
+        estiloRotulo = estiloDor(dadosRotulo);
+        origemRotulo = 'DOR';
+        linkRotulo = linkDorRotulo;
+      }
+
+      if (!dadosRotulo || !estiloRotulo) continue;
+
+      var chaveRotulo = origemRotulo + '|' + String(linkRotulo) + '|' + String(dadosRotulo.PROPOSTA || '') + '|' + String(dadosRotulo.SERVICO || '');
+      if (rotulosIncluidos[chaveRotulo]) continue;
+      rotulosIncluidos[chaveRotulo] = true;
+      adicionarRotuloObra(obrasLabelLayer, featRotulo, dadosRotulo, origemRotulo, linkRotulo, estiloRotulo.cor);
+    }
+    obrasLabelLayer.addTo(map);
+    atualizarVisibilidadeRotulosObras();
+
         document.getElementById('countMunicipios').textContent = featuresMunicipios.length;
     document.getElementById('countLinhas').textContent = Object.keys(idsUnicos).length;
 
@@ -2063,7 +3085,7 @@ map.addControl(new NortheArrowControl());
     function atualizarPainelInferior(feature) {
       var p = feature.properties || {};
       var dadosFund = dadosFundeinfraDaFeature(feature);
-      var dadosDor = dadosDorDaFeature(feature);
+      var dadosDorTodos = dadosDorDaFeatureTodos(feature);
 
       var html = `
         <div class="bloco-servico">
@@ -2097,7 +3119,30 @@ map.addControl(new NortheArrowControl());
         </div>`;
       }
 
-      if (dadosDor) {
+      if (dadosDorTodos.length) {
+        html += `
+        <div class="bloco-servico">
+          <div class="titulo-servico">Dados DOR</div>
+          <table class="tabela-servico">
+            <tr><th>Proposta</th><th>Servico</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusao</th></tr>`;
+        for (var i = 0; i < dadosDorTodos.length; i++) {
+          var dadosDor = dadosDorTodos[i];
+          html += `
+            <tr>
+              <td>${dadosDor.PROPOSTA || ''}</td>
+              <td>${dadosDor.SERVICO || ''}</td>
+              <td>${dadosDor.ETAPA || ''}</td>
+              <td>${dadosDor.STATUS || ''}</td>
+              <td>${dadosDor.SEI || ''}</td>
+              <td>${dadosDor.CONCLUSAO || ''}</td>
+            </tr>`;
+        }
+        html += `
+          </table>
+        </div>`;
+      }
+
+      if (false) {
         html += `
         <div class="bloco-servico">
           <div class="titulo-servico">Dados DOR</div>
@@ -2779,6 +3824,46 @@ map.addControl(new NortheArrowControl());
     };
   }
 
+  function formatoImpressaoGrande(dimensoes) {
+    if (!dimensoes) dimensoes = dimensoesPapelImpressao();
+    var ladoMenor = Math.min(dimensoes.largura, dimensoes.altura);
+    var ladoMaior = Math.max(dimensoes.largura, dimensoes.altura);
+    return ladoMenor >= FORMATOS_IMPRESSAO.A0.largura &&
+      ladoMaior >= FORMATOS_IMPRESSAO.A0.altura;
+  }
+
+  function formatoAte(dimensoes, formato) {
+    var base = FORMATOS_IMPRESSAO[formato];
+    if (!base) return false;
+    var ladoMenor = Math.min(dimensoes.largura, dimensoes.altura);
+    var ladoMaior = Math.max(dimensoes.largura, dimensoes.altura);
+    return ladoMenor <= base.largura && ladoMaior <= base.altura;
+  }
+
+  function tituloComCaixaImpressao(dimensoes) {
+    return dimensoes.formato === 'A4' ||
+      dimensoes.formato === 'A3' ||
+      (dimensoes.formato === 'personalizado' && formatoAte(dimensoes, 'A3'));
+  }
+
+  function tituloAmpliadoImpressao(dimensoes) {
+    return formatoAte(dimensoes, 'A1');
+  }
+
+  function atualizarBotaoRotulosObrasPrint() {
+    var botao = document.getElementById('toggleRotulosObrasPrint');
+    if (!botao) return;
+
+    botao.classList.toggle('ativo-filtro', rotulosObrasPrintAtivos);
+    botao.textContent = rotulosObrasPrintAtivos ? 'Rótulos das obras: ligados' : 'Rótulos das obras: desligados';
+  }
+
+  function aplicarPadraoRotulosObrasPrint() {
+    rotulosObrasPrintAtivos = formatoImpressaoGrande(dimensoesPapelImpressao());
+    atualizarBotaoRotulosObrasPrint();
+    atualizarVisibilidadeRotulosObras();
+  }
+
   function atualizarEstiloPaginaImpressao() {
     var d = dimensoesPapelImpressao();
     var margem = parseFloat(document.getElementById('printMargem').value);
@@ -2790,7 +3875,8 @@ map.addControl(new NortheArrowControl());
     document.documentElement.style.setProperty('--print-margin', margem + 'mm');
     var larguraBaseA4 = d.orientacao === 'landscape' ? FORMATOS_IMPRESSAO.A4.altura : FORMATOS_IMPRESSAO.A4.largura;
     var escalaTitulo = d.largura / larguraBaseA4;
-    document.documentElement.style.setProperty('--print-title-font-size', (13 * escalaTitulo).toFixed(2) + 'pt');
+    var fatorTitulo = tituloAmpliadoImpressao(d) ? 1.2 : 1;
+    document.documentElement.style.setProperty('--print-title-font-size', (13 * escalaTitulo * fatorTitulo).toFixed(2) + 'pt');
     document.documentElement.style.setProperty('--print-legend-scale', d.largura <= larguraBaseA4 ? '0.6' : '1');
 
     var style = document.getElementById('printPageStyle');
@@ -2825,6 +3911,24 @@ map.addControl(new NortheArrowControl());
       escala.id = 'printScaleText';
       mapWrap.appendChild(escala);
     }
+
+    if (!document.getElementById('printServiceTableBox')) {
+      var tabela = document.createElement('div');
+      tabela.id = 'printServiceTableBox';
+      mapWrap.appendChild(tabela);
+    }
+
+    if (!document.getElementById('printStampBox')) {
+      var carimbo = document.createElement('div');
+      carimbo.id = 'printStampBox';
+      carimbo.innerHTML =
+        '<img src="data/Carimbo_POP2.png" alt="Carimbo do mapa">' +
+        '<div class="print-stamp-info">' +
+          '<div id="printStampServico" class="print-stamp-servico"></div>' +
+          '<div id="printStampData" class="print-stamp-data"></div>' +
+        '</div>';
+      mapWrap.appendChild(carimbo);
+    }
   }
 
   function atualizarTituloImpressao() {
@@ -2851,6 +3955,33 @@ map.addControl(new NortheArrowControl());
     }
 
     destino.textContent = partes.join(' - ');
+  }
+
+  function textoMesAnoAtualImpressao() {
+    var meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+    var data = new Date();
+    return meses[data.getMonth()] + ' / ' + data.getFullYear();
+  }
+
+  function atualizarCarimboImpressao(dimensoes) {
+    var carimbo = document.getElementById('printStampBox');
+    if (!carimbo) return;
+
+    if (!formatoImpressaoGrande(dimensoes)) {
+      carimbo.style.display = 'none';
+      return;
+    }
+
+    var servico = document.getElementById('printStampServico');
+    var data = document.getElementById('printStampData');
+    var nomesServico = [];
+
+    if (servicosAtivos.DOR) nomesServico.push('OBRAS');
+    if (servicosAtivos.FUNDEINFRA) nomesServico.push('FUNDEINFRA');
+
+    if (servico) servico.textContent = nomesServico.join(' / ');
+    if (data) data.textContent = textoMesAnoAtualImpressao();
+    carimbo.style.display = 'block';
   }
 
   function atualizarLegendaImpressao() {
@@ -2886,7 +4017,114 @@ map.addControl(new NortheArrowControl());
       destino.appendChild(blocoLocalidade);
     }
 
-    destino.style.display = destino.children.length ? '' : 'none';
+    destino.style.display = destino.children.length ? 'block' : 'none';
+  }
+
+  function atualizarTabelaServicosImpressao(dimensoes) {
+    var destino = document.getElementById('printServiceTableBox');
+    if (!destino) return;
+
+    destino.innerHTML = '';
+
+    if (!formatoImpressaoGrande(dimensoes)) {
+      destino.style.display = 'none';
+      return;
+    }
+
+    var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
+    var sreSelecionado = document.getElementById('sreSelect').value;
+    var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+    var linhasFund = [];
+    var linhasDor = [];
+    var vistosFund = {};
+    var vistosDor = {};
+
+    function valorTabela(valor) {
+      return escapeHtml(valor === null || valor === undefined ? '' : valor);
+    }
+
+    function linhaTabela(dados, feature) {
+      var p = feature.properties || {};
+      return '<tr>' +
+        '<td>' + valorTabela(dados.PROPOSTA) + '</td>' +
+        '<td>' + valorTabela(p.RODOVIA || p.rodovia) + '</td>' +
+        '<td>' + valorTabela(p.TRECHO || p.trecho_go) + '</td>' +
+        '<td>' + valorTabela(p.EXT_KM || p.ext) + '</td>' +
+        '<td>' + valorTabela(dados.SERVICO) + '</td>' +
+        '<td>' + valorTabela(dados.ETAPA) + '</td>' +
+        '<td>' + valorTabela(dados.STATUS) + '</td>' +
+        '<td>' + valorTabela(dados.SEI) + '</td>' +
+        '<td>' + valorTabela(dados.CONCLUSAO) + '</td>' +
+      '</tr>';
+    }
+
+    function blocoTabela(titulo, linhas) {
+      if (!linhas.length) return '';
+      return '<div class="bloco-servico">' +
+        '<div class="titulo-servico">' + escapeHtml(titulo) + '</div>' +
+        '<table class="tabela-servico">' +
+          '<tr><th>Proposta</th><th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th></tr>' +
+          linhas.join('') +
+        '</table>' +
+      '</div>';
+    }
+
+    function compararProposta(a, b) {
+      var propostaA = a && a.PROPOSTA;
+      var propostaB = b && b.PROPOSTA;
+      var numeroA = Number(propostaA);
+      var numeroB = Number(propostaB);
+
+      if (isFinite(numeroA) && isFinite(numeroB)) return numeroA - numeroB;
+      return String(propostaA || '').localeCompare(String(propostaB || ''), 'pt-BR', { numeric: true });
+    }
+
+    if (sreData && sreData.features) {
+      for (var i = 0; i < sreData.features.length; i++) {
+        var feature = sreData.features[i];
+        if (rodoviaSelecionada && nomeRodoviaFeature(feature) !== rodoviaSelecionada) continue;
+        if (sreSelecionado && nomeSREFeature(feature) !== sreSelecionado) continue;
+
+        if (servicosAtivos.FUNDEINFRA) {
+          var linkFund = valorSeguro(feature, 'LINK_FUND');
+          var dadosFund = dadosFundeinfraDaFeature(feature);
+          if (linkFund && dadosFund) {
+            if (!servicoFiltroAtivo || dadosFund.SERVICO === servicoFiltroAtivo) {
+              if (!propostaSelecionada || String(dadosFund.PROPOSTA) === String(propostaSelecionada)) {
+                var chaveFund = String(linkFund) + '|' + String(dadosFund.PROPOSTA || '');
+                if (!vistosFund[chaveFund]) {
+                  linhasFund.push({ dados: dadosFund, feature: feature });
+                  vistosFund[chaveFund] = true;
+                }
+              }
+            }
+          }
+        }
+
+        if (servicosAtivos.DOR) {
+          var linkDor = valorSeguro(feature, 'LINK_DOR');
+          if (linkDor) {
+            var dadosDor = dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, propostaSelecionada);
+            for (var j = 0; j < dadosDor.length; j++) {
+              var itemDor = dadosDor[j];
+              var chaveDor = String(linkDor) + '|' + String(itemDor.PROPOSTA || '') + '|' + String(itemDor.SERVICO || '') + '|' + String(itemDor.SEI || '');
+              if (!vistosDor[chaveDor]) {
+                linhasDor.push({ dados: itemDor, feature: feature });
+                vistosDor[chaveDor] = true;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    linhasFund.sort(function(a, b) { return compararProposta(a.dados, b.dados); });
+    linhasDor.sort(function(a, b) { return compararProposta(a.dados, b.dados); });
+
+    destino.innerHTML =
+      blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
+      blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature); }));
+    destino.style.display = destino.children.length ? 'block' : 'none';
   }
 
   function estenderBoundsComLayer(bounds, layer) {
@@ -2966,6 +4204,16 @@ map.addControl(new NortheArrowControl());
     return denominador;
   }
 
+  function deslocarMapaParaTabelaA0(dimensoes) {
+    if (!formatoImpressaoGrande(dimensoes)) return;
+    var tabela = document.getElementById('printServiceTableBox');
+    if (!tabela || tabela.style.display === 'none') return;
+
+    var larguraTabela = tabela.offsetWidth || 0;
+    if (!larguraTabela) return;
+    map.panBy([larguraTabela * 0.42, 0], { animate: false });
+  }
+
   function ajustarMapaParaImpressao(dimensoes) {
     var modoEscala = document.getElementById('printEscala').value || 'tela';
     var textoEscala = document.getElementById('printScaleText');
@@ -2983,6 +4231,7 @@ map.addControl(new NortheArrowControl());
           textoEscala.style.display = 'none';
         }
       }
+      deslocarMapaParaTabelaA0(dimensoes);
       return;
     }
 
@@ -2991,6 +4240,7 @@ map.addControl(new NortheArrowControl());
       textoEscala.style.display = 'none';
     }
     map.setView(estadoMapaAntesImpressao.center, estadoMapaAntesImpressao.zoom, { animate: false });
+    deslocarMapaParaTabelaA0(dimensoes);
   }
 
   function atualizarCampoEscalaPersonalizada() {
@@ -3019,6 +4269,11 @@ map.addControl(new NortheArrowControl());
   function sairModoImpressao() {
     document.body.classList.remove('preparando-impressao');
     document.body.classList.remove('modo-impressao');
+    document.body.classList.remove('print-formato-a0');
+    document.body.classList.remove('print-titulo-com-caixa');
+    atualizarVisibilidadeRotulosObras();
+    var carimbo = document.getElementById('printStampBox');
+    if (carimbo) carimbo.style.display = 'none';
 
     if (estadoMapaAntesImpressao) {
       map.options.zoomSnap = estadoMapaAntesImpressao.zoomSnap;
@@ -3040,18 +4295,26 @@ map.addControl(new NortheArrowControl());
       zoomSnap: map.options.zoomSnap
     };
 
-    atualizarLegendaImpressao();
-    atualizarTituloImpressao();
     var dimensoes = atualizarEstiloPaginaImpressao();
 
     document.body.classList.add('modo-impressao');
     document.body.classList.add('preparando-impressao');
+    document.body.classList.toggle('print-formato-a0', formatoImpressaoGrande(dimensoes));
+    document.body.classList.toggle('print-titulo-com-caixa', tituloComCaixaImpressao(dimensoes));
+    atualizarVisibilidadeRotulosObras();
+
+    atualizarLegendaImpressao();
+    atualizarTituloImpressao();
+    atualizarCarimboImpressao(dimensoes);
+    atualizarTabelaServicosImpressao(dimensoes);
 
     setTimeout(function() {
       ajustarMapaParaImpressao(dimensoes);
+      atualizarVisibilidadeRotulosObras();
       setTimeout(function() {
         map.invalidateSize(true);
         ajustarMapaParaImpressao(dimensoes);
+        atualizarVisibilidadeRotulosObras();
         setTimeout(function() {
           window.print();
         }, 450);
@@ -3101,14 +4364,37 @@ map.addControl(new NortheArrowControl());
       atualizarTextoDensidadeRotulos();
       atualizarVisibilidadeRotulos();
       atualizarVisibilidadeRotulosSRE();
+      atualizarVisibilidadeRotulosObras();
+    });
+  }
+
+  var botaoRotulosObrasPrint = document.getElementById('toggleRotulosObrasPrint');
+  if (botaoRotulosObrasPrint) {
+    botaoRotulosObrasPrint.addEventListener('click', function() {
+      rotulosObrasPrintAtivos = !rotulosObrasPrintAtivos;
+      atualizarBotaoRotulosObrasPrint();
+      atualizarVisibilidadeRotulosObras();
     });
   }
 
   var seletorPrintFormato = document.getElementById('printFormato');
   if (seletorPrintFormato) {
-    seletorPrintFormato.addEventListener('change', atualizarCamposPapelPersonalizado);
+    seletorPrintFormato.addEventListener('change', function() {
+      atualizarCamposPapelPersonalizado();
+      aplicarPadraoRotulosObrasPrint();
+    });
     atualizarCamposPapelPersonalizado();
   }
+
+  var printLarguraPersonalizada = document.getElementById('printLarguraPersonalizada');
+  var printAlturaPersonalizada = document.getElementById('printAlturaPersonalizada');
+  if (printLarguraPersonalizada) {
+    printLarguraPersonalizada.addEventListener('change', aplicarPadraoRotulosObrasPrint);
+  }
+  if (printAlturaPersonalizada) {
+    printAlturaPersonalizada.addEventListener('change', aplicarPadraoRotulosObrasPrint);
+  }
+  aplicarPadraoRotulosObrasPrint();
 
   window.addEventListener('afterprint', sairModoImpressao);
 

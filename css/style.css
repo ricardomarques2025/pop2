@@ -127,6 +127,73 @@
       grid-template-columns: repeat(3, 1fr);
     }
 
+    .grid-anotacoes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .anotacao-btn {
+      min-height: 42px;
+      margin-bottom: 0;
+    }
+
+    .anotacao-status {
+      min-height: 30px;
+      margin: 6px 0 12px;
+      padding: 8px 10px;
+      border: 1px solid #d8ddd9;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.78);
+      color: #4b5563;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .anotacao-opcoes {
+      margin: 8px 0 10px;
+    }
+
+    .anotacao-opcoes label {
+      margin-top: 8px;
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 38px;
+      padding: 4px;
+      margin-bottom: 8px;
+      border: 1px solid #d7dde3;
+      border-radius: 12px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .anotacao-texto-icon {
+      background: none !important;
+      border: none !important;
+      width: max-content !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+
+    .anotacao-texto {
+      display: inline-block;
+      min-width: 48px;
+      width: max-content;
+      max-width: none;
+      padding: 4px 7px;
+      border: 1px solid rgba(17, 24, 39, 0.65);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.9);
+      font-weight: 800;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow-wrap: normal;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.22);
+    }
+
     .filtro-btn {
       border: 1px solid #d8ddd9;
       background: rgba(255,255,255,0.94);
@@ -595,6 +662,51 @@ label:first-of-type {
   border-top: none;
 }
 
+.painel-colapsavel {
+  margin-top: 16px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.painel-colapsavel > summary.subtitulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 0 10px;
+  border-top: none;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.painel-colapsavel > summary.subtitulo::-webkit-details-marker {
+  display: none;
+}
+
+.painel-colapsavel > summary.subtitulo::after {
+  content: "+";
+  width: 22px;
+  height: 22px;
+  border: 1px solid #d8ddd9;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #374151;
+  background: #ffffff;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.painel-colapsavel[open] > summary.subtitulo::after {
+  content: "-";
+}
+
+.conteudo-colapsavel {
+  padding-bottom: 4px;
+}
+
 select {
   width: 100%;
   font-weight: 600;
@@ -656,6 +768,11 @@ input[type="range"] {
 
 .filtro-btn:not(.ativo-filtro):hover {
   opacity: 0.85;
+}
+
+.filtro-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
 }
 
 /* ===== BUSCA DE MUNICÍPIO ===== */
@@ -874,7 +991,9 @@ input[type="range"] {
 
 #printLegendBox,
 #printTitleBox,
-#printScaleText {
+#printScaleText,
+#printServiceTableBox,
+#printStampBox {
   display: none;
 }
 
@@ -922,7 +1041,7 @@ body.modo-impressao.preparando-impressao #centro-mapa {
 body.modo-impressao.preparando-impressao #map-wrap {
   position: relative;
   margin: 0;
-  border: 0;
+  border: 0.9mm solid #8a8f98;
   border-radius: 0;
   box-shadow: none;
   overflow: hidden;
@@ -931,7 +1050,9 @@ body.modo-impressao.preparando-impressao #map-wrap {
 
 body.modo-impressao.preparando-impressao #printTitleBox,
 body.modo-impressao.preparando-impressao #printLegendBox,
-body.modo-impressao.preparando-impressao #printScaleText {
+body.modo-impressao.preparando-impressao #printScaleText,
+body.modo-impressao.preparando-impressao #printServiceTableBox,
+body.modo-impressao.preparando-impressao #printStampBox {
   display: block;
 }
 
@@ -945,15 +1066,31 @@ body.modo-impressao.preparando-impressao #printTitleBox {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1200;
-  padding: 2mm 3mm;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.22);
-  color: #111827;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: #005f22;
   font-size: var(--print-title-font-size, 13pt);
   font-weight: 900;
   line-height: 1.2;
   max-width: calc(100% - 40mm);
   text-align: center;
+  text-shadow:
+    -1.4px -1.4px 0 #ffffff,
+    1.4px -1.4px 0 #ffffff,
+    -1.4px 1.4px 0 #ffffff,
+    1.4px 1.4px 0 #ffffff,
+    0 -1.8px 0 #ffffff,
+    1.8px 0 0 #ffffff,
+    0 1.8px 0 #ffffff,
+    -1.8px 0 0 #ffffff;
+}
+
+body.modo-impressao.preparando-impressao.print-titulo-com-caixa #printTitleBox {
+  padding: 2.2mm 4mm;
+  border-radius: 2mm;
+  background: #ffffff;
+  box-shadow: 0 1mm 3mm rgba(0, 0, 0, 0.16);
 }
 
 body.modo-impressao.preparando-impressao #printLegendBox {
@@ -1006,6 +1143,124 @@ body.modo-impressao.preparando-impressao #printScaleText {
   font-size: 8pt;
   font-weight: 400;
   line-height: 1;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printLegendBox {
+  left: 8mm;
+  right: auto;
+  bottom: 28mm;
+  transform-origin: bottom left;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printTitleBox {
+  font-size: calc(var(--print-title-font-size, 13pt) * 1.5);
+}
+
+body.modo-impressao.preparando-impressao #printServiceTableBox {
+  display: none;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox {
+  display: block;
+  position: absolute;
+  right: 8mm;
+  bottom: 8mm;
+  z-index: 1210;
+  width: max-content;
+  max-width: 340mm;
+  overflow: visible;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.24);
+  color: #111827;
+  font-size: 6.5pt;
+  line-height: 1.2;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox .bloco-servico {
+  margin: 0;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox .titulo-servico {
+  padding: 1.8mm 2.4mm;
+  font-size: 14pt;
+  text-align: center;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox .tabela-servico {
+  border-collapse: collapse;
+  font-size: 6.2pt;
+  table-layout: auto;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox .tabela-servico th,
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox .tabela-servico td {
+  padding: 1.1mm 1.3mm;
+  border-bottom: 1px solid #d8d8d8;
+  text-align: center;
+  vertical-align: middle;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox .tabela-servico th:nth-child(3),
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox .tabela-servico td:nth-child(3) {
+  max-width: 115mm;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox .tabela-servico th:nth-child(7),
+body.modo-impressao.preparando-impressao.print-formato-a0 #printServiceTableBox .tabela-servico td:nth-child(7) {
+  max-width: 42mm;
+}
+
+body.modo-impressao.preparando-impressao #printStampBox {
+  display: none;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1220;
+  height: 270mm;
+  width: auto;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox img {
+  display: block;
+  height: 291.6mm;
+  width: auto;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-stamp-info {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 67%;
+  padding: 4mm 2mm 3mm;
+  background: transparent;
+  color: #005f22;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: Arial, sans-serif;
+  font-weight: 900;
+  line-height: 1.05;
+  text-shadow:
+    -0.7px -0.7px 0 #ffffff,
+    0.7px -0.7px 0 #ffffff,
+    -0.7px 0.7px 0 #ffffff,
+    0.7px 0.7px 0 #ffffff;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-stamp-servico {
+  min-height: 25.92mm;
+  font-size: 38.88pt;
+}
+
+body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-stamp-data {
+  min-height: 15.12mm;
+  font-size: 23.76pt;
 }
 
 .legenda-localidade-simbolo {
@@ -1067,7 +1322,7 @@ body.modo-impressao.preparando-impressao #printScaleText {
   body.modo-impressao #map-wrap {
     position: relative !important;
     margin: 0 !important;
-    border: 0 !important;
+    border: 0.9mm solid #8a8f98 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     overflow: hidden !important;
@@ -1091,15 +1346,31 @@ body.modo-impressao.preparando-impressao #printScaleText {
     left: 50%;
     transform: translateX(-50%);
     z-index: 1200;
-    padding: 2mm 3mm;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0, 0, 0, 0.22);
-    color: #111827;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    color: #005f22;
     font-size: var(--print-title-font-size, 13pt);
     font-weight: 900;
     line-height: 1.2;
     max-width: calc(100% - 40mm);
     text-align: center;
+    text-shadow:
+      -1.4px -1.4px 0 #ffffff,
+      1.4px -1.4px 0 #ffffff,
+      -1.4px 1.4px 0 #ffffff,
+      1.4px 1.4px 0 #ffffff,
+      0 -1.8px 0 #ffffff,
+      1.8px 0 0 #ffffff,
+      0 1.8px 0 #ffffff,
+      -1.8px 0 0 #ffffff;
+  }
+
+  body.modo-impressao.print-titulo-com-caixa #printTitleBox {
+    padding: 2.2mm 4mm;
+    border-radius: 2mm;
+    background: #ffffff;
+    box-shadow: 0 1mm 3mm rgba(0, 0, 0, 0.16);
   }
 
   body.modo-impressao #printLegendBox {
@@ -1118,6 +1389,17 @@ body.modo-impressao.preparando-impressao #printScaleText {
     line-height: 1.25;
     transform: scale(var(--print-legend-scale, 1));
     transform-origin: bottom right;
+  }
+
+  body.modo-impressao.print-formato-a0 #printLegendBox {
+    left: 8mm;
+    right: auto;
+    bottom: 28mm;
+    transform-origin: bottom left;
+  }
+
+  body.modo-impressao.print-formato-a0 #printTitleBox {
+    font-size: calc(var(--print-title-font-size, 13pt) * 1.5);
   }
 
   body.modo-impressao #printLegendBox .bloco {
@@ -1154,6 +1436,113 @@ body.modo-impressao.preparando-impressao #printScaleText {
     font-size: 8pt;
     font-weight: 400;
     line-height: 1;
+  }
+
+  body.modo-impressao #printServiceTableBox {
+    display: none;
+  }
+
+  body.modo-impressao.print-formato-a0 #printServiceTableBox {
+    display: block;
+    position: absolute;
+    right: 8mm;
+    bottom: 8mm;
+    z-index: 1210;
+    width: max-content;
+    max-width: 340mm;
+    overflow: visible;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(0, 0, 0, 0.24);
+    color: #111827;
+    font-size: 6.5pt;
+    line-height: 1.2;
+  }
+
+  body.modo-impressao.print-formato-a0 #printServiceTableBox .bloco-servico {
+    margin: 0;
+  }
+
+  body.modo-impressao.print-formato-a0 #printServiceTableBox .titulo-servico {
+    padding: 1.8mm 2.4mm;
+    font-size: 14pt;
+    text-align: center;
+  }
+
+  body.modo-impressao.print-formato-a0 #printServiceTableBox .tabela-servico {
+    border-collapse: collapse;
+    font-size: 6.2pt;
+    table-layout: auto;
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  body.modo-impressao.print-formato-a0 #printServiceTableBox .tabela-servico th,
+  body.modo-impressao.print-formato-a0 #printServiceTableBox .tabela-servico td {
+    padding: 1.1mm 1.3mm;
+    border-bottom: 1px solid #d8d8d8;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  body.modo-impressao.print-formato-a0 #printServiceTableBox .tabela-servico th:nth-child(3),
+  body.modo-impressao.print-formato-a0 #printServiceTableBox .tabela-servico td:nth-child(3) {
+    max-width: 115mm;
+  }
+
+  body.modo-impressao.print-formato-a0 #printServiceTableBox .tabela-servico th:nth-child(7),
+  body.modo-impressao.print-formato-a0 #printServiceTableBox .tabela-servico td:nth-child(7) {
+    max-width: 42mm;
+  }
+
+  body.modo-impressao #printStampBox {
+    display: none;
+  }
+
+  body.modo-impressao.print-formato-a0 #printStampBox {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1220;
+    height: 270mm;
+    width: auto;
+  }
+
+  body.modo-impressao.print-formato-a0 #printStampBox img {
+    display: block;
+    height: 291.6mm;
+    width: auto;
+  }
+
+  body.modo-impressao.print-formato-a0 #printStampBox .print-stamp-info {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 67%;
+    padding: 4mm 2mm 3mm;
+    background: transparent;
+    color: #005f22;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: Arial, sans-serif;
+    font-weight: 900;
+    line-height: 1.05;
+    text-shadow:
+      -0.7px -0.7px 0 #ffffff,
+      0.7px -0.7px 0 #ffffff,
+      -0.7px 0.7px 0 #ffffff,
+      0.7px 0.7px 0 #ffffff;
+  }
+
+  body.modo-impressao.print-formato-a0 #printStampBox .print-stamp-servico {
+    min-height: 25.92mm;
+    font-size: 38.88pt;
+  }
+
+  body.modo-impressao.print-formato-a0 #printStampBox .print-stamp-data {
+    min-height: 15.12mm;
+    font-size: 23.76pt;
   }
 }
 
@@ -1257,4 +1646,77 @@ body.modo-impressao.preparando-impressao #printScaleText {
     1px -1px 0 #ffffff,
     -1px 1px 0 #ffffff,
     1px 1px 0 #ffffff;
+}
+
+/* ===== ROTULOS DOS SERVICOS ATIVOS ===== */
+
+.obra-label-icon {
+  background: none !important;
+  border: none !important;
+  overflow: visible !important;
+  z-index: 9999 !important;
+}
+
+.obra-label-chamada {
+  position: absolute;
+  left: 21px;
+  top: 23px;
+  height: 3px;
+  border-radius: 999px;
+  transform-origin: 0 50%;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.obra-label-offset {
+  width: 38px;
+  height: 42px;
+  transform-origin: 50% 50%;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  z-index: 2;
+}
+
+.obra-label {
+  width: 38px;
+  height: 42px;
+  border: 2px solid #1f2937;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.32);
+  font-family: Arial, sans-serif;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.obra-label-top,
+.obra-label-bottom {
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.obra-label-top {
+  color: #1f2937;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  border-bottom: 1.5px solid #1f2937;
+}
+
+.obra-label-bottom {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 900;
+  text-shadow:
+    -0.8px -0.8px 0 rgba(0, 0, 0, 0.55),
+    0.8px -0.8px 0 rgba(0, 0, 0, 0.55),
+    -0.8px 0.8px 0 rgba(0, 0, 0, 0.55),
+    0.8px 0.8px 0 rgba(0, 0, 0, 0.55);
 }
