@@ -417,6 +417,8 @@ map.addControl(new NortheArrowControl());
   var anotacaoFerramenta = null;
   var anotacaoInicio = null;
   var anotacaoPreview = null;
+  var anotacaoMedicaoTooltip = null;
+  var anotacaoMedicaoPontosPreview = [];
   var anotacaoLinhaPontos = [];
   var legendaAnotacoesAtiva = false;
   var ANOTACOES_STORAGE_KEY = 'mapa_pop2_anotacoes_v1';
@@ -512,12 +514,14 @@ map.addControl(new NortheArrowControl());
       weight: opcoes.weight || estiloAnotacao.weight,
       opacity: opcoes.opacity == null ? estiloAnotacao.opacity : opcoes.opacity,
       fillColor: opcoes.fillColor || opcoes.color || estiloAnotacao.fillColor,
-      fillOpacity: opcoes.fillOpacity == null ? estiloAnotacao.fillOpacity : opcoes.fillOpacity
+      fillOpacity: opcoes.fillOpacity == null ? estiloAnotacao.fillOpacity : opcoes.fillOpacity,
+      dashArray: opcoes.dashArray || ''
     };
   }
 
   function nomeTipoAnotacao(tipo) {
     if (tipo === 'linha') return 'Linha';
+    if (tipo === 'medicao') return 'Medição';
     if (tipo === 'ponto') return 'Ponto';
     if (tipo === 'retangulo') return 'Retângulo';
     if (tipo === 'circulo') return 'Círculo';
@@ -578,8 +582,9 @@ map.addControl(new NortheArrowControl());
     var preenchimento = estiloCssCor(estilo.fillColor, cor);
     var opacidade = estilo.fillOpacity == null ? 0.14 : Math.max(0, Math.min(1, Number(estilo.fillOpacity)));
 
-    if (tipo === 'linha') {
-      return '<span class="legenda-anotacao-simbolo"><span class="legenda-anotacao-linha" style="border-top-color:' + cor + ';border-top-width:' + espessura + 'px"></span></span>';
+    if (tipo === 'linha' || tipo === 'medicao') {
+      var tracejado = tipo === 'medicao' ? ';border-top-style:dashed' : '';
+      return '<span class="legenda-anotacao-simbolo"><span class="legenda-anotacao-linha" style="border-top-color:' + cor + ';border-top-width:' + espessura + 'px' + tracejado + '"></span></span>';
     }
     if (tipo === 'ponto') {
       var ponto = extra.estiloPonto || {};
@@ -637,6 +642,14 @@ map.addControl(new NortheArrowControl());
       map.removeLayer(anotacaoPreview);
       anotacaoPreview = null;
     }
+    if (anotacaoMedicaoTooltip) {
+      map.removeLayer(anotacaoMedicaoTooltip);
+      anotacaoMedicaoTooltip = null;
+    }
+    anotacaoMedicaoPontosPreview.forEach(function(layer) {
+      map.removeLayer(layer);
+    });
+    anotacaoMedicaoPontosPreview = [];
     anotacaoInicio = null;
     anotacaoLinhaPontos = [];
   }
@@ -644,6 +657,7 @@ map.addControl(new NortheArrowControl());
   function atualizarBotoesAnotacao() {
     var ids = {
       linha: 'drawLinha',
+      medicao: 'drawMedicao',
       ponto: 'drawPonto',
       retangulo: 'drawRetangulo',
       circulo: 'drawCirculo',
@@ -696,6 +710,130 @@ map.addControl(new NortheArrowControl());
     });
   }
 
+  function criarIconeMedicaoAnotacao(texto, estiloTexto) {
+    estiloTexto = Object.assign({}, estiloTextoAnotacao, estiloTexto || {});
+    var tamanho = Number(estiloTexto.tamanho || estiloTextoAnotacao.tamanho);
+    var cor = estiloCssCor(estiloTexto.cor, estiloTextoAnotacao.cor);
+    var style = 'color:' + cor + ';' +
+      'font-size:' + tamanho + 'px;' +
+      'border-color:' + cor + ';';
+    return L.divIcon({
+      className: 'medicao-tooltip-icon',
+      html: '<span class="medicao-tooltip anotacao-medicao-tooltip" style="' + style + '">' + escaparHtml(texto) + '</span>',
+      iconSize: [1, 1],
+      iconAnchor: [0, 0]
+    });
+  }
+
+  function textoMedicaoAnotacao(layer) {
+    var extra = layer._anotacaoExtra || {};
+    if (extra.texto) return extra.texto;
+    return formatarDistanciaMedicao(distanciaTotalMedicao(layer.getLatLngs()));
+  }
+
+  function criarPontoExtremoMedicao(latlng, estiloForma) {
+    estiloForma = Object.assign({}, estiloAnotacao, estiloForma || {});
+    return L.circleMarker(latlng, {
+      pane: 'anotacoesPane',
+      interactive: false,
+      radius: 4,
+      color: estiloForma.color || '#111827',
+      weight: 2,
+      fillColor: '#ffffff',
+      fillOpacity: 1
+    }).addTo(map);
+  }
+
+  function removerPontosExtremosMedicao(layer) {
+    if (!layer || !layer._anotacaoMedicaoPontos) return;
+    layer._anotacaoMedicaoPontos.forEach(function(ponto) {
+      map.removeLayer(ponto);
+    });
+    layer._anotacaoMedicaoPontos = [];
+  }
+
+  function sincronizarPontosExtremosMedicao(layer) {
+    if (!layer || layer._anotacaoTipo !== 'medicao') return;
+    removerPontosExtremosMedicao(layer);
+    var pontos = layer.getLatLngs();
+    if (pontos.length < 2) return;
+    var estiloForma = estiloFormaPorProps(layer._anotacaoExtra || {});
+    layer._anotacaoMedicaoPontos = [
+      criarPontoExtremoMedicao(pontos[0], estiloForma),
+      criarPontoExtremoMedicao(pontos[pontos.length - 1], estiloForma)
+    ];
+  }
+
+  function sincronizarMarcadorMedicaoAnotacao(layer) {
+    if (!layer || layer._anotacaoTipo !== 'medicao') return;
+    var pontos = layer.getLatLngs();
+    if (!pontos.length) return;
+    sincronizarPontosExtremosMedicao(layer);
+    var texto = textoMedicaoAnotacao(layer);
+    var estiloTexto = estiloTextoPorProps(layer._anotacaoExtra || {});
+    if (layer._anotacaoMedicaoMarcador) {
+      layer._anotacaoMedicaoMarcador.setLatLng(pontos[pontos.length - 1]);
+      layer._anotacaoMedicaoMarcador.setIcon(criarIconeMedicaoAnotacao(texto, estiloTexto));
+      return;
+    }
+    layer._anotacaoMedicaoMarcador = L.marker(pontos[pontos.length - 1], {
+      pane: 'anotacoesTextoPane',
+      interactive: true,
+      icon: criarIconeMedicaoAnotacao(texto, estiloTexto)
+    }).addTo(map);
+    layer._anotacaoMedicaoMarcador.on('click', function(e) {
+      if (e.originalEvent) {
+        L.DomEvent.preventDefault(e.originalEvent);
+        L.DomEvent.stopPropagation(e.originalEvent);
+      }
+      editarMedicaoAnotacao(layer);
+    });
+  }
+
+  function editarMedicaoAnotacao(layer) {
+    if (anotacaoFerramenta) return;
+    var textoAtual = textoMedicaoAnotacao(layer);
+    var novoTexto = window.prompt('Texto da medição:', textoAtual);
+    if (novoTexto === null) return;
+    novoTexto = novoTexto.trim();
+    if (!novoTexto) {
+      removerAnotacao(layer);
+      return;
+    }
+
+    var nomeAtual = layer._anotacaoExtra.nomeLegenda || '';
+    var novoNome = solicitarNomeLegendaAnotacao('medicao', nomeAtual);
+    layer._anotacaoExtra.texto = novoTexto;
+    layer._anotacaoExtra.nomeLegenda = novoNome;
+    sincronizarMarcadorMedicaoAnotacao(layer);
+    salvarAnotacoesLocal();
+  }
+
+  function atualizarPreviewMedicaoAnotacao(pontos) {
+    if (anotacaoMedicaoTooltip) {
+      map.removeLayer(anotacaoMedicaoTooltip);
+      anotacaoMedicaoTooltip = null;
+    }
+    anotacaoMedicaoPontosPreview.forEach(function(layer) {
+      map.removeLayer(layer);
+    });
+    anotacaoMedicaoPontosPreview = [];
+    if (!pontos || !pontos.length) return;
+    var texto = formatarDistanciaMedicao(distanciaTotalMedicao(pontos));
+    anotacaoMedicaoTooltip = L.marker(pontos[pontos.length - 1], {
+      pane: 'anotacoesTextoPane',
+      interactive: false,
+      icon: criarIconeMedicaoAnotacao(texto, lerEstiloTextoAnotacao())
+    }).addTo(map);
+    if (pontos.length > 1) {
+      var estiloForma = lerEstiloFormaAnotacao();
+      anotacaoMedicaoPontosPreview = [
+        criarPontoExtremoMedicao(pontos[0], estiloForma),
+        criarPontoExtremoMedicao(pontos[pontos.length - 1], estiloForma)
+      ];
+    }
+  }
+
   function configurarCamadaAnotacao(layer, tipo, extra) {
     layer._anotacaoTipo = tipo;
     layer._anotacaoExtra = extra || {};
@@ -713,6 +851,11 @@ map.addControl(new NortheArrowControl());
         layer._anotacaoExtra.texto = novoTexto;
         layer.setIcon(criarIconeTextoAnotacao(novoTexto, estiloTextoPorProps(layer._anotacaoExtra)));
         salvarAnotacoesLocal();
+      });
+    } else if (tipo === 'medicao') {
+      sincronizarMarcadorMedicaoAnotacao(layer);
+      layer.on('click', function() {
+        editarMedicaoAnotacao(layer);
       });
     } else {
       layer.on('click', function() {
@@ -736,6 +879,11 @@ map.addControl(new NortheArrowControl());
   }
 
   function removerAnotacao(layer) {
+    if (layer && layer._anotacaoMedicaoMarcador) {
+      map.removeLayer(layer._anotacaoMedicaoMarcador);
+      layer._anotacaoMedicaoMarcador = null;
+    }
+    removerPontosExtremosMedicao(layer);
     anotacoesLayer.removeLayer(layer);
     anotacoesHistorico = anotacoesHistorico.filter(function(item) {
       return item !== layer;
@@ -782,7 +930,7 @@ map.addControl(new NortheArrowControl());
     var tipo = layer._anotacaoTipo;
     var props = Object.assign({ tipo: tipo }, layer._anotacaoExtra || {});
 
-    if (tipo === 'linha') {
+    if (tipo === 'linha' || tipo === 'medicao') {
       props.estilo = estiloFormaDaCamada(layer);
       return {
         type: 'Feature',
@@ -873,6 +1021,10 @@ map.addControl(new NortheArrowControl());
 
     if (tipo === 'linha' && geom.type === 'LineString') {
       layer = L.polyline(coordsParaLatLngs(geom.coordinates), estiloForma);
+    } else if (tipo === 'medicao' && geom.type === 'LineString') {
+      layer = L.polyline(coordsParaLatLngs(geom.coordinates), Object.assign({}, estiloForma, {
+        dashArray: estiloForma.dashArray || '8,6'
+      }));
     } else if (tipo === 'ponto' && geom.type === 'Point') {
       layer = L.marker([geom.coordinates[1], geom.coordinates[0]], {
         pane: 'anotacoesPane',
@@ -908,6 +1060,10 @@ map.addControl(new NortheArrowControl());
     }
 
     if (substituir) {
+      anotacoesLayer.eachLayer(function(layer) {
+        if (layer._anotacaoMedicaoMarcador) map.removeLayer(layer._anotacaoMedicaoMarcador);
+        removerPontosExtremosMedicao(layer);
+      });
       anotacoesLayer.clearLayers();
       anotacoesHistorico = [];
     }
@@ -949,6 +1105,7 @@ map.addControl(new NortheArrowControl());
     map.doubleClickZoom.disable();
 
     if (tipo === 'linha') setStatusAnotacao('Linha: clique nos pontos e dê duplo clique para finalizar');
+    if (tipo === 'medicao') setStatusAnotacao('Medição: clique nos pontos e dê duplo clique para finalizar');
     if (tipo === 'ponto') setStatusAnotacao('Ponto: clique no local da anotação');
     if (tipo === 'retangulo') setStatusAnotacao('Retângulo: clique em dois cantos do retângulo');
     if (tipo === 'circulo') setStatusAnotacao('Círculo: clique no centro e depois no raio');
@@ -958,14 +1115,21 @@ map.addControl(new NortheArrowControl());
   function finalizarLinhaAnotacao() {
     if (anotacaoLinhaPontos.length < 2) return;
     if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+    var tipoLinha = anotacaoFerramenta === 'medicao' ? 'medicao' : 'linha';
     var estiloLinha = lerEstiloFormaAnotacao();
-    var nomeLegenda = solicitarNomeLegendaAnotacao('linha', '');
-    adicionarAnotacao(L.polyline(anotacaoLinhaPontos, estiloLinha), 'linha', {
+    if (tipoLinha === 'medicao') estiloLinha.dashArray = '8,6';
+    var nomeLegenda = solicitarNomeLegendaAnotacao(tipoLinha, '');
+    var extra = {
       estilo: estiloFormaDaCamada({ options: estiloLinha }),
       nomeLegenda: nomeLegenda
-    });
+    };
+    if (tipoLinha === 'medicao') {
+      extra.texto = formatarDistanciaMedicao(distanciaTotalMedicao(anotacaoLinhaPontos));
+      extra.estiloTexto = lerEstiloTextoAnotacao();
+    }
+    adicionarAnotacao(L.polyline(anotacaoLinhaPontos, estiloLinha), tipoLinha, extra);
     limparPreviewAnotacao();
-    ativarFerramentaAnotacao('linha');
+    ativarFerramentaAnotacao(tipoLinha);
   }
 
   function processarCliqueAnotacao(e) {
@@ -1006,7 +1170,7 @@ map.addControl(new NortheArrowControl());
       return;
     }
 
-    if (anotacaoFerramenta === 'linha') {
+    if (anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'medicao') {
       if (e.originalEvent && e.originalEvent.detail >= 2) {
         finalizarLinhaAnotacao();
         return;
@@ -1014,8 +1178,9 @@ map.addControl(new NortheArrowControl());
       anotacaoLinhaPontos.push(e.latlng);
       if (anotacaoPreview) map.removeLayer(anotacaoPreview);
       anotacaoPreview = L.polyline(anotacaoLinhaPontos, Object.assign({}, lerEstiloFormaAnotacao(), {
-        dashArray: '6,6'
+        dashArray: anotacaoFerramenta === 'medicao' ? '8,6' : '6,6'
       })).addTo(map);
+      if (anotacaoFerramenta === 'medicao') atualizarPreviewMedicaoAnotacao(anotacaoLinhaPontos);
       return;
     }
 
@@ -1058,11 +1223,12 @@ map.addControl(new NortheArrowControl());
   function processarMousemoveAnotacao(e) {
     if (!anotacaoFerramenta) return;
 
-    if (anotacaoFerramenta === 'linha' && anotacaoLinhaPontos.length) {
+    if ((anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'medicao') && anotacaoLinhaPontos.length) {
       if (anotacaoPreview) map.removeLayer(anotacaoPreview);
       anotacaoPreview = L.polyline(anotacaoLinhaPontos.concat([e.latlng]), Object.assign({}, lerEstiloFormaAnotacao(), {
-        dashArray: '6,6'
+        dashArray: anotacaoFerramenta === 'medicao' ? '8,6' : '6,6'
       })).addTo(map);
+      if (anotacaoFerramenta === 'medicao') atualizarPreviewMedicaoAnotacao(anotacaoLinhaPontos.concat([e.latlng]));
       return;
     }
 
@@ -1108,7 +1274,7 @@ map.addControl(new NortheArrowControl());
     map.on('click', processarCliqueAnotacao);
     map.on('mousemove', processarMousemoveAnotacao);
     map.on('dblclick', function(e) {
-      if (anotacaoFerramenta === 'linha') {
+      if (anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'medicao') {
         if (e.originalEvent) {
           L.DomEvent.preventDefault(e.originalEvent);
           L.DomEvent.stopPropagation(e.originalEvent);
@@ -1120,11 +1286,12 @@ map.addControl(new NortheArrowControl());
       if (!anotacaoFerramenta) return;
       e.preventDefault();
       e.stopPropagation();
-      if (anotacaoFerramenta === 'linha') finalizarLinhaAnotacao();
+      if (anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'medicao') finalizarLinhaAnotacao();
     }, true);
 
     var botoes = [
       ['drawLinha', 'linha'],
+      ['drawMedicao', 'medicao'],
       ['drawPonto', 'ponto'],
       ['drawRetangulo', 'retangulo'],
       ['drawCirculo', 'circulo'],
@@ -1141,6 +1308,10 @@ map.addControl(new NortheArrowControl());
     if (limpar) limpar.addEventListener('click', function() {
       if (!anotacoesLayer.getLayers().length) return;
       if (!window.confirm('Limpar todas as anotações salvas neste navegador?')) return;
+      anotacoesLayer.eachLayer(function(layer) {
+        if (layer._anotacaoMedicaoMarcador) map.removeLayer(layer._anotacaoMedicaoMarcador);
+        removerPontosExtremosMedicao(layer);
+      });
       anotacoesLayer.clearLayers();
       anotacoesHistorico = [];
       salvarAnotacoesLocal();
