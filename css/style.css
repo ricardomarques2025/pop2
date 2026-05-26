@@ -129,14 +129,25 @@
 
     .grid-anotacoes {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .anotacao-grupo-titulo {
+      margin: 10px 0 6px;
+      color: #4b5563;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
     }
 
     .anotacao-btn {
-      min-height: 42px;
+      min-height: 38px;
       margin-bottom: 0;
+      padding-left: 6px;
+      padding-right: 6px;
     }
 
     .anotacao-status {
@@ -192,6 +203,7 @@
       line-height: 1.2;
       white-space: nowrap;
       overflow-wrap: normal;
+      transform-origin: left center;
       box-shadow: 0 1px 4px rgba(0,0,0,0.22);
     }
 
@@ -1073,6 +1085,7 @@ input[type="range"] {
   font-weight: 900;
   line-height: 1;
   white-space: nowrap;
+  transform-origin: center center;
   box-shadow: 0 1px 4px rgba(0,0,0,0.22);
 }
 
@@ -1287,8 +1300,8 @@ body.modo-impressao.preparando-impressao.print-titulo-com-caixa #printTitleBox {
 
 body.modo-impressao.preparando-impressao #printLegendBox {
   position: absolute;
-  right: 8mm;
-  bottom: 8mm;
+  right: 4mm;
+  bottom: 4mm;
   z-index: 1200;
   max-width: 86mm;
   overflow: visible;
@@ -1570,8 +1583,8 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
   body.modo-impressao #printLegendBox {
     display: block;
     position: absolute;
-    right: 8mm;
-    bottom: 8mm;
+    right: 4mm;
+    bottom: 4mm;
     z-index: 1200;
     max-width: 86mm;
     overflow: visible;

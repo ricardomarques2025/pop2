@@ -7,13 +7,13 @@ var originalCenter = map.getCenter();
 var originalZoom = map.getZoom();
 
   map.createPane('snvPane');
-  map.getPane('snvPane').style.zIndex = 200;
+  map.getPane('snvPane').style.zIndex = 260;
 
   map.createPane('sreBasePane');
   map.getPane('sreBasePane').style.zIndex = 300;
 
     map.createPane('areasUrbanasPane');
-    map.getPane('areasUrbanasPane').style.zIndex = 340;
+    map.getPane('areasUrbanasPane').style.zIndex = 240;
 
     map.createPane('servicosPane');
     map.getPane('servicosPane').style.zIndex = 500;
@@ -45,12 +45,11 @@ var originalZoom = map.getZoom();
   }
 );
 
-const baseClaroComNomes = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+const basePadrao = L.tileLayer(
+  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   {
-    attribution: '© OpenStreetMap © CARTO',
-    subdomains: 'abcd',
-    maxZoom: 20
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 19
   }
 );
 
@@ -97,7 +96,7 @@ function desenharMascaraBrasil() {
 // controle para trocar a base
 const mapasBase = {
   "Claro limpo": baseClaro,
-  "Claro com nomes": baseClaroComNomes,
+  "Padrão": basePadrao,
   "Escuro": baseEscuro,
   "Satélite": baseSatelite
 };
@@ -275,6 +274,7 @@ function adicionarPontoMedicao(e) {
     fillOpacity: 1
   }).addTo(medicaoLayer);
   atualizarDesenhoMedicao();
+  if (medicaoPontos.length >= 2) finalizarMedicao();
 }
 
 function previewMedicao(e) {
@@ -425,6 +425,7 @@ map.addControl(new NortheArrowControl());
   var anotacaoMedicaoTooltip = null;
   var anotacaoMedicaoPontosPreview = [];
   var anotacaoLinhaPontos = [];
+  var anotacaoMedicaoFormaModo = null;
   var legendaAnotacoesAtiva = false;
   var ANOTACOES_STORAGE_KEY = 'mapa_pop2_anotacoes_v1';
   var estiloAnotacao = {
@@ -526,6 +527,7 @@ map.addControl(new NortheArrowControl());
 
   function nomeTipoAnotacao(tipo) {
     if (tipo === 'linha') return 'Linha';
+    if (tipo === 'poligono') return 'Polígono';
     if (tipo === 'medicao') return 'Medição';
     if (tipo === 'ponto') return 'Ponto';
     if (tipo === 'retangulo') return 'Retângulo';
@@ -596,7 +598,7 @@ map.addControl(new NortheArrowControl());
       var tamanho = Math.max(8, Math.min(22, Number(ponto.tamanho) || 14));
       return '<span class="legenda-anotacao-simbolo"><span class="anotacao-ponto-shape' + classeFormatoPonto(ponto.formato) + '" style="width:' + tamanho + 'px;height:' + tamanho + 'px;border-color:' + cor + ';border-width:' + espessura + 'px;background:' + corHexParaRgba(preenchimento, opacidade) + '"></span></span>';
     }
-    if (tipo === 'retangulo') {
+    if (tipo === 'retangulo' || tipo === 'poligono') {
       return '<span class="legenda-anotacao-simbolo"><span class="legenda-anotacao-retangulo" style="border-color:' + cor + ';border-width:' + espessura + 'px;background:' + corHexParaRgba(preenchimento, opacidade) + '"></span></span>';
     }
     if (tipo === 'circulo') {
@@ -659,9 +661,21 @@ map.addControl(new NortheArrowControl());
     anotacaoLinhaPontos = [];
   }
 
+  function limparPreviewMedicoesAnotacao() {
+    if (anotacaoMedicaoTooltip) {
+      map.removeLayer(anotacaoMedicaoTooltip);
+      anotacaoMedicaoTooltip = null;
+    }
+    anotacaoMedicaoPontosPreview.forEach(function(layer) {
+      map.removeLayer(layer);
+    });
+    anotacaoMedicaoPontosPreview = [];
+  }
+
   function atualizarBotoesAnotacao() {
     var ids = {
       linha: 'drawLinha',
+      poligono: 'drawPoligono',
       medicao: 'drawMedicao',
       ponto: 'drawPonto',
       retangulo: 'drawRetangulo',
@@ -686,15 +700,56 @@ map.addControl(new NortheArrowControl());
   function criarIconeTextoAnotacao(texto, estiloTexto) {
     estiloTexto = Object.assign({}, estiloTextoAnotacao, estiloTexto || {});
     var tamanho = Number(estiloTexto.tamanho || estiloTextoAnotacao.tamanho);
+    var rotacao = Number(estiloTexto.rotacao) || 0;
     var style = 'color:' + escaparHtml(estiloTexto.cor) + ';' +
       'font-size:' + tamanho + 'px;' +
-      'border-color:' + escaparHtml(estiloTexto.cor) + ';';
+      'border-color:' + escaparHtml(estiloTexto.cor) + ';' +
+      'transform:rotate(' + rotacao + 'deg);';
     return L.divIcon({
       className: 'anotacao-texto-icon',
       html: '<span class="anotacao-texto" style="' + style + '">' + escaparHtml(texto) + '</span>',
       iconSize: [1, 1],
       iconAnchor: [0, 0]
     });
+  }
+
+  function anguloEntreLatLngs(origem, destino) {
+    if (!origem || !destino) return 0;
+    var p1 = map.latLngToLayerPoint(origem);
+    var p2 = map.latLngToLayerPoint(destino);
+    if (p1.equals && p1.equals(p2)) return 0;
+    return Math.round(Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI);
+  }
+
+  function rotacaoTextoLegivel(angulo) {
+    var rotacao = Number(angulo) || 0;
+    while (rotacao > 180) rotacao -= 360;
+    while (rotacao < -180) rotacao += 360;
+    if (rotacao > 90) rotacao -= 180;
+    if (rotacao < -90) rotacao += 180;
+    return rotacao;
+  }
+
+  function destinoLatLng(centro, metros, graus) {
+    var raioTerra = 6378137;
+    var brng = graus * Math.PI / 180;
+    var lat1 = centro.lat * Math.PI / 180;
+    var lng1 = centro.lng * Math.PI / 180;
+    var distanciaAngular = metros / raioTerra;
+    var lat2 = Math.asin(
+      Math.sin(lat1) * Math.cos(distanciaAngular) +
+      Math.cos(lat1) * Math.sin(distanciaAngular) * Math.cos(brng)
+    );
+    var lng2 = lng1 + Math.atan2(
+      Math.sin(brng) * Math.sin(distanciaAngular) * Math.cos(lat1),
+      Math.cos(distanciaAngular) - Math.sin(lat1) * Math.sin(lat2)
+    );
+    return L.latLng(lat2 * 180 / Math.PI, lng2 * 180 / Math.PI);
+  }
+
+  function formatarCoordenadasMedicao(latlng) {
+    return 'Lat: ' + latlng.lat.toFixed(6).replace('.', ',') +
+      ' | Lon: ' + latlng.lng.toFixed(6).replace('.', ',');
   }
 
   function criarIconePontoAnotacao(estiloForma, estiloPonto) {
@@ -719,9 +774,12 @@ map.addControl(new NortheArrowControl());
     estiloTexto = Object.assign({}, estiloTextoAnotacao, estiloTexto || {});
     var tamanho = Number(estiloTexto.tamanho || estiloTextoAnotacao.tamanho);
     var cor = estiloCssCor(estiloTexto.cor, estiloTextoAnotacao.cor);
+    var rotacao = Number(estiloTexto.rotacao) || 0;
+    var deslocamento = estiloTexto.ancora === 'inferiorDireito' ? 'translate(10px, 10px)' : 'translate(-50%, -50%)';
     var style = 'color:' + cor + ';' +
       'font-size:' + tamanho + 'px;' +
-      'border-color:' + cor + ';';
+      'border-color:' + cor + ';' +
+      'transform:' + deslocamento + ' rotate(' + rotacao + 'deg);';
     return L.divIcon({
       className: 'medicao-tooltip-icon',
       html: '<span class="medicao-tooltip anotacao-medicao-tooltip" style="' + style + '">' + escaparHtml(texto) + '</span>',
@@ -793,6 +851,212 @@ map.addControl(new NortheArrowControl());
       }
       editarMedicaoAnotacao(layer);
     });
+  }
+
+  function removerMedicoesFormaAnotacao(layer) {
+    if (!layer) return;
+    (layer._anotacaoMedicaoFormaLayers || []).forEach(function(item) {
+      map.removeLayer(item);
+    });
+    layer._anotacaoMedicaoFormaLayers = [];
+  }
+
+  function adicionarMarcadorMedicaoForma(layer, latlng, texto, rotacao, opcoes) {
+    var estiloTexto = estiloTextoPorProps(layer._anotacaoExtra || {});
+    estiloTexto.rotacao = rotacao || 0;
+    if (opcoes && opcoes.ancora) estiloTexto.ancora = opcoes.ancora;
+    var marcador = L.marker(latlng, {
+      pane: 'anotacoesTextoPane',
+      interactive: false,
+      icon: criarIconeMedicaoAnotacao(texto, estiloTexto)
+    }).addTo(map);
+    layer._anotacaoMedicaoFormaLayers.push(marcador);
+  }
+
+  function adicionarMarcadorPreviewMedicao(latlng, texto, rotacao, opcoes) {
+    var estiloTexto = lerEstiloTextoAnotacao();
+    estiloTexto.rotacao = rotacao || 0;
+    if (opcoes && opcoes.ancora) estiloTexto.ancora = opcoes.ancora;
+    anotacaoMedicaoPontosPreview.push(L.marker(latlng, {
+      pane: 'anotacoesTextoPane',
+      interactive: false,
+      icon: criarIconeMedicaoAnotacao(texto, estiloTexto)
+    }).addTo(map));
+  }
+
+  function pontoMedioLatLng(a, b) {
+    return L.latLng((a.lat + b.lat) / 2, (a.lng + b.lng) / 2);
+  }
+
+  function adicionarMedicaoSegmentoForma(layer, a, b) {
+    adicionarMarcadorMedicaoForma(
+      layer,
+      pontoMedioLatLng(a, b),
+      formatarDistanciaMedicao(a.distanceTo(b)),
+      rotacaoTextoLegivel(anguloEntreLatLngs(a, b))
+    );
+  }
+
+  function adicionarMedicaoSegmentoPreview(a, b) {
+    adicionarMarcadorPreviewMedicao(
+      pontoMedioLatLng(a, b),
+      formatarDistanciaMedicao(a.distanceTo(b)),
+      rotacaoTextoLegivel(anguloEntreLatLngs(a, b))
+    );
+  }
+
+  function areaPoligonoMetrosQuadrados(pontos) {
+    if (!pontos || pontos.length < 3) return 0;
+    var raioTerra = 6378137;
+    var area = 0;
+    for (var i = 0; i < pontos.length; i++) {
+      var atual = pontos[i];
+      var prox = pontos[(i + 1) % pontos.length];
+      area += (prox.lng - atual.lng) * Math.PI / 180 *
+        (2 + Math.sin(atual.lat * Math.PI / 180) + Math.sin(prox.lat * Math.PI / 180));
+    }
+    return Math.abs(area * raioTerra * raioTerra / 2);
+  }
+
+  function formatarAreaMedicao(area) {
+    if (!isFinite(area)) return '0 m²';
+    if (area >= 1000000) return (area / 1000000).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }) + ' km²';
+    if (area >= 10000) return (area / 10000).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }) + ' ha';
+    return area.toLocaleString('pt-BR', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }) + ' m²';
+  }
+
+  function centroideLatLng(pontos) {
+    if (!pontos || !pontos.length) return null;
+    var lat = 0;
+    var lng = 0;
+    pontos.forEach(function(ponto) {
+      lat += ponto.lat;
+      lng += ponto.lng;
+    });
+    return L.latLng(lat / pontos.length, lng / pontos.length);
+  }
+
+  function adicionarMedicoesPoligono(layer, pontos, incluirArea) {
+    if (!pontos || pontos.length < 2) return;
+    if (pontos.length > 2 && pontos[0].equals && pontos[0].equals(pontos[pontos.length - 1])) {
+      pontos = pontos.slice(0, -1);
+    }
+    for (var i = 1; i < pontos.length; i++) {
+      adicionarMedicaoSegmentoForma(layer, pontos[i - 1], pontos[i]);
+    }
+    if (pontos.length > 2) {
+      adicionarMedicaoSegmentoForma(layer, pontos[pontos.length - 1], pontos[0]);
+      if (incluirArea) {
+        adicionarMarcadorMedicaoForma(
+          layer,
+          centroideLatLng(pontos),
+          'Área = ' + formatarAreaMedicao(areaPoligonoMetrosQuadrados(pontos)),
+          0
+        );
+      }
+    }
+  }
+
+  function atualizarPreviewMedicoesForma(tipo, pontos, incluirArea) {
+    limparPreviewMedicoesAnotacao();
+    if (!pontos || !pontos.length) return;
+
+    if (tipo === 'linha') {
+      for (var i = 1; i < pontos.length; i++) adicionarMedicaoSegmentoPreview(pontos[i - 1], pontos[i]);
+      return;
+    }
+
+    if (tipo === 'poligono') {
+      for (var j = 1; j < pontos.length; j++) adicionarMedicaoSegmentoPreview(pontos[j - 1], pontos[j]);
+      if (pontos.length > 2) {
+        adicionarMedicaoSegmentoPreview(pontos[pontos.length - 1], pontos[0]);
+        if (incluirArea) {
+          adicionarMarcadorPreviewMedicao(
+            centroideLatLng(pontos),
+            'Área = ' + formatarAreaMedicao(areaPoligonoMetrosQuadrados(pontos)),
+            0
+          );
+        }
+      }
+      return;
+    }
+
+    if (tipo === 'retangulo' && pontos.length > 1) {
+      var bounds = L.latLngBounds(pontos[0], pontos[1]);
+      var nw = bounds.getNorthWest();
+      var ne = bounds.getNorthEast();
+      var sw = bounds.getSouthWest();
+      adicionarMedicaoSegmentoPreview(nw, ne);
+      adicionarMedicaoSegmentoPreview(nw, sw);
+      return;
+    }
+
+    if (tipo === 'circulo' && pontos.length > 1) {
+      adicionarMedicaoSegmentoPreview(pontos[0], pontos[1]);
+    }
+  }
+
+  function sincronizarMedicoesFormaAnotacao(layer) {
+    if (!layer || !layer._anotacaoExtra || !layer._anotacaoExtra.medirForma) return;
+    removerMedicoesFormaAnotacao(layer);
+    layer._anotacaoMedicaoFormaLayers = [];
+    var tipo = layer._anotacaoTipo;
+    var estiloForma = estiloFormaPorProps(layer._anotacaoExtra);
+
+    if (tipo === 'ponto') {
+      adicionarMarcadorMedicaoForma(layer, layer.getLatLng(), formatarCoordenadasMedicao(layer.getLatLng()), 0, {
+        ancora: 'inferiorDireito'
+      });
+      return;
+    }
+
+    if (tipo === 'retangulo') {
+      var bounds = layer.getBounds();
+      var nw = bounds.getNorthWest();
+      var ne = bounds.getNorthEast();
+      var sw = bounds.getSouthWest();
+      adicionarMedicaoSegmentoForma(layer, nw, ne);
+      adicionarMedicaoSegmentoForma(layer, nw, sw);
+      return;
+    }
+
+    if (tipo === 'linha') {
+      var pontosLinha = layer.getLatLngs();
+      for (var i = 1; i < pontosLinha.length; i++) {
+        adicionarMedicaoSegmentoForma(layer, pontosLinha[i - 1], pontosLinha[i]);
+      }
+      return;
+    }
+
+    if (tipo === 'poligono') {
+      adicionarMedicoesPoligono(layer, layer.getLatLngs()[0] || [], true);
+      return;
+    }
+
+    if (tipo === 'circulo') {
+      var centro = layer.getLatLng();
+      var raio = layer.getRadius();
+      var pontoRaio = layer._anotacaoExtra.pontoRaio ?
+        L.latLng(layer._anotacaoExtra.pontoRaio[1], layer._anotacaoExtra.pontoRaio[0]) :
+        destinoLatLng(centro, raio, 90);
+      var linhaRaio = L.polyline([centro, pontoRaio], Object.assign({}, estiloForma, {
+        pane: 'anotacoesPane',
+        dashArray: '8,6',
+        fillOpacity: 0,
+        interactive: false
+      })).addTo(map);
+      layer._anotacaoMedicaoFormaLayers.push(linhaRaio);
+      adicionarMarcadorMedicaoForma(layer, pontoMedioLatLng(centro, pontoRaio), formatarDistanciaMedicao(raio), rotacaoTextoLegivel(anguloEntreLatLngs(centro, pontoRaio)));
+    }
   }
 
   function editarMedicaoAnotacao(layer) {
@@ -872,6 +1136,7 @@ map.addControl(new NortheArrowControl());
         if (window.confirm('Remover esta anotação?')) removerAnotacao(layer);
       });
     }
+    sincronizarMedicoesFormaAnotacao(layer);
     return layer;
   }
 
@@ -888,6 +1153,7 @@ map.addControl(new NortheArrowControl());
       map.removeLayer(layer._anotacaoMedicaoMarcador);
       layer._anotacaoMedicaoMarcador = null;
     }
+    removerMedicoesFormaAnotacao(layer);
     removerPontosExtremosMedicao(layer);
     anotacoesLayer.removeLayer(layer);
     anotacoesHistorico = anotacoesHistorico.filter(function(item) {
@@ -956,7 +1222,7 @@ map.addControl(new NortheArrowControl());
       };
     }
 
-    if (tipo === 'retangulo') {
+    if (tipo === 'retangulo' || tipo === 'poligono') {
       var polygon = layer.toGeoJSON().geometry.coordinates;
       props.estilo = estiloFormaDaCamada(layer);
       return {
@@ -1038,6 +1304,8 @@ map.addControl(new NortheArrowControl());
       });
     } else if (tipo === 'retangulo' && geom.type === 'Polygon') {
       layer = L.polygon(coordsParaLatLngs(geom.coordinates[0] || []), estiloForma);
+    } else if (tipo === 'poligono' && geom.type === 'Polygon') {
+      layer = L.polygon(coordsParaLatLngs(geom.coordinates[0] || []), estiloForma);
     } else if (tipo === 'circulo' && geom.type === 'Polygon' && props.centro) {
       layer = L.circle([props.centro[1], props.centro[0]], Object.assign({}, estiloForma, {
         radius: Number(props.raio) || 1000
@@ -1067,6 +1335,7 @@ map.addControl(new NortheArrowControl());
     if (substituir) {
       anotacoesLayer.eachLayer(function(layer) {
         if (layer._anotacaoMedicaoMarcador) map.removeLayer(layer._anotacaoMedicaoMarcador);
+        removerMedicoesFormaAnotacao(layer);
         removerPontosExtremosMedicao(layer);
       });
       anotacoesLayer.clearLayers();
@@ -1095,8 +1364,13 @@ map.addControl(new NortheArrowControl());
   }
 
   function ativarFerramentaAnotacao(tipo) {
+    var ferramentaAnterior = anotacaoFerramenta;
     limparPreviewAnotacao();
+    anotacaoMedicaoFormaModo = tipo === 'medicao' && ['linha', 'poligono', 'ponto', 'retangulo', 'circulo'].indexOf(ferramentaAnterior) !== -1 ?
+      ferramentaAnterior :
+      null;
     anotacaoFerramenta = anotacaoFerramenta === tipo ? null : tipo;
+    if (!anotacaoFerramenta) anotacaoMedicaoFormaModo = null;
     atualizarBotoesAnotacao();
 
     if (!anotacaoFerramenta) {
@@ -1109,18 +1383,50 @@ map.addControl(new NortheArrowControl());
     map.dragging.disable();
     map.doubleClickZoom.disable();
 
-    if (tipo === 'linha') setStatusAnotacao('Linha: clique nos pontos e dê duplo clique para finalizar');
-    if (tipo === 'medicao') setStatusAnotacao('Medição: clique nos pontos e dê duplo clique para finalizar');
-    if (tipo === 'ponto') setStatusAnotacao('Ponto: clique no local da anotação');
-    if (tipo === 'retangulo') setStatusAnotacao('Retângulo: clique em dois cantos do retângulo');
-    if (tipo === 'circulo') setStatusAnotacao('Círculo: clique no centro e depois no raio');
-    if (tipo === 'texto') setStatusAnotacao('Texto: clique no local da anotação');
+    if (tipo === 'linha') {
+      setStatusAnotacao('Linha: clique nos pontos e dê duplo clique para finalizar');
+      return;
+    }
+    if (tipo === 'poligono') {
+      setStatusAnotacao('Polígono: clique nos vértices e dê duplo clique para finalizar');
+      return;
+    }
+    if (tipo === 'medicao') {
+      if (anotacaoMedicaoFormaModo === 'ponto') setStatusAnotacao('Medição de ponto: clique no local para inserir as coordenadas');
+      else if (anotacaoMedicaoFormaModo === 'linha') setStatusAnotacao('Medição de linha: clique nos pontos e dê duplo clique para finalizar');
+      else if (anotacaoMedicaoFormaModo === 'poligono') setStatusAnotacao('Medição de polígono: clique nos vértices e dê duplo clique para finalizar');
+      else if (anotacaoMedicaoFormaModo === 'retangulo') setStatusAnotacao('Medição de retângulo: clique em dois cantos para medir os lados');
+      else if (anotacaoMedicaoFormaModo === 'circulo') setStatusAnotacao('Medição de círculo: clique no centro e depois no raio');
+      else setStatusAnotacao('Medição: clique nos pontos e dê duplo clique para finalizar');
+      return;
+    }
+    if (tipo === 'ponto') {
+      setStatusAnotacao('Ponto: clique no local da anotação');
+      return;
+    }
+    if (tipo === 'retangulo') {
+      setStatusAnotacao('Retângulo: clique em dois cantos do retângulo');
+      return;
+    }
+    if (tipo === 'circulo') {
+      setStatusAnotacao('Círculo: clique no centro e depois no raio');
+      return;
+    }
+    if (tipo === 'texto') {
+      setStatusAnotacao('Texto: clique no local, mova para escolher a rotação e clique para digitar');
+      return;
+    }
   }
 
   function finalizarLinhaAnotacao() {
     if (anotacaoLinhaPontos.length < 2) return;
     if (anotacaoPreview) map.removeLayer(anotacaoPreview);
-    var tipoLinha = anotacaoFerramenta === 'medicao' ? 'medicao' : 'linha';
+    var medirSegmentosLinha = anotacaoFerramenta === 'medicao' && anotacaoMedicaoFormaModo === 'linha';
+    var medirPoligono = anotacaoFerramenta === 'medicao' && anotacaoMedicaoFormaModo === 'poligono';
+    var tipoPoligono = anotacaoFerramenta === 'poligono' || medirPoligono;
+    if (tipoPoligono && anotacaoLinhaPontos.length < 3) return;
+    var tipoLinha = anotacaoFerramenta === 'medicao' && !medirSegmentosLinha ? 'medicao' : 'linha';
+    if (tipoPoligono) tipoLinha = 'poligono';
     var estiloLinha = lerEstiloFormaAnotacao();
     if (tipoLinha === 'medicao') estiloLinha.dashArray = '8,6';
     var nomeLegenda = solicitarNomeLegendaAnotacao(tipoLinha, '');
@@ -1128,13 +1434,17 @@ map.addControl(new NortheArrowControl());
       estilo: estiloFormaDaCamada({ options: estiloLinha }),
       nomeLegenda: nomeLegenda
     };
+    if (medirSegmentosLinha || medirPoligono) {
+      extra.estiloTexto = lerEstiloTextoAnotacao();
+      extra.medirForma = true;
+    }
     if (tipoLinha === 'medicao') {
       extra.texto = formatarDistanciaMedicao(distanciaTotalMedicao(anotacaoLinhaPontos));
       extra.estiloTexto = lerEstiloTextoAnotacao();
     }
-    adicionarAnotacao(L.polyline(anotacaoLinhaPontos, estiloLinha), tipoLinha, extra);
+    adicionarAnotacao(tipoPoligono ? L.polygon(anotacaoLinhaPontos, estiloLinha) : L.polyline(anotacaoLinhaPontos, estiloLinha), tipoLinha, extra);
     limparPreviewAnotacao();
-    ativarFerramentaAnotacao(tipoLinha);
+    ativarFerramentaAnotacao((medirSegmentosLinha || medirPoligono) ? 'medicao' : tipoLinha);
   }
 
   function processarCliqueAnotacao(e) {
@@ -1145,19 +1455,30 @@ map.addControl(new NortheArrowControl());
     }
 
     if (anotacaoFerramenta === 'texto') {
-      var texto = window.prompt('Texto da anotação:');
-      if (texto && texto.trim()) {
-        var estiloTexto = lerEstiloTextoAnotacao();
-        adicionarAnotacao(L.marker(e.latlng, {
+      if (!anotacaoInicio) {
+        anotacaoInicio = e.latlng;
+        setStatusAnotacao('Texto: mova o mouse para escolher a rotação e clique para digitar');
+        return;
+      }
+      var rotacaoTexto = anguloEntreLatLngs(anotacaoInicio, e.latlng);
+      if (anotacaoPreview) {
+        map.removeLayer(anotacaoPreview);
+        anotacaoPreview = null;
+      }
+      var textoRotacionado = window.prompt('Texto da anotação:');
+      if (textoRotacionado && textoRotacionado.trim()) {
+        var estiloTextoRotacionado = lerEstiloTextoAnotacao();
+        estiloTextoRotacionado.rotacao = rotacaoTexto;
+        adicionarAnotacao(L.marker(anotacaoInicio, {
           pane: 'anotacoesTextoPane',
           draggable: true,
-          icon: criarIconeTextoAnotacao(texto.trim(), estiloTexto)
-        }), 'texto', { texto: texto.trim(), estiloTexto: estiloTexto });
+          icon: criarIconeTextoAnotacao(textoRotacionado.trim(), estiloTextoRotacionado)
+        }), 'texto', { texto: textoRotacionado.trim(), estiloTexto: estiloTextoRotacionado });
       }
+      limparPreviewAnotacao();
       ativarFerramentaAnotacao('texto');
       return;
     }
-
     if (anotacaoFerramenta === 'ponto') {
       var estiloPontoForma = lerEstiloFormaAnotacao();
       var estiloPonto = lerEstiloPontoAnotacao();
@@ -1175,17 +1496,80 @@ map.addControl(new NortheArrowControl());
       return;
     }
 
-    if (anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'medicao') {
+    if (anotacaoFerramenta === 'medicao' && anotacaoMedicaoFormaModo === 'ponto') {
+      var estiloPontoMedicaoForma = lerEstiloFormaAnotacao();
+      var estiloPontoMedicao = lerEstiloPontoAnotacao();
+      var nomeLegendaPontoMedicao = solicitarNomeLegendaAnotacao('ponto', '');
+      adicionarAnotacao(L.marker(e.latlng, {
+        pane: 'anotacoesPane',
+        draggable: false,
+        icon: criarIconePontoAnotacao(estiloPontoMedicaoForma, estiloPontoMedicao)
+      }), 'ponto', {
+        estilo: estiloFormaDaCamada({ options: estiloPontoMedicaoForma }),
+        estiloPonto: estiloPontoMedicao,
+        estiloTexto: lerEstiloTextoAnotacao(),
+        medirForma: true,
+        nomeLegenda: nomeLegendaPontoMedicao
+      });
+      limparPreviewAnotacao();
+      ativarFerramentaAnotacao('medicao');
+      return;
+    }
+
+    if (anotacaoFerramenta === 'medicao' && (anotacaoMedicaoFormaModo === 'retangulo' || anotacaoMedicaoFormaModo === 'circulo')) {
+      if (!anotacaoInicio) {
+        anotacaoInicio = e.latlng;
+        return;
+      }
+
+      if (anotacaoMedicaoFormaModo === 'retangulo') {
+        if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+        var estiloRetanguloMedicao = lerEstiloFormaAnotacao();
+        var nomeLegendaRetanguloMedicao = solicitarNomeLegendaAnotacao('retangulo', '');
+        adicionarAnotacao(L.rectangle(L.latLngBounds(anotacaoInicio, e.latlng), estiloRetanguloMedicao), 'retangulo', {
+          estilo: estiloFormaDaCamada({ options: estiloRetanguloMedicao }),
+          estiloTexto: lerEstiloTextoAnotacao(),
+          medirForma: true,
+          nomeLegenda: nomeLegendaRetanguloMedicao
+        });
+      }
+
+      if (anotacaoMedicaoFormaModo === 'circulo') {
+        var raioMedicao = anotacaoInicio.distanceTo(e.latlng);
+        if (raioMedicao > 0) {
+          if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+          var estiloCirculoMedicao = lerEstiloFormaAnotacao();
+          var nomeLegendaCirculoMedicao = solicitarNomeLegendaAnotacao('circulo', '');
+          adicionarAnotacao(L.circle(anotacaoInicio, Object.assign({}, estiloCirculoMedicao, {
+            radius: raioMedicao
+          })), 'circulo', {
+            estilo: estiloFormaDaCamada({ options: estiloCirculoMedicao }),
+            estiloTexto: lerEstiloTextoAnotacao(),
+            medirForma: true,
+            pontoRaio: [e.latlng.lng, e.latlng.lat],
+            nomeLegenda: nomeLegendaCirculoMedicao
+          });
+        }
+      }
+
+      limparPreviewAnotacao();
+      ativarFerramentaAnotacao('medicao');
+      return;
+    }
+
+    if (anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'poligono' || anotacaoFerramenta === 'medicao') {
       if (e.originalEvent && e.originalEvent.detail >= 2) {
         finalizarLinhaAnotacao();
         return;
       }
       anotacaoLinhaPontos.push(e.latlng);
       if (anotacaoPreview) map.removeLayer(anotacaoPreview);
-      anotacaoPreview = L.polyline(anotacaoLinhaPontos, Object.assign({}, lerEstiloFormaAnotacao(), {
+      var desenhandoPoligono = anotacaoFerramenta === 'poligono' || (anotacaoFerramenta === 'medicao' && anotacaoMedicaoFormaModo === 'poligono');
+      anotacaoPreview = (desenhandoPoligono ? L.polygon : L.polyline)(anotacaoLinhaPontos, Object.assign({}, lerEstiloFormaAnotacao(), {
         dashArray: anotacaoFerramenta === 'medicao' ? '8,6' : '6,6'
       })).addTo(map);
-      if (anotacaoFerramenta === 'medicao') atualizarPreviewMedicaoAnotacao(anotacaoLinhaPontos);
+      if (anotacaoFerramenta === 'medicao' && !anotacaoMedicaoFormaModo) atualizarPreviewMedicaoAnotacao(anotacaoLinhaPontos);
+      else atualizarPreviewMedicoesForma(desenhandoPoligono ? 'poligono' : 'linha', anotacaoLinhaPontos, desenhandoPoligono);
       return;
     }
 
@@ -1228,29 +1612,46 @@ map.addControl(new NortheArrowControl());
   function processarMousemoveAnotacao(e) {
     if (!anotacaoFerramenta) return;
 
-    if ((anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'medicao') && anotacaoLinhaPontos.length) {
+    if (anotacaoFerramenta === 'texto' && anotacaoInicio) {
       if (anotacaoPreview) map.removeLayer(anotacaoPreview);
-      anotacaoPreview = L.polyline(anotacaoLinhaPontos.concat([e.latlng]), Object.assign({}, lerEstiloFormaAnotacao(), {
+      var estiloTextoPreview = lerEstiloTextoAnotacao();
+      estiloTextoPreview.rotacao = anguloEntreLatLngs(anotacaoInicio, e.latlng);
+      anotacaoPreview = L.marker(anotacaoInicio, {
+        pane: 'anotacoesTextoPane',
+        interactive: false,
+        icon: criarIconeTextoAnotacao('Texto', estiloTextoPreview)
+      }).addTo(map);
+      return;
+    }
+
+    if ((anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'poligono' || anotacaoFerramenta === 'medicao') && anotacaoLinhaPontos.length) {
+      if (anotacaoPreview) map.removeLayer(anotacaoPreview);
+      var pontosPreviewLinha = anotacaoLinhaPontos.concat([e.latlng]);
+      var previewPoligono = anotacaoFerramenta === 'poligono' || (anotacaoFerramenta === 'medicao' && anotacaoMedicaoFormaModo === 'poligono');
+      anotacaoPreview = (previewPoligono ? L.polygon : L.polyline)(pontosPreviewLinha, Object.assign({}, lerEstiloFormaAnotacao(), {
         dashArray: anotacaoFerramenta === 'medicao' ? '8,6' : '6,6'
       })).addTo(map);
-      if (anotacaoFerramenta === 'medicao') atualizarPreviewMedicaoAnotacao(anotacaoLinhaPontos.concat([e.latlng]));
+      if (anotacaoFerramenta === 'medicao' && !anotacaoMedicaoFormaModo) atualizarPreviewMedicaoAnotacao(pontosPreviewLinha);
+      else atualizarPreviewMedicoesForma(previewPoligono ? 'poligono' : 'linha', pontosPreviewLinha, previewPoligono);
       return;
     }
 
     if (!anotacaoInicio) return;
     if (anotacaoPreview) map.removeLayer(anotacaoPreview);
 
-    if (anotacaoFerramenta === 'retangulo') {
+    if (anotacaoFerramenta === 'retangulo' || (anotacaoFerramenta === 'medicao' && anotacaoMedicaoFormaModo === 'retangulo')) {
       anotacaoPreview = L.rectangle(L.latLngBounds(anotacaoInicio, e.latlng), Object.assign({}, lerEstiloFormaAnotacao(), {
         dashArray: '6,6'
       })).addTo(map);
+      atualizarPreviewMedicoesForma('retangulo', [anotacaoInicio, e.latlng], false);
     }
 
-    if (anotacaoFerramenta === 'circulo') {
+    if (anotacaoFerramenta === 'circulo' || (anotacaoFerramenta === 'medicao' && anotacaoMedicaoFormaModo === 'circulo')) {
       anotacaoPreview = L.circle(anotacaoInicio, Object.assign({}, lerEstiloFormaAnotacao(), {
         radius: anotacaoInicio.distanceTo(e.latlng),
         dashArray: '6,6'
       })).addTo(map);
+      atualizarPreviewMedicoesForma('circulo', [anotacaoInicio, e.latlng], false);
     }
   }
 
@@ -1279,7 +1680,7 @@ map.addControl(new NortheArrowControl());
     map.on('click', processarCliqueAnotacao);
     map.on('mousemove', processarMousemoveAnotacao);
     map.on('dblclick', function(e) {
-      if (anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'medicao') {
+      if (anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'poligono' || anotacaoFerramenta === 'medicao') {
         if (e.originalEvent) {
           L.DomEvent.preventDefault(e.originalEvent);
           L.DomEvent.stopPropagation(e.originalEvent);
@@ -1291,11 +1692,12 @@ map.addControl(new NortheArrowControl());
       if (!anotacaoFerramenta) return;
       e.preventDefault();
       e.stopPropagation();
-      if (anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'medicao') finalizarLinhaAnotacao();
+      if (anotacaoFerramenta === 'linha' || anotacaoFerramenta === 'poligono' || anotacaoFerramenta === 'medicao') finalizarLinhaAnotacao();
     }, true);
 
     var botoes = [
       ['drawLinha', 'linha'],
+      ['drawPoligono', 'poligono'],
       ['drawMedicao', 'medicao'],
       ['drawPonto', 'ponto'],
       ['drawRetangulo', 'retangulo'],
@@ -1315,6 +1717,7 @@ map.addControl(new NortheArrowControl());
       if (!window.confirm('Limpar todas as anotações salvas neste navegador?')) return;
       anotacoesLayer.eachLayer(function(layer) {
         if (layer._anotacaoMedicaoMarcador) map.removeLayer(layer._anotacaoMedicaoMarcador);
+        removerMedicoesFormaAnotacao(layer);
         removerPontosExtremosMedicao(layer);
       });
       anotacoesLayer.clearLayers();
@@ -1352,8 +1755,8 @@ map.addControl(new NortheArrowControl());
         var reader = new FileReader();
         reader.onload = function() {
           try {
-            carregarAnotacoesGeoJSON(JSON.parse(reader.result), true);
-            setStatusAnotacao('Anotações importadas e salvas no navegador');
+            carregarAnotacoesGeoJSON(JSON.parse(reader.result), false);
+            setStatusAnotacao('Anotações importadas e acrescentadas ao mapa');
           } catch (erro) {
             setStatusAnotacao('Não foi possível importar o arquivo');
             console.warn('Falha ao importar anotações:', erro);
@@ -2069,11 +2472,11 @@ map.addControl(new NortheArrowControl());
       pane: 'areasUrbanasPane',
       style: function() {
         return {
-          color: '#facc15',
+          color: '#ffb5b5',
           weight: 1.5,
           opacity: 1,
-          fillColor: '#facc15',
-          fillOpacity: 0.5
+          fillColor: '#ffb5b5',
+          fillOpacity: 0.42
         };
       }
     }).addTo(map);
@@ -4528,7 +4931,7 @@ map.addControl(new NortheArrowControl());
     var fatorTitulo = tituloAmpliadoImpressao(d) ? 1.2 : 1;
     document.documentElement.style.setProperty('--print-title-font-size', (13 * escalaTitulo * fatorTitulo).toFixed(2) + 'pt');
     var escalaLegenda = d.largura <= larguraBaseA4 ? 0.6 : 1;
-    if (legendaAmpliadaImpressao(d)) escalaLegenda *= 1.5;
+    if (legendaAmpliadaImpressao(d)) escalaLegenda = 0.9;
     document.documentElement.style.setProperty('--print-legend-scale', escalaLegenda.toFixed(2));
 
     var style = document.getElementById('printPageStyle');
