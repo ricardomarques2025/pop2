@@ -389,10 +389,10 @@
   {
     "PROPOSTA": 38,
     "SERVICO": "Pavimentação",
-    "ETAPA": "Projeto",
+    "ETAPA": "Obra",
     "LINK_FUND": "FP_0038",
     "SEI": 202300036007682,
-    "STATUS": "Elaboração de Projeto",
+    "STATUS": "Em Contratação de Obra",
     "CONCLUSAO": null
   },
   {
@@ -416,10 +416,10 @@
   {
     "PROPOSTA": 48,
     "SERVICO": "Duplicação",
-    "ETAPA": "Projeto",
+    "ETAPA": "Obra",
     "LINK_FUND": "FP_0048",
     "SEI": 202500005027007,
-    "STATUS": "Licitação de Projeto",
+    "STATUS": "Obra em andamento",
     "CONCLUSAO": "fev/27"
   },
   {
@@ -434,28 +434,28 @@
   {
     "PROPOSTA": 54,
     "SERVICO": "Restauração",
-    "ETAPA": "Projeto",
+    "ETAPA": "Obra",
     "LINK_FUND": "FP_0054",
     "SEI": 202520920000586,
-    "STATUS": "Elaboração Anteprojeto",
+    "STATUS": "Em Contratação de Obra",
     "CONCLUSAO": "dez/25"
   },
   {
     "PROPOSTA": 55,
     "SERVICO": "Restauração",
-    "ETAPA": "Projeto",
+    "ETAPA": "Obra",
     "LINK_FUND": "FP_0055",
     "SEI": 202520920000585,
-    "STATUS": "Elaboração Anteprojeto",
+    "STATUS": "Em Contratação de Obra",
     "CONCLUSAO": "dez/25"
   },
   {
     "PROPOSTA": 56,
     "SERVICO": "Restauração",
-    "ETAPA": "Projeto",
+    "ETAPA": "Obra",
     "LINK_FUND": "FP_0056",
     "SEI": 202520920000587,
-    "STATUS": "Elaboração Anteprojeto",
+    "STATUS": "Em Contratação de Obra",
     "CONCLUSAO": "fev/27"
   },
   {
