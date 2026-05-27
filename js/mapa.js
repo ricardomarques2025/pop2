@@ -1,4 +1,4 @@
-var map = L.map('map', {
+﻿var map = L.map('map', {
   zoomControl: false,
   zoomSnap: 0.1,
   zoomDelta: 0.1
@@ -6,72 +6,29 @@ var map = L.map('map', {
 var originalCenter = map.getCenter();
 var originalZoom = map.getZoom();
 
-  map.createPane('snvPane');
-  map.getPane('snvPane').style.zIndex = 260;
+function criarPanesMapa() {
+  Object.keys(MAPA_PANES).forEach(function(nomePane) {
+    map.createPane(nomePane);
+    map.getPane(nomePane).style.zIndex = MAPA_PANES[nomePane];
+  });
+}
 
-  map.createPane('sreBasePane');
-  map.getPane('sreBasePane').style.zIndex = 300;
+criarPanesMapa();
 
-    map.createPane('areasUrbanasPane');
-    map.getPane('areasUrbanasPane').style.zIndex = 240;
+function criarMapasBase() {
+  var mapas = {};
+  var mapaInicial = null;
 
-    map.createPane('servicosPane');
-    map.getPane('servicosPane').style.zIndex = 500;
+  Object.keys(MAPAS_BASE_CONFIG).forEach(function(nome) {
+    var config = MAPAS_BASE_CONFIG[nome];
+    var camada = L.tileLayer(config.url, config.opcoes);
+    mapas[nome] = camada;
+    if (config.inicial) mapaInicial = camada;
+  });
 
-    map.createPane('rotulosServicosPane');
-    map.getPane('rotulosServicosPane').style.zIndex = 900;
-
-    map.createPane('localidadesPane');
-    map.getPane('localidadesPane').style.zIndex = 550;
-
-    map.createPane('oaePane');
-    map.getPane('oaePane').style.zIndex = 600;
-
-    map.createPane('anotacoesPane');
-    map.getPane('anotacoesPane').style.zIndex = 850;
-
-    map.createPane('anotacoesTextoPane');
-    map.getPane('anotacoesTextoPane').style.zIndex = 950;
-
-    map.createPane('medicaoPane');
-    map.getPane('medicaoPane').style.zIndex = 875;
-
- const baseClaro = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
-  {
-    attribution: '© OpenStreetMap © CARTO',
-    subdomains: 'abcd',
-    maxZoom: 20
-  }
-);
-
-const basePadrao = L.tileLayer(
-  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution: '© OpenStreetMap contributors',
-    maxZoom: 19
-  }
-);
-
-const baseEscuro = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-  {
-    attribution: '© OpenStreetMap © CARTO',
-    subdomains: 'abcd',
-    maxZoom: 20
-  }
-);
-
-const baseSatelite = L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-  {
-    attribution: 'Tiles © Esri',
-    maxZoom: 19
-  }
-);
-
-// base inicial
-baseClaro.addTo(map);
+  if (mapaInicial) mapaInicial.addTo(map);
+  return mapas;
+}
 
 // --- MÁSCARA DO BRASIL (Brasil menos Goiás) com 50% de transparência ---
 var mascaraBrasilData = null;
@@ -94,12 +51,7 @@ function desenharMascaraBrasil() {
 // --- FIM MÁSCARA ---
 
 // controle para trocar a base
-const mapasBase = {
-  "Claro limpo": baseClaro,
-  "Padrão": basePadrao,
-  "Escuro": baseEscuro,
-  "Satélite": baseSatelite
-};
+const mapasBase = criarMapasBase();
 
 L.control.layers(mapasBase, null, {
   position: 'topleft',
@@ -391,6 +343,7 @@ map.addControl(new NortheArrowControl());
   var areasUrbanasData = null;
   var sreBaseData = null;
   var sreData = null;
+  var obrasPontosData = null;
   var oaeData = null;
   var estadosData = null;
   var snvData = null;
@@ -402,6 +355,7 @@ map.addControl(new NortheArrowControl());
   var sreBaseLayer = null;
   var sreBaseLabelLayer = null;
   var snvLabelLayer = null;
+  var obrasPontosLayer = null;
   var oaeLayer = null;
   var snvLayer = null;
   var obrasLabelLayer = null;
@@ -428,22 +382,9 @@ map.addControl(new NortheArrowControl());
   var anotacaoMedicaoFormaModo = null;
   var legendaAnotacoesAtiva = false;
   var ANOTACOES_STORAGE_KEY = 'mapa_pop2_anotacoes_v1';
-  var estiloAnotacao = {
-    pane: 'anotacoesPane',
-    color: '#e11d48',
-    weight: 4,
-    opacity: 0.95,
-    fillColor: '#f43f5e',
-    fillOpacity: 0.14
-  };
-  var estiloTextoAnotacao = {
-    cor: '#111827',
-    tamanho: 13
-  };
-  var estiloPontoAnotacao = {
-    formato: 'circulo',
-    tamanho: 14
-  };
+  var estiloAnotacao = Object.assign({}, ESTILO_ANOTACAO_PADRAO);
+  var estiloTextoAnotacao = Object.assign({}, ESTILO_TEXTO_ANOTACAO_PADRAO);
+  var estiloPontoAnotacao = Object.assign({}, ESTILO_PONTO_ANOTACAO_PADRAO);
 
   function setStatusAnotacao(texto) {
     var status = document.getElementById('drawStatus');
@@ -1786,6 +1727,8 @@ map.addControl(new NortheArrowControl());
   var obrasFundeinfraPorLink = {};
   var obrasDorData = [];
   var obrasDorPorLink = {};
+  var obrasPontosTabelaData = [];
+  var obrasPontosPorLink = {};
 
     function carregarTabelasFundeinfra() {
     fetch('data/OBRAS_LINHAS_FUNDEINFRA.json')
@@ -1847,8 +1790,34 @@ map.addControl(new NortheArrowControl());
       });
   }
 
+  function carregarTabelaObrasPontos() {
+    fetch('data/OBRAS_PONTOS.json')
+      .then(function(r) { return r.json(); })
+      .then(function(resultado) {
+        obrasPontosTabelaData = Array.isArray(resultado) ? resultado : [];
+        obrasPontosPorLink = {};
+
+        for (var i = 0; i < obrasPontosTabelaData.length; i++) {
+          var item = obrasPontosTabelaData[i];
+          var link = item && item.LINK;
+          if (!link) continue;
+          var chave = String(link);
+          if (!obrasPontosPorLink[chave]) obrasPontosPorLink[chave] = [];
+          obrasPontosPorLink[chave].push(item);
+        }
+
+        console.log('OBRAS_PONTOS carregado:', obrasPontosTabelaData.length);
+        if (municipiosData) preencherPropostas();
+        if (obrasPontosData && municipiosData) aplicarFiltros();
+      })
+      .catch(function(e) {
+        console.warn('Falha ao carregar OBRAS_PONTOS:', e);
+      });
+  }
+
   carregarTabelasFundeinfra();
   carregarTabelasDor();
+  carregarTabelaObrasPontos();
   
   
   function atualizarBotoesBase() {
@@ -1879,6 +1848,10 @@ map.addControl(new NortheArrowControl());
     if (obrasLabelLayer) {
       map.removeLayer(obrasLabelLayer);
       obrasLabelLayer = null;
+    }
+    if (obrasPontosLayer) {
+      map.removeLayer(obrasPontosLayer);
+      obrasPontosLayer = null;
     }
   }
 
@@ -2062,6 +2035,9 @@ map.addControl(new NortheArrowControl());
     if (sreBaseData && sreBaseData.features) {
       sreBaseData.features.forEach(considerarFeature);
     }
+    if (obrasPontosData && obrasPontosData.features) {
+      obrasPontosData.features.forEach(considerarFeature);
+    }
 
     sres.sort(function(a,b){ return String(a).localeCompare(String(b), 'pt-BR'); });
     sres.forEach(function(s) {
@@ -2081,6 +2057,7 @@ map.addControl(new NortheArrowControl());
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
     var sreSelecionado = document.getElementById('sreSelect').value;
     var propostas = [];
+    var municipiosSelecionadosParaPontos = municipiosFiltrados();
 
     select.innerHTML = '<option value="">Todas</option>';
 
@@ -2113,6 +2090,20 @@ map.addControl(new NortheArrowControl());
 
     if (sreData && sreData.features) {
       sreData.features.forEach(considerarFeature);
+    }
+
+    if (obrasPontosData && obrasPontosData.features && servicosAtivos.FUNDEINFRA) {
+      for (var p = 0; p < obrasPontosData.features.length; p++) {
+        var featurePonto = obrasPontosData.features[p];
+        var coordsPonto = featurePonto.geometry && featurePonto.geometry.coordinates;
+        if (coordsPonto && coordsPonto.length >= 2 && !pontoDentroSelecaoMunicipios(coordsPonto[0], coordsPonto[1], municipiosSelecionadosParaPontos)) continue;
+        if (rodoviaSelecionada && nomeRodoviaFeature(featurePonto) !== rodoviaSelecionada) continue;
+        if (sreSelecionado && nomeSREFeature(featurePonto) !== sreSelecionado) continue;
+        var dadosPonto = dadosObrasPontosDaFeature(featurePonto);
+        if (dadosPonto && dadosPonto.PROPOSTA !== null && dadosPonto.PROPOSTA !== undefined && String(dadosPonto.PROPOSTA).trim() !== '') {
+          adicionarUnico(propostas, String(dadosPonto.PROPOSTA));
+        }
+      }
     }
 
     propostas.sort(function(a, b) { return Number(a) - Number(b); });
@@ -2161,6 +2152,8 @@ map.addControl(new NortheArrowControl());
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
 
     var feats = [];
+    var featuresMunicipios = municipiosFiltrados();
+
     function considerarFeature(f, base) {
       var nmMun = valorSeguro(f, 'NM_MUN');
       var rgPlan = valorSeguro(f, 'RG_PLAN');
@@ -2172,10 +2165,9 @@ map.addControl(new NortheArrowControl());
       if (rodoviaSelecionada && rodovia !== rodoviaSelecionada) return;
       if (sreSelecionado && sre !== sreSelecionado) return;
       if (propostaSelecionada) {
-        var dadosFund = dadosFundeinfraDaFeature(f);
-        var dadosDorFiltrados = dadosDorDaFeatureFiltrados(f, '', propostaSelecionada);
-        if ((!dadosFund || String(dadosFund.PROPOSTA) !== String(propostaSelecionada)) &&
-            !dadosDorFiltrados.length) return;
+        var dadosFund = servicosAtivos.FUNDEINFRA ? dadosFundeinfraDaFeatureFiltrado(f, propostaSelecionada) : null;
+        var dadosDorFiltrados = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(f, servicoFiltroAtivo, propostaSelecionada) : [];
+        if (!dadosFund && !dadosDorFiltrados.length) return;
       }
 
       feats.push(f);
@@ -2189,6 +2181,19 @@ map.addControl(new NortheArrowControl());
     }
     if (snvData && snvData.features && rodoviaSelecionada && !propostaSelecionada) {
       for (var k = 0; k < snvData.features.length; k++) considerarFeature(snvData.features[k], true);
+    }
+    if (obrasPontosData && obrasPontosData.features && servicosAtivos.FUNDEINFRA) {
+      for (var p = 0; p < obrasPontosData.features.length; p++) {
+        var featurePonto = obrasPontosData.features[p];
+        var coordsPonto = featurePonto.geometry && featurePonto.geometry.coordinates;
+        if (!coordsPonto || coordsPonto.length < 2) continue;
+        if (!pontoDentroSelecaoMunicipios(coordsPonto[0], coordsPonto[1], featuresMunicipios)) continue;
+        if (rodoviaSelecionada && nomeRodoviaFeature(featurePonto) !== rodoviaSelecionada) continue;
+        if (sreSelecionado && nomeSREFeature(featurePonto) !== sreSelecionado) continue;
+        if (servicoFiltroAtivo) continue;
+        if (propostaSelecionada && !dadosObrasPontosFiltrados(featurePonto, propostaSelecionada).length) continue;
+        feats.push(featurePonto);
+      }
     }
     return feats;
   }
@@ -2220,6 +2225,9 @@ map.addControl(new NortheArrowControl());
     }
     if (snvData && snvData.features) {
       snvData.features.forEach(considerarFeature);
+    }
+    if (obrasPontosData && obrasPontosData.features) {
+      obrasPontosData.features.forEach(considerarFeature);
     }
 
     rodovias.sort(function(a,b){ return String(a).localeCompare(String(b), 'pt-BR'); });
@@ -2515,7 +2523,7 @@ map.addControl(new NortheArrowControl());
 
             // Criar marcador para o ponto
             var marker = L.circleMarker(latlng, {
-              pane: 'localidadesPane',
+              pane: 'rotulosBasePane',
               color: '#000000',
         fillColor: '#ffffff',
         fillOpacity: 1,
@@ -2530,9 +2538,9 @@ map.addControl(new NortheArrowControl());
 
       localidadesLayer.addLayer(marker);
 
-            // Adicionar rótulo baseado no zoom e população
+      // Adicionar rótulo baseado no zoom e população
       var label = L.marker(latlng, {
-        pane: 'localidadesPane',
+        pane: 'rotulosBasePane',
         icon: L.divIcon({
           className: 'localidade-label',
           html: '<div class="label-text">' + nome + '</div>',
@@ -2717,6 +2725,7 @@ map.addControl(new NortheArrowControl());
       : '<div class="sre-escudo-circular">' + texto + '</div>';
 
     return L.marker(latlng, {
+      pane: 'rotulosBasePane',
       icon: L.divIcon({
         className: federal ? 'sre-label-escudo snv-label-escudo' : 'sre-label-escudo',
         html: html,
@@ -3198,6 +3207,15 @@ map.addControl(new NortheArrowControl());
     return obrasFundeinfraPorLink[String(link)] || null;
   }
 
+  function dadosFundeinfraDaFeatureFiltrado(feature, proposta) {
+    var dados = dadosFundeinfraDaFeature(feature);
+    if (!dados) return null;
+    if (!servicosAtivos.FUNDEINFRA) return null;
+    if (servicoFiltroAtivo && dados.SERVICO !== servicoFiltroAtivo) return null;
+    if (proposta && String(dados.PROPOSTA) !== String(proposta)) return null;
+    return dados;
+  }
+
   function dadosDorDaFeature(feature) {
     var dados = dadosDorDaFeatureTodos(feature);
     return dados.length ? dados[0] : null;
@@ -3222,6 +3240,39 @@ map.addControl(new NortheArrowControl());
     }
 
     return filtrados;
+  }
+
+  function dadosObrasPontosDaFeatureTodos(feature) {
+    var link = valorSeguro(feature, 'LINK');
+    if (!link) return [];
+    var dados = obrasPontosPorLink[String(link)] || [];
+    return Array.isArray(dados) ? dados : [dados];
+  }
+
+  function dadosObrasPontosDaFeature(feature) {
+    var dados = dadosObrasPontosDaFeatureTodos(feature);
+    return dados.length ? dados[0] : null;
+  }
+
+  function dadosObrasPontosFiltrados(feature, proposta) {
+    var todos = dadosObrasPontosDaFeatureTodos(feature);
+    var filtrados = [];
+
+    for (var i = 0; i < todos.length; i++) {
+      var item = todos[i];
+      if (!servicosAtivos.FUNDEINFRA) continue;
+      if (proposta && String(item.PROPOSTA) !== String(proposta)) continue;
+      filtrados.push(item);
+    }
+
+    return filtrados;
+  }
+
+  function estiloObraPonto(dados) {
+    var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
+    if (etapa.indexOf('projeto') >= 0) return OBRAS_PONTOS_INFO.Projeto;
+    if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.Obra;
+    return OBRAS_PONTOS_INFO.Padrao;
   }
 
     function estiloDor(dados) {
@@ -3571,8 +3622,9 @@ map.addControl(new NortheArrowControl());
 
     function construirPopupLinha(feature) {
       var p = feature.properties || {};
-      var dadosFund = dadosFundeinfraDaFeature(feature);
-      var dadosDorTodos = dadosDorDaFeatureTodos(feature);
+      var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+      var dadosFund = dadosFundeinfraDaFeatureFiltrado(feature, propostaSelecionada);
+      var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, propostaSelecionada) : [];
 
       var html = '';
       html += '<b>SRE:</b> ' + escapeHtml(p.sre || p.SRE || '') + '<br>';
@@ -3758,19 +3810,21 @@ map.addControl(new NortheArrowControl());
     '</span>';
   }
 
-    function renderizarLegendaServicos(legendasVisiveis) {
+  function renderizarLegendaServicos(legendasVisiveis) {
     var alvo = document.getElementById('legendaServicos'); if(!alvo) return;
     var bloco = document.getElementById('legendaServicos').closest('.bloco');
     alvo.innerHTML = '';
 
     var total = 0;
-    var nomes = Object.keys(legendasVisiveis || {}).sort(function(a, b) {
+    var linhas = (legendasVisiveis && legendasVisiveis.linhas) || legendasVisiveis || {};
+    var pontos = (legendasVisiveis && legendasVisiveis.pontos) || {};
+    var nomes = Object.keys(linhas || {}).sort(function(a, b) {
       return String(a).localeCompare(String(b), 'pt-BR');
     });
 
     for (var i = 0; i < nomes.length; i++) {
       var legenda = nomes[i];
-      var cor = legendasVisiveis[legenda] || '#666666';
+      var cor = linhas[legenda] || '#666666';
       var projeto = String(legenda).toLowerCase().indexOf('projeto') >= 0;
       var item = document.createElement('div');
       item.className = 'legenda-item';
@@ -3791,6 +3845,20 @@ map.addControl(new NortheArrowControl());
       }
 
       alvo.appendChild(item);
+      total++;
+    }
+
+    var ordemPontos = ['Projeto', 'Obra', 'Padrao'];
+    for (var p = 0; p < ordemPontos.length; p++) {
+      var chavePonto = ordemPontos[p];
+      if (!pontos[chavePonto]) continue;
+      var info = OBRAS_PONTOS_INFO[chavePonto];
+      var itemPonto = document.createElement('div');
+      itemPonto.className = 'legenda-item';
+      itemPonto.innerHTML =
+        '<span class="obra-ponto-simbolo legenda-ponto-simbolo ' + info.classe + '"></span>' +
+        '<div class="legenda-texto">' + escapeHtml(info.label) + '</div>';
+      alvo.appendChild(itemPonto);
       total++;
     }
 
@@ -3948,6 +4016,203 @@ map.addControl(new NortheArrowControl());
     }
   }
 
+  function tabelaHtmlObjeto(titulo, dados, classeTitulo) {
+    dados = dados || {};
+    var chaves = Object.keys(dados);
+    if (!chaves.length) return '';
+
+    var html = '<div class="bloco-servico">' +
+      '<div class="titulo-servico ' + (classeTitulo || '') + '">' + escapeHtml(titulo) + '</div>' +
+      '<table class="tabela-servico">';
+
+    for (var i = 0; i < chaves.length; i++) {
+      var chave = chaves[i];
+      html += '<tr><th>' + escapeHtml(chave) + '</th><td>' + escapeHtml(dados[chave]) + '</td></tr>';
+    }
+
+    html += '</table></div>';
+    return html;
+  }
+
+  function construirPopupObraPonto(feature) {
+    var p = feature.properties || {};
+    var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+    var dadosTodos = dadosObrasPontosFiltrados(feature, propostaSelecionada);
+    var html = '';
+
+    html += '<b>SRE:</b> ' + escapeHtml(p.SRE || '') + '<br>';
+    html += '<b>Rodovia:</b> ' + escapeHtml(p.RODOVIA || '') + '<br>';
+    html += '<b>Trecho:</b> ' + escapeHtml(p.Trecho || p.TRECHO || '') + '<br>';
+    html += '<b>Extensão:</b> ' + escapeHtml(p.EXT_M || '') + ' m';
+
+    for (var i = 0; i < dadosTodos.length; i++) {
+      var dados = dadosTodos[i];
+      html += '<br><br><b>— FUNDEINFRA';
+      if (dadosTodos.length > 1) html += ' ' + (i + 1);
+      html += ' —</b><br>';
+      html += '<b>Proposta:</b> ' + escapeHtml(dados.PROPOSTA || '') + '<br>';
+      html += '<b>Etapa:</b> ' + escapeHtml(dados.ETAPA || '') + '<br>';
+      html += '<b>Status:</b> ' + escapeHtml(dados.STATUS || '') + '<br>';
+      html += '<b>SEI:</b> ' + escapeHtml(dados.SEI || '') + '<br>';
+      html += '<b>Conclusão:</b> ' + escapeHtml(dados.CONCLUSAO || '');
+    }
+
+    return html;
+  }
+
+  function atualizarPainelInferiorObraPonto(feature) {
+    var p = feature.properties || {};
+    var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+    var dadosTodos = dadosObrasPontosFiltrados(feature, propostaSelecionada);
+    var html = `
+        <div class="bloco-servico">
+          <div class="titulo-servico titulo-cinza">Dados do ponto</div>
+          <table class="tabela-servico">
+            <tr><th>SRE</th><th>Rodovia</th><th>Trecho</th><th>Extensão</th><th>Link</th></tr>
+            <tr>
+              <td>${escapeHtml(p.SRE || '')}</td>
+              <td>${escapeHtml(p.RODOVIA || '')}</td>
+              <td>${escapeHtml(p.Trecho || p.TRECHO || '')}</td>
+              <td>${escapeHtml(p.EXT_M || '')} m</td>
+              <td>${escapeHtml(p.LINK || '')}</td>
+            </tr>
+          </table>
+        </div>`;
+
+    for (var i = 0; i < dadosTodos.length; i++) {
+      var dados = dadosTodos[i];
+      html += `
+        <div class="bloco-servico">
+          <div class="titulo-servico">Dados FUNDEINFRA</div>
+          <table class="tabela-servico">
+            <tr><th>Proposta</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Origem</th></tr>
+            <tr>
+              <td>${escapeHtml(dados.PROPOSTA || '')}</td>
+              <td>${escapeHtml(dados.ETAPA || '')}</td>
+              <td>${escapeHtml(dados.STATUS || '')}</td>
+              <td>${escapeHtml(dados.SEI || '')}</td>
+              <td>${escapeHtml(dados.CONCLUSAO || '')}</td>
+              <td>${escapeHtml(dados.ORIGEM || '')}</td>
+            </tr>
+          </table>
+        </div>`;
+    }
+
+    document.getElementById('painelTabelaConteudo').innerHTML = html || '<b>Nenhum dado encontrado</b>';
+  }
+
+  function criarIconeObraPonto(dados) {
+    var estilo = estiloObraPonto(dados);
+    return L.divIcon({
+      className: 'obra-ponto-icon',
+      html: '<span class="obra-ponto-simbolo ' + estilo.classe + '"></span>',
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+      popupAnchor: [0, -10]
+    });
+  }
+
+  function pontoEmAnel(lon, lat, anel) {
+    var dentro = false;
+    for (var i = 0, j = anel.length - 1; i < anel.length; j = i++) {
+      var xi = anel[i][0], yi = anel[i][1];
+      var xj = anel[j][0], yj = anel[j][1];
+      var cruza = ((yi > lat) !== (yj > lat)) &&
+        (lon < (xj - xi) * (lat - yi) / ((yj - yi) || 1e-12) + xi);
+      if (cruza) dentro = !dentro;
+    }
+    return dentro;
+  }
+
+  function pontoEmPoligonoFeature(lon, lat, feature) {
+    var geom = feature && feature.geometry;
+    if (!geom || !geom.coordinates) return false;
+    var poligonos = geom.type === 'Polygon' ? [geom.coordinates] : geom.coordinates;
+
+    for (var i = 0; i < poligonos.length; i++) {
+      var poligono = poligonos[i];
+      if (!poligono || !poligono.length) continue;
+      if (!pontoEmAnel(lon, lat, poligono[0])) continue;
+
+      var emBuraco = false;
+      for (var j = 1; j < poligono.length; j++) {
+        if (pontoEmAnel(lon, lat, poligono[j])) {
+          emBuraco = true;
+          break;
+        }
+      }
+      if (!emBuraco) return true;
+    }
+
+    return false;
+  }
+
+  function pontoDentroSelecaoMunicipios(lon, lat, featuresMunicipios) {
+    if (!featuresMunicipios || !featuresMunicipios.length) return true;
+    if (municipiosData && featuresMunicipios.length >= municipiosData.features.length) return true;
+
+    for (var i = 0; i < featuresMunicipios.length; i++) {
+      if (pontoEmPoligonoFeature(lon, lat, featuresMunicipios[i])) return true;
+    }
+
+    return false;
+  }
+
+  function desenharObrasPontos(rodoviaSelecionada, sreSelecionado, propostaSelecionada, featuresMunicipios) {
+    if (obrasPontosLayer) {
+      map.removeLayer(obrasPontosLayer);
+      obrasPontosLayer = null;
+    }
+
+    var tiposVisiveis = {};
+    var total = 0;
+
+    if (!obrasPontosData || !obrasPontosData.features || !servicosAtivos.FUNDEINFRA) {
+      return { total: total, legenda: tiposVisiveis };
+    }
+
+    obrasPontosLayer = L.layerGroup();
+
+    for (var i = 0; i < obrasPontosData.features.length; i++) {
+      var feature = obrasPontosData.features[i];
+      var p = feature.properties || {};
+      var dadosFiltrados = dadosObrasPontosFiltrados(feature, propostaSelecionada);
+      if (!dadosFiltrados.length) continue;
+      if (rodoviaSelecionada && nomeRodoviaFeature(feature) !== rodoviaSelecionada) continue;
+      if (sreSelecionado && nomeSREFeature(feature) !== sreSelecionado) continue;
+      if (servicoFiltroAtivo) continue;
+
+      var coords = feature.geometry && feature.geometry.coordinates;
+      if (!coords || coords.length < 2) continue;
+      if (!pontoDentroSelecaoMunicipios(coords[0], coords[1], featuresMunicipios)) continue;
+
+      var dados = dadosFiltrados[0];
+      var estilo = estiloObraPonto(dados);
+      var tipoLegenda = estilo === OBRAS_PONTOS_INFO.Projeto ? 'Projeto' :
+        estilo === OBRAS_PONTOS_INFO.Obra ? 'Obra' : 'Padrao';
+      tiposVisiveis[tipoLegenda] = true;
+
+      var marker = L.marker([coords[1], coords[0]], {
+        pane: 'oaePane',
+        icon: criarIconeObraPonto(dados),
+        title: (p.Trecho || p.TRECHO || '') + ' - ' + ((dados && dados.ETAPA) || '')
+      });
+
+      marker.bindPopup(construirPopupObraPonto(feature));
+      marker.on('click', function(f) {
+        return function() {
+          atualizarPainelInferiorObraPonto(f);
+        };
+      }(feature));
+
+      obrasPontosLayer.addLayer(marker);
+      total++;
+    }
+
+    if (total) obrasPontosLayer.addTo(map);
+    return { total: total, legenda: tiposVisiveis };
+  }
+
     function desenharLinhasEPontos(featuresMunicipios) {
     limparCamadasRegras();
 
@@ -3962,6 +4227,8 @@ map.addControl(new NortheArrowControl());
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
     var sreSelecionado = document.getElementById('sreSelect').value;
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+    var resultadoObrasPontos = desenharObrasPontos(rodoviaSelecionada, sreSelecionado, propostaSelecionada, featuresMunicipios);
+    var totalObrasPontos = resultadoObrasPontos.total;
 
         var linhasBase = [];
     var linksFundIncluidos = {};
@@ -4102,9 +4369,14 @@ map.addControl(new NortheArrowControl());
       if (valorSeguro(linhasBase[ci], 'LINK_DOR')) countDor++;
     }
     document.getElementById('countOAE').textContent = countFund;
+    var contadorObrasPontos = document.getElementById('countObrasPontos');
+    if (contadorObrasPontos) contadorObrasPontos.textContent = totalObrasPontos;
     document.getElementById('countDor').textContent = countDor;
 
-        renderizarLegendaServicos(servicosVisiveis);
+        renderizarLegendaServicos({
+      linhas: servicosVisiveis,
+      pontos: resultadoObrasPontos.legenda
+    });
     renderizarLegendaDor(servicosVisiveisDor);
     renderizarLegendaOAE({});
     renderizarLegendaRodEst(situacoesEstVisiveis);
@@ -4113,8 +4385,9 @@ map.addControl(new NortheArrowControl());
 
     function atualizarPainelInferior(feature) {
       var p = feature.properties || {};
-      var dadosFund = dadosFundeinfraDaFeature(feature);
-      var dadosDorTodos = dadosDorDaFeatureTodos(feature);
+      var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+      var dadosFund = dadosFundeinfraDaFeatureFiltrado(feature, propostaSelecionada);
+      var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, propostaSelecionada) : [];
 
       var html = `
         <div class="bloco-servico">
@@ -4320,9 +4593,11 @@ map.addControl(new NortheArrowControl());
     desenharEstados();
     desenharMunicipiosBase(municipiosFiltrados());
 
-        document.getElementById('countMunicipios').textContent = municipiosFiltrados().length;
+    document.getElementById('countMunicipios').textContent = municipiosFiltrados().length;
     document.getElementById('countLinhas').textContent = '0';
     document.getElementById('countOAE').textContent = '0';
+    var contadorObrasPontosOff = document.getElementById('countObrasPontos');
+    if (contadorObrasPontosOff) contadorObrasPontosOff.textContent = '0';
     document.getElementById('countDor').textContent = '0';
 
     atualizarTituloTopBar();
@@ -4828,631 +5103,6 @@ map.addControl(new NortheArrowControl());
     });
   }
 
-  // ===== IMPRESSAO / PDF =====
-
-  var FORMATOS_IMPRESSAO = {
-    A4: { largura: 210, altura: 297 },
-    A3: { largura: 297, altura: 420 },
-    A2: { largura: 420, altura: 594 },
-    A1: { largura: 594, altura: 841 },
-    A0: { largura: 841, altura: 1189 }
-  };
-
-  var estadoMapaAntesImpressao = null;
-
-  function dimensoesPapelImpressao() {
-    var formato = document.getElementById('printFormato').value || 'A4';
-    var orientacao = document.getElementById('printOrientacao').value || 'landscape';
-
-    if (formato === 'personalizado') {
-      var larguraPersonalizada = parseFloat(document.getElementById('printLarguraPersonalizada').value);
-      var alturaPersonalizada = parseFloat(document.getElementById('printAlturaPersonalizada').value);
-      if (!isFinite(larguraPersonalizada)) larguraPersonalizada = 1000;
-      if (!isFinite(alturaPersonalizada)) alturaPersonalizada = 700;
-
-      return {
-        formato: formato,
-        orientacao: orientacao,
-        largura: Math.max(50, Math.min(3000, larguraPersonalizada)),
-        altura: Math.max(50, Math.min(3000, alturaPersonalizada))
-      };
-    }
-
-    var base = FORMATOS_IMPRESSAO[formato] || FORMATOS_IMPRESSAO.A4;
-    var largura = orientacao === 'landscape' ? base.altura : base.largura;
-    var altura = orientacao === 'landscape' ? base.largura : base.altura;
-
-    return {
-      formato: formato,
-      orientacao: orientacao,
-      largura: largura,
-      altura: altura
-    };
-  }
-
-  function formatoImpressaoGrande(dimensoes) {
-    if (!dimensoes) dimensoes = dimensoesPapelImpressao();
-    var ladoMenor = Math.min(dimensoes.largura, dimensoes.altura);
-    var ladoMaior = Math.max(dimensoes.largura, dimensoes.altura);
-    return ladoMenor >= FORMATOS_IMPRESSAO.A0.largura &&
-      ladoMaior >= FORMATOS_IMPRESSAO.A0.altura;
-  }
-
-  function formatoAte(dimensoes, formato) {
-    var base = FORMATOS_IMPRESSAO[formato];
-    if (!base) return false;
-    var ladoMenor = Math.min(dimensoes.largura, dimensoes.altura);
-    var ladoMaior = Math.max(dimensoes.largura, dimensoes.altura);
-    return ladoMenor <= base.largura && ladoMaior <= base.altura;
-  }
-
-  function tituloComCaixaImpressao(dimensoes) {
-    return dimensoes.formato === 'A4' ||
-      dimensoes.formato === 'A3' ||
-      (dimensoes.formato === 'personalizado' && formatoAte(dimensoes, 'A3'));
-  }
-
-  function tituloAmpliadoImpressao(dimensoes) {
-    return formatoAte(dimensoes, 'A1');
-  }
-
-  function legendaAmpliadaImpressao(dimensoes) {
-    return dimensoes.formato === 'A4' ||
-      dimensoes.formato === 'A3' ||
-      dimensoes.formato === 'A2' ||
-      dimensoes.formato === 'A1';
-  }
-
-  function atualizarBotaoRotulosObrasPrint() {
-    var botao = document.getElementById('toggleRotulosObrasPrint');
-    if (!botao) return;
-
-    botao.classList.toggle('ativo-filtro', rotulosObrasPrintAtivos);
-    botao.textContent = rotulosObrasPrintAtivos ? 'Rótulos das obras: ligados' : 'Rótulos das obras: desligados';
-  }
-
-  function aplicarPadraoRotulosObrasPrint() {
-    rotulosObrasPrintAtivos = formatoImpressaoGrande(dimensoesPapelImpressao());
-    atualizarBotaoRotulosObrasPrint();
-    atualizarVisibilidadeRotulosObras();
-  }
-
-  function atualizarEstiloPaginaImpressao() {
-    var d = dimensoesPapelImpressao();
-    var margem = parseFloat(document.getElementById('printMargem').value);
-    if (!isFinite(margem)) margem = 12;
-    margem = Math.max(5, Math.min(40, margem));
-
-    document.documentElement.style.setProperty('--print-page-width', d.largura + 'mm');
-    document.documentElement.style.setProperty('--print-page-height', d.altura + 'mm');
-    document.documentElement.style.setProperty('--print-margin', margem + 'mm');
-    var larguraBaseA4 = d.orientacao === 'landscape' ? FORMATOS_IMPRESSAO.A4.altura : FORMATOS_IMPRESSAO.A4.largura;
-    var escalaTitulo = d.largura / larguraBaseA4;
-    var fatorTitulo = tituloAmpliadoImpressao(d) ? 1.2 : 1;
-    document.documentElement.style.setProperty('--print-title-font-size', (13 * escalaTitulo * fatorTitulo).toFixed(2) + 'pt');
-    var escalaLegenda = d.largura <= larguraBaseA4 ? 0.6 : 1;
-    if (legendaAmpliadaImpressao(d)) escalaLegenda = 0.9;
-    document.documentElement.style.setProperty('--print-legend-scale', escalaLegenda.toFixed(2));
-
-    var style = document.getElementById('printPageStyle');
-    if (!style) {
-      style = document.createElement('style');
-      style.id = 'printPageStyle';
-      document.head.appendChild(style);
-    }
-    style.textContent = '@page { size: ' + d.largura + 'mm ' + d.altura + 'mm; margin: 0; }';
-
-    return d;
-  }
-
-  function garantirElementosImpressao() {
-    var mapWrap = document.getElementById('map-wrap');
-    if (!mapWrap) return;
-
-    if (!document.getElementById('printTitleBox')) {
-      var titulo = document.createElement('div');
-      titulo.id = 'printTitleBox';
-      mapWrap.appendChild(titulo);
-    }
-
-    if (!document.getElementById('printLegendBox')) {
-      var legenda = document.createElement('div');
-      legenda.id = 'printLegendBox';
-      mapWrap.appendChild(legenda);
-    }
-
-    if (!document.getElementById('printScaleText')) {
-      var escala = document.createElement('div');
-      escala.id = 'printScaleText';
-      mapWrap.appendChild(escala);
-    }
-
-    if (!document.getElementById('printServiceTableBox')) {
-      var tabela = document.createElement('div');
-      tabela.id = 'printServiceTableBox';
-      mapWrap.appendChild(tabela);
-    }
-
-    if (!document.getElementById('printStampBox')) {
-      var carimbo = document.createElement('div');
-      carimbo.id = 'printStampBox';
-      carimbo.innerHTML =
-        '<img src="data/Carimbo_POP2.png" alt="Carimbo do mapa">' +
-        '<div class="print-stamp-info">' +
-          '<div id="printStampServico" class="print-stamp-servico"></div>' +
-          '<div id="printStampData" class="print-stamp-data"></div>' +
-        '</div>';
-      mapWrap.appendChild(carimbo);
-    }
-  }
-
-  function atualizarTituloImpressao() {
-    var destino = document.getElementById('printTitleBox');
-    if (!destino) return;
-
-    var tituloCustom = document.getElementById('printTituloCustom');
-    if (tituloCustom && tituloCustom.value.trim()) {
-      destino.textContent = tituloCustom.value.trim();
-      return;
-    }
-
-    var titulo = document.querySelector('.topbar-left strong');
-    var complemento = document.querySelector('.topbar-left span');
-    var area = document.querySelector('.topbar-right span');
-    var partes = [];
-
-    if (titulo && titulo.textContent.trim()) partes.push(titulo.textContent.trim());
-    if (complemento && complemento.textContent.trim()) {
-      partes.push(complemento.textContent.trim().replace(/^\s*-\s*/, ''));
-    }
-    if (area && area.textContent.trim() && area.textContent.trim() !== 'ESTADO DE GOIÁS') {
-      partes.push(area.textContent.trim());
-    }
-
-    destino.textContent = partes.join(' - ');
-  }
-
-  function textoMesAnoAtualImpressao() {
-    var meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-    var data = new Date();
-    return meses[data.getMonth()] + ' / ' + data.getFullYear();
-  }
-
-  function atualizarCarimboImpressao(dimensoes) {
-    var carimbo = document.getElementById('printStampBox');
-    if (!carimbo) return;
-
-    if (!formatoImpressaoGrande(dimensoes)) {
-      carimbo.style.display = 'none';
-      return;
-    }
-
-    var servico = document.getElementById('printStampServico');
-    var data = document.getElementById('printStampData');
-    var nomesServico = [];
-
-    if (servicosAtivos.DOR) nomesServico.push('OBRAS');
-    if (servicosAtivos.FUNDEINFRA) nomesServico.push('FUNDEINFRA');
-
-    if (servico) servico.textContent = nomesServico.join(' / ');
-    if (data) data.textContent = textoMesAnoAtualImpressao();
-    carimbo.style.display = 'block';
-  }
-
-  function atualizarLegendaImpressao() {
-    var destino = document.getElementById('printLegendBox');
-    var origem = document.getElementById('sidebar-right-content');
-    if (!destino || !origem) return;
-
-    destino.innerHTML = '';
-    var blocos = origem.querySelectorAll('.bloco');
-    for (var i = 0; i < blocos.length; i++) {
-      var bloco = blocos[i];
-      if (bloco.style.display === 'none') continue;
-      if (!bloco.textContent.trim()) continue;
-
-      var clone = bloco.cloneNode(true);
-      clone.removeAttribute('id');
-      var elementosComId = clone.querySelectorAll('[id]');
-      for (var j = 0; j < elementosComId.length; j++) {
-        elementosComId[j].removeAttribute('id');
-      }
-      destino.appendChild(clone);
-    }
-
-    if (localidadeFiltroAtivo && localidadesLayer && map.hasLayer(localidadesLayer)) {
-      var blocoLocalidade = document.createElement('div');
-      blocoLocalidade.className = 'bloco legenda-categoria';
-      blocoLocalidade.innerHTML =
-        '<div class="subtitulo">Localidades</div>' +
-        '<div class="legenda-item">' +
-          '<span class="legenda-localidade-simbolo"></span>' +
-          '<div class="legenda-texto"><b>Localidade</b></div>' +
-        '</div>';
-      destino.appendChild(blocoLocalidade);
-    }
-
-    destino.style.display = destino.children.length ? 'block' : 'none';
-  }
-
-  function atualizarTabelaServicosImpressao(dimensoes) {
-    var destino = document.getElementById('printServiceTableBox');
-    if (!destino) return;
-
-    destino.innerHTML = '';
-
-    if (!formatoImpressaoGrande(dimensoes)) {
-      destino.style.display = 'none';
-      return;
-    }
-
-    var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
-    var sreSelecionado = document.getElementById('sreSelect').value;
-    var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
-    var linhasFund = [];
-    var linhasDor = [];
-    var vistosFund = {};
-    var vistosDor = {};
-
-    function valorTabela(valor) {
-      return escapeHtml(valor === null || valor === undefined ? '' : valor);
-    }
-
-    function linhaTabela(dados, feature) {
-      var p = feature.properties || {};
-      return '<tr>' +
-        '<td>' + valorTabela(dados.PROPOSTA) + '</td>' +
-        '<td>' + valorTabela(p.RODOVIA || p.rodovia) + '</td>' +
-        '<td>' + valorTabela(p.TRECHO || p.trecho_go) + '</td>' +
-        '<td>' + valorTabela(p.EXT_KM || p.ext) + '</td>' +
-        '<td>' + valorTabela(dados.SERVICO) + '</td>' +
-        '<td>' + valorTabela(dados.ETAPA) + '</td>' +
-        '<td>' + valorTabela(dados.STATUS) + '</td>' +
-        '<td>' + valorTabela(dados.SEI) + '</td>' +
-        '<td>' + valorTabela(dados.CONCLUSAO) + '</td>' +
-      '</tr>';
-    }
-
-    function blocoTabela(titulo, linhas) {
-      if (!linhas.length) return '';
-      return '<div class="bloco-servico">' +
-        '<div class="titulo-servico">' + escapeHtml(titulo) + '</div>' +
-        '<table class="tabela-servico">' +
-          '<tr><th>Proposta</th><th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th></tr>' +
-          linhas.join('') +
-        '</table>' +
-      '</div>';
-    }
-
-    function compararProposta(a, b) {
-      var propostaA = a && a.PROPOSTA;
-      var propostaB = b && b.PROPOSTA;
-      var numeroA = Number(propostaA);
-      var numeroB = Number(propostaB);
-
-      if (isFinite(numeroA) && isFinite(numeroB)) return numeroA - numeroB;
-      return String(propostaA || '').localeCompare(String(propostaB || ''), 'pt-BR', { numeric: true });
-    }
-
-    if (sreData && sreData.features) {
-      for (var i = 0; i < sreData.features.length; i++) {
-        var feature = sreData.features[i];
-        if (rodoviaSelecionada && nomeRodoviaFeature(feature) !== rodoviaSelecionada) continue;
-        if (sreSelecionado && nomeSREFeature(feature) !== sreSelecionado) continue;
-
-        if (servicosAtivos.FUNDEINFRA) {
-          var linkFund = valorSeguro(feature, 'LINK_FUND');
-          var dadosFund = dadosFundeinfraDaFeature(feature);
-          if (linkFund && dadosFund) {
-            if (!servicoFiltroAtivo || dadosFund.SERVICO === servicoFiltroAtivo) {
-              if (!propostaSelecionada || String(dadosFund.PROPOSTA) === String(propostaSelecionada)) {
-                var chaveFund = String(linkFund) + '|' + String(dadosFund.PROPOSTA || '');
-                if (!vistosFund[chaveFund]) {
-                  linhasFund.push({ dados: dadosFund, feature: feature });
-                  vistosFund[chaveFund] = true;
-                }
-              }
-            }
-          }
-        }
-
-        if (servicosAtivos.DOR) {
-          var linkDor = valorSeguro(feature, 'LINK_DOR');
-          if (linkDor) {
-            var dadosDor = dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, propostaSelecionada);
-            for (var j = 0; j < dadosDor.length; j++) {
-              var itemDor = dadosDor[j];
-              var chaveDor = String(linkDor) + '|' + String(itemDor.PROPOSTA || '') + '|' + String(itemDor.SERVICO || '') + '|' + String(itemDor.SEI || '');
-              if (!vistosDor[chaveDor]) {
-                linhasDor.push({ dados: itemDor, feature: feature });
-                vistosDor[chaveDor] = true;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    linhasFund.sort(function(a, b) { return compararProposta(a.dados, b.dados); });
-    linhasDor.sort(function(a, b) { return compararProposta(a.dados, b.dados); });
-
-    destino.innerHTML =
-      blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
-      blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature); }));
-    destino.style.display = destino.children.length ? 'block' : 'none';
-  }
-
-  function estenderBoundsComLayer(bounds, layer) {
-    if (!layer || !map.hasLayer(layer)) return bounds;
-
-    if (typeof layer.getBounds === 'function') {
-      var lb = layer.getBounds();
-      if (lb && lb.isValid && lb.isValid()) {
-        return bounds ? bounds.extend(lb) : L.latLngBounds(lb.getSouthWest(), lb.getNorthEast());
-      }
-    }
-
-    if (typeof layer.getLatLng === 'function') {
-      var latlng = layer.getLatLng();
-      return bounds ? bounds.extend(latlng) : L.latLngBounds(latlng, latlng);
-    }
-
-    if (typeof layer.eachLayer === 'function') {
-      layer.eachLayer(function(subLayer) {
-        bounds = estenderBoundsComLayer(bounds, subLayer);
-      });
-    }
-
-    return bounds;
-  }
-
-  function obterBoundsGoiasImpressao() {
-    if (municipiosData && municipiosData.features && municipiosData.features.length) {
-      var boundsGoias = L.geoJSON(municipiosData).getBounds();
-      if (boundsGoias && boundsGoias.isValid && boundsGoias.isValid()) return boundsGoias;
-    }
-
-    return map.getBounds();
-  }
-
-  function lerDenominadorEscala() {
-    var campo = document.getElementById('printEscalaPersonalizada');
-    var texto = campo ? campo.value : '';
-    var somenteDigitos = String(texto).replace(/[^\d]/g, '');
-    var denominador = parseInt(somenteDigitos, 10);
-
-    if (!isFinite(denominador) || denominador <= 0) denominador = 1000000;
-    if (campo) campo.value = String(denominador).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-
-    return denominador;
-  }
-
-  function textoEscalaPersonalizada(denominador) {
-    return 'Escala 1:' + String(denominador).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  }
-
-  function calcularZoomPorEscala(denominador, latCentro) {
-    var metrosPorPixelPapel = 0.0254 / 96;
-    var resolucaoAlvo = denominador * metrosPorPixelPapel;
-    var latitude = Math.max(-85, Math.min(85, latCentro || 0));
-    var resolucaoZoomZero = 156543.03392804097 * Math.cos(latitude * Math.PI / 180);
-    var zoom = Math.log(resolucaoZoomZero / resolucaoAlvo) / Math.LN2;
-    var minZoom = typeof map.getMinZoom === 'function' ? map.getMinZoom() : 0;
-    var maxZoom = typeof map.getMaxZoom === 'function' ? map.getMaxZoom() : 20;
-    if (!isFinite(minZoom)) minZoom = 0;
-    if (!isFinite(maxZoom)) maxZoom = 20;
-
-    return Math.max(minZoom, Math.min(maxZoom, zoom));
-  }
-
-  function aplicarEscalaPersonalizadaNoMapa() {
-    var boundsGoias = obterBoundsGoiasImpressao();
-    if (!boundsGoias || !boundsGoias.isValid || !boundsGoias.isValid()) return null;
-
-    var centroGoias = boundsGoias.getCenter();
-    var denominador = lerDenominadorEscala();
-    map.options.zoomSnap = 0;
-    map.invalidateSize(true);
-    map.setView(centroGoias, calcularZoomPorEscala(denominador, centroGoias.lat), { animate: false });
-    map.panTo(centroGoias, { animate: false });
-
-    return denominador;
-  }
-
-  function deslocarMapaParaTabelaA0(dimensoes) {
-    if (!formatoImpressaoGrande(dimensoes)) return;
-    var tabela = document.getElementById('printServiceTableBox');
-    if (!tabela || tabela.style.display === 'none') return;
-
-    var larguraTabela = tabela.offsetWidth || 0;
-    if (!larguraTabela) return;
-    map.panBy([larguraTabela * 0.42, 0], { animate: false });
-  }
-
-  function ajustarMapaParaImpressao(dimensoes) {
-    var modoEscala = document.getElementById('printEscala').value || 'tela';
-    var textoEscala = document.getElementById('printScaleText');
-
-    map.invalidateSize(true);
-
-    if (modoEscala === 'personalizada') {
-      var denominador = aplicarEscalaPersonalizadaNoMapa();
-      if (textoEscala) {
-        if (denominador) {
-          textoEscala.textContent = textoEscalaPersonalizada(denominador);
-          textoEscala.style.display = '';
-        } else {
-          textoEscala.textContent = '';
-          textoEscala.style.display = 'none';
-        }
-      }
-      deslocarMapaParaTabelaA0(dimensoes);
-      return;
-    }
-
-    if (textoEscala) {
-      textoEscala.textContent = '';
-      textoEscala.style.display = 'none';
-    }
-    map.setView(estadoMapaAntesImpressao.center, estadoMapaAntesImpressao.zoom, { animate: false });
-    deslocarMapaParaTabelaA0(dimensoes);
-  }
-
-  function atualizarCampoEscalaPersonalizada() {
-    var modo = document.getElementById('printEscala');
-    var label = document.getElementById('printEscalaPersonalizadaLabel');
-    var campo = document.getElementById('printEscalaPersonalizada');
-    var mostrar = modo && modo.value === 'personalizada';
-
-    if (label) label.style.display = mostrar ? '' : 'none';
-    if (campo) campo.style.display = mostrar ? '' : 'none';
-
-    if (mostrar) aplicarEscalaPersonalizadaNoMapa();
-  }
-
-  function atualizarCamposPapelPersonalizado() {
-    var formato = document.getElementById('printFormato');
-    var camposPersonalizados = document.getElementById('printPapelPersonalizadoCampos');
-    var mostrar = formato && formato.value === 'personalizado';
-
-    if (camposPersonalizados) {
-      camposPersonalizados.hidden = !mostrar;
-      camposPersonalizados.style.display = mostrar ? 'block' : 'none';
-    }
-  }
-
-  function sairModoImpressao() {
-    document.body.classList.remove('preparando-impressao');
-    document.body.classList.remove('modo-impressao');
-    document.body.classList.remove('print-formato-a0');
-    document.body.classList.remove('print-titulo-com-caixa');
-    atualizarVisibilidadeRotulosObras();
-    var carimbo = document.getElementById('printStampBox');
-    if (carimbo) carimbo.style.display = 'none';
-
-    if (estadoMapaAntesImpressao) {
-      map.options.zoomSnap = estadoMapaAntesImpressao.zoomSnap;
-      map.setView(estadoMapaAntesImpressao.center, estadoMapaAntesImpressao.zoom, { animate: false });
-      estadoMapaAntesImpressao = null;
-    }
-
-    setTimeout(function() {
-      map.invalidateSize(true);
-    }, 100);
-  }
-
-  function imprimirMapaAtual() {
-    garantirElementosImpressao();
-
-    estadoMapaAntesImpressao = {
-      center: map.getCenter(),
-      zoom: map.getZoom(),
-      zoomSnap: map.options.zoomSnap
-    };
-
-    var dimensoes = atualizarEstiloPaginaImpressao();
-
-    document.body.classList.add('modo-impressao');
-    document.body.classList.add('preparando-impressao');
-    document.body.classList.toggle('print-formato-a0', formatoImpressaoGrande(dimensoes));
-    document.body.classList.toggle('print-titulo-com-caixa', tituloComCaixaImpressao(dimensoes));
-    atualizarVisibilidadeRotulosObras();
-
-    atualizarLegendaImpressao();
-    atualizarTituloImpressao();
-    atualizarCarimboImpressao(dimensoes);
-    atualizarTabelaServicosImpressao(dimensoes);
-
-    setTimeout(function() {
-      ajustarMapaParaImpressao(dimensoes);
-      atualizarVisibilidadeRotulosObras();
-      setTimeout(function() {
-        map.invalidateSize(true);
-        ajustarMapaParaImpressao(dimensoes);
-        atualizarVisibilidadeRotulosObras();
-        setTimeout(function() {
-          window.print();
-        }, 450);
-      }, 250);
-    }, 150);
-  }
-
-  var botaoPrintMapa = document.getElementById('printMapa');
-  if (botaoPrintMapa) {
-    botaoPrintMapa.addEventListener('click', imprimirMapaAtual);
-  }
-
-  var seletorPrintEscala = document.getElementById('printEscala');
-  if (seletorPrintEscala) {
-    seletorPrintEscala.addEventListener('change', atualizarCampoEscalaPersonalizada);
-    atualizarCampoEscalaPersonalizada();
-  }
-
-  var campoPrintEscalaPersonalizada = document.getElementById('printEscalaPersonalizada');
-  if (campoPrintEscalaPersonalizada) {
-    campoPrintEscalaPersonalizada.addEventListener('blur', function() {
-      if (document.getElementById('printEscala').value === 'personalizada') {
-        aplicarEscalaPersonalizadaNoMapa();
-      } else {
-        lerDenominadorEscala();
-      }
-    });
-
-    campoPrintEscalaPersonalizada.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        if (document.getElementById('printEscala').value === 'personalizada') {
-          aplicarEscalaPersonalizadaNoMapa();
-        } else {
-          lerDenominadorEscala();
-        }
-      }
-    });
-  }
-
-  var controleDensidadeRotulos = document.getElementById('rotulosDensidade');
-  if (controleDensidadeRotulos) {
-    densidadeRotulos = Number(controleDensidadeRotulos.value) || 0;
-    atualizarTextoDensidadeRotulos();
-    controleDensidadeRotulos.addEventListener('input', function() {
-      densidadeRotulos = Number(this.value) || 0;
-      atualizarTextoDensidadeRotulos();
-      atualizarVisibilidadeRotulos();
-      atualizarVisibilidadeRotulosSRE();
-      atualizarVisibilidadeRotulosObras();
-    });
-  }
-
-  var botaoRotulosObrasPrint = document.getElementById('toggleRotulosObrasPrint');
-  if (botaoRotulosObrasPrint) {
-    botaoRotulosObrasPrint.addEventListener('click', function() {
-      rotulosObrasPrintAtivos = !rotulosObrasPrintAtivos;
-      atualizarBotaoRotulosObrasPrint();
-      atualizarVisibilidadeRotulosObras();
-    });
-  }
-
-  var seletorPrintFormato = document.getElementById('printFormato');
-  if (seletorPrintFormato) {
-    seletorPrintFormato.addEventListener('change', function() {
-      atualizarCamposPapelPersonalizado();
-      aplicarPadraoRotulosObrasPrint();
-    });
-    atualizarCamposPapelPersonalizado();
-  }
-
-  var printLarguraPersonalizada = document.getElementById('printLarguraPersonalizada');
-  var printAlturaPersonalizada = document.getElementById('printAlturaPersonalizada');
-  if (printLarguraPersonalizada) {
-    printLarguraPersonalizada.addEventListener('change', aplicarPadraoRotulosObrasPrint);
-  }
-  if (printAlturaPersonalizada) {
-    printAlturaPersonalizada.addEventListener('change', aplicarPadraoRotulosObrasPrint);
-  }
-  aplicarPadraoRotulosObrasPrint();
-
-  window.addEventListener('afterprint', sairModoImpressao);
-
   function fetchGeoJSON(nome, obrigatorio) {
     return fetch(nome)
       .then(function(r) {
@@ -5481,7 +5131,7 @@ map.addControl(new NortheArrowControl());
     fetchGeoJSON('data/areas_urbanas.geojson', false),
     fetchGeoJSON('data/sre_base.geojson', false),
     fetchGeoJSON('data/obras_linhas.geojson', true),
-    Promise.resolve(null),
+    fetchGeoJSON('data/obras_pontos.geojson', false),
     fetchGeoJSON('data/snv_goias.geojson', false),
     fetchGeoJSON('data/estados.geojson', false),
     fetchGeoJSON('data/mascara_brasil.geojson', false)
@@ -5491,7 +5141,8 @@ map.addControl(new NortheArrowControl());
     areasUrbanasData = resultado[2];
     sreBaseData = resultado[3];
     sreData = resultado[4];
-    oaeData = resultado[5];
+    obrasPontosData = resultado[5];
+    oaeData = null;
     snvData = resultado[6];
     estadosData = resultado[7];
     mascaraBrasilData = resultado[8];
@@ -5511,3 +5162,4 @@ map.addControl(new NortheArrowControl());
       '\nDetalhe: ' + (e.message || e)
     );
   });
+

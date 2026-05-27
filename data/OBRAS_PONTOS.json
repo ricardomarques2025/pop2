@@ -1,0 +1,146 @@
+[
+  {
+    "PROPOSTA": 61,
+    "ETAPA": "Projeto",
+    "LINK": "FP_0061_OAE_01",
+    "STATUS": "Elaboração Anteprojeto",
+    "SEI": 202520920000573,
+    "CONCLUSAO": "Não Informado",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 46,
+    "ETAPA": "Obra",
+    "LINK": "FO_0046_OAE_01",
+    "STATUS": "Obra em andamento",
+    "SEI": 202200036001873,
+    "CONCLUSAO": "dez/26",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 43,
+    "ETAPA": "Projeto",
+    "LINK": "FO_0043_OAE_01",
+    "STATUS": "Licitação de Projeto",
+    "SEI": 202500005023706,
+    "CONCLUSAO": "Não Informado",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 28,
+    "ETAPA": "Obra",
+    "LINK": "FO_0028_OAE_01",
+    "STATUS": "Obra em andamento",
+    "SEI": 202300036015414,
+    "CONCLUSAO": "out/25",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 37,
+    "ETAPA": "Obra",
+    "LINK": "FO_0037_OAE_01",
+    "STATUS": "Obra em andamento",
+    "SEI": 202500036007137,
+    "CONCLUSAO": "mai/29",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 28,
+    "ETAPA": "Obra",
+    "LINK": "FO_0028_OAE_02",
+    "STATUS": "Obra em andamento",
+    "SEI": 202300036015414,
+    "CONCLUSAO": "out/25",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 25,
+    "ETAPA": "Obra",
+    "LINK": "FO_0025_OAE_01",
+    "STATUS": "Obra em andamento",
+    "SEI": 202300036014695,
+    "CONCLUSAO": "dez/25",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 65,
+    "ETAPA": "Projeto",
+    "LINK": "FP_0065_OAE_01",
+    "STATUS": "Planejamento",
+    "SEI": 202500036008193,
+    "CONCLUSAO": "Não Informado",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 44,
+    "ETAPA": "Projeto",
+    "LINK": "FO_0044_OAE_01",
+    "STATUS": "Licitação de Projeto",
+    "SEI": 202320920000828,
+    "CONCLUSAO": "mai/28",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 53,
+    "ETAPA": "Obra",
+    "LINK": "FP_0053_OAE_01",
+    "STATUS": "Em Contratação de Obra",
+    "SEI": 202520920000584,
+    "CONCLUSAO": "fev/27",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 57,
+    "ETAPA": "Projeto",
+    "LINK": "FP_0057_OAE_01",
+    "STATUS": "Elaboração Anteprojeto",
+    "SEI": 202520920000581,
+    "CONCLUSAO": "fev/27",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 58,
+    "ETAPA": "Projeto",
+    "LINK": "FP_0058_OAE_01",
+    "STATUS": "Elaboração Anteprojeto",
+    "SEI": 202520920000578,
+    "CONCLUSAO": "fev/27",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 59,
+    "ETAPA": "Projeto",
+    "LINK": "FP_0059_OAE_01",
+    "STATUS": "Elaboração Anteprojeto",
+    "SEI": 202520920000574,
+    "CONCLUSAO": "fev/27",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 60,
+    "ETAPA": "Projeto",
+    "LINK": "FP_0060_OAE_01",
+    "STATUS": "Elaboração Anteprojeto",
+    "SEI": 202520920000576,
+    "CONCLUSAO": "Não Informado",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 62,
+    "ETAPA": "Projeto",
+    "LINK": "FP_0062_OAE_01",
+    "STATUS": "Elaboração Anteprojeto",
+    "SEI": 202520920000580,
+    "CONCLUSAO": "Não Informado",
+    "ORIGEM": "FUNDEINFRA"
+  },
+  {
+    "PROPOSTA": 46,
+    "ETAPA": "Obra",
+    "LINK": "FO_0046_OAE_02",
+    "STATUS": "Obra em andamento",
+    "SEI": 202200036001873,
+    "CONCLUSAO": "dez/26",
+    "ORIGEM": "FUNDEINFRA"
+  }
+]

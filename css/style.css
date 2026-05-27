@@ -1,3 +1,42 @@
+/* ==========================================================================
+   Guia rapido de manutencao
+   - Layout, cores e medidas gerais ficam em :root.
+   - Estilos das linhas do mapa ficam em js/estilos.js.
+   - Regras de impressao ficam no bloco "Impressao / PDF".
+   ========================================================================== */
+
+:root {
+  /* Layout principal */
+  --altura-topbar: 64px;
+  --largura-sidebar: 300px;
+  --largura-sidebar-fechada: 42px;
+  --espacamento-app: 12px;
+  --altura-area-principal: calc(100vh - 88px);
+
+  /* Cores principais */
+  --cor-topbar: #006600;
+  --cor-topbar-texto: #ffffff;
+  --cor-topbar-subtitulo: #b1b1b1;
+  --cor-texto: #111827;
+  --cor-texto-suave: #374151;
+  --cor-botao-ativo: #111827;
+  --cor-acao-principal: #006600;
+
+  /* Painel e formulario */
+  --raio-painel: 15px;
+  --raio-controle: 12px;
+  --borda-controle: #d7dde3;
+  --fundo-painel: rgba(255,255,255,0.92);
+  --sombra-painel: 0 18px 35px rgba(0,0,0,0.08);
+
+  /* Mapa e impressao */
+  --borda-mapa: rgba(255,255,255,0.75);
+  --cor-titulo-impressao: #005f22;
+  --cor-borda-impressao: #8a8f98;
+}
+
+/* ===== BASE ===== */
+
  * { box-sizing: border-box; }
 
     html, body {
@@ -13,7 +52,7 @@
       display: grid;
       grid-template-columns: 330px 1fr 320px;
       gap: 16px;
-      height: calc(100vh - 64px);
+      height: calc(100vh - var(--altura-topbar));
       width: 100vw;
       padding: 18px;
     }
@@ -23,7 +62,7 @@
       height: calc(100vh - 100px);
       background: rgba(255,255,255,0.88);
       padding: 18px 12px 18px 18px;
-      border-radius: 15px;
+      border-radius: var(--raio-painel);
       border: 1px solid rgba(255,255,255,0.65);
       box-shadow: 0 18px 38px rgba(0,0,0,0.08);
       backdrop-filter: blur(8px);
@@ -36,7 +75,7 @@
     #map-wrap {
       min-width: 0;
       height: calc(100vh - 100px);
-      border-radius: 15px;
+      border-radius: var(--raio-painel);
       overflow: hidden;
       border: 4px solid rgba(255,255,255,0.5);
       box-shadow: 0 18px 42px rgba(0,0,0,0.10);
@@ -54,7 +93,7 @@
       text-align: center;
       margin-bottom: 18px;
       padding: 18px 16px;
-      border-radius: 15px;
+      border-radius: var(--raio-painel);
       border-bottom: none;
       color: #111111;
       background: rgba(255,255,255,0.9);
@@ -97,7 +136,7 @@
       font-size: 13px;
       font-weight: 700;
       margin-bottom: 6px;
-      color: #374151;
+      color: var(--cor-texto-suave);
     }
 
     select, button {
@@ -105,7 +144,7 @@
       padding: 12px 14px;
       font-size: 14px;
       border: 1px solid #d8ddd9;
-      border-radius: 15px;
+      border-radius: var(--raio-painel);
       background: rgba(255,255,255,0.96);
       margin-bottom: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.03);
@@ -256,9 +295,9 @@
 
     .filtro-btn.ativo-filtro,
     .filtro-btn.ativo-municipio {
-      background: #0f1210;
+      background: var(--cor-botao-ativo);
       color: #ffffff;
-      border-color: #0f1210;
+      border-color: var(--cor-botao-ativo);
       box-shadow: 0 12px 20px rgba(0,0,0,0.14);
     }
 
@@ -338,16 +377,57 @@
       background: transparent !important;
     }
 
-    .legenda-simbolo {
-      width: 14px;
-      height: 14px;
-      display: inline-block;
+.legenda-simbolo {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
       margin-right: 8px;
       border: 1px solid #000;
       transform: rotate(45deg);
       flex-shrink: 0;
-      margin-top: 2px;
-    }
+  margin-top: 2px;
+}
+
+.obra-ponto-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.obra-ponto-simbolo {
+  display: block;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 3px solid #ffffff;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.35);
+}
+
+.obra-ponto-projeto {
+  background: #ffffff;
+  border-color: #b08a5a;
+  border-radius: 3px;
+}
+
+.obra-ponto-obra {
+  background: #b08a5a;
+  border-color: #ffffff;
+  border-radius: 3px;
+  transform: rotate(45deg);
+}
+
+.obra-ponto-padrao {
+  background: #6b7280;
+  border-color: #ffffff;
+  border-radius: 50%;
+}
+
+.legenda-ponto-simbolo {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
 
 .legenda-texto {
   flex: 1;
@@ -474,7 +554,7 @@
     /* ===== TOPBAR ===== */
 
 #topbar {
-  height: 64px;
+  height: var(--altura-topbar);
   width: 100%;
 
   display: flex;
@@ -483,7 +563,7 @@
 
   padding: 0 24px;
 
-  background: #006600; /* nova cor de fundo */
+  background: var(--cor-topbar);
   backdrop-filter: blur(10px);
 
   border-bottom: 1px solid rgba(0,0,0,0.08);
@@ -513,18 +593,28 @@
   color: #ffffff; /* Troque por qualquer cor desejada, ex: #ff0000 para vermelho */
 }
 
+/* Cores do texto da barra superior. Edite as variaveis em :root. */
+#topbar .topbar-left strong,
+#topbar .topbar-right span {
+  color: var(--cor-topbar-texto);
+}
+
+#topbar .topbar-left span {
+  color: var(--cor-topbar-subtitulo);
+}
+
 /* ===== SIDEBAR MODERNA ===== */
 
 #sidebar-left,
 #sidebar-right {
-  background: rgba(255,255,255,0.92);
-  border-radius: 15px;
-  box-shadow: 0 18px 35px rgba(0,0,0,0.08);
+  background: var(--fundo-painel);
+  border-radius: var(--raio-painel);
+  box-shadow: var(--sombra-painel);
 }
 
 .bloco {
   background: #ffffff;
-  border-radius: 15px;
+  border-radius: var(--raio-painel);
   padding: 16px;
   margin-bottom: 14px;
   border: 1px solid rgba(0,0,0,0.06);
@@ -541,15 +631,15 @@
 
 select {
   height: 42px;
-  border-radius: 15px;
-  border: 1px solid #d7dde3;
+  border-radius: var(--raio-painel);
+  border: 1px solid var(--borda-controle);
   background: #f9fafb;
 }
 
 .filtro-btn {
-  border-radius: 15px;
+  border-radius: var(--raio-painel);
   background: #f8fafc;
-  border: 1px solid #d7dde3;
+  border: 1px solid var(--borda-controle);
   transition: 0.15s ease;
 }
 
@@ -560,30 +650,30 @@ select {
 
 .filtro-btn.ativo-filtro,
 .filtro-btn.ativo-municipio {
-  background: #111827;
+  background: var(--cor-botao-ativo);
   color: white;
-  border-color: #111827;
+  border-color: var(--cor-botao-ativo);
 }
 
 /* ===== FOCO NO MAPA ===== */
 
 #app {
-  grid-template-columns: 300px 1fr 300px;
-  gap: 12px;
-  padding: 12px;
+  grid-template-columns: var(--largura-sidebar) 1fr var(--largura-sidebar);
+  gap: var(--espacamento-app);
+  padding: var(--espacamento-app);
   transition: grid-template-columns 0.3s ease;
 }
 
 #app.sidebar-left-collapsed {
-  grid-template-columns: 42px 1fr 300px;
+  grid-template-columns: var(--largura-sidebar-fechada) 1fr var(--largura-sidebar);
 }
 
 #app.sidebar-right-collapsed {
-  grid-template-columns: 300px 1fr 42px;
+  grid-template-columns: var(--largura-sidebar) 1fr var(--largura-sidebar-fechada);
 }
 
 #app.sidebar-left-collapsed.sidebar-right-collapsed {
-  grid-template-columns: 42px 1fr 42px;
+  grid-template-columns: var(--largura-sidebar-fechada) 1fr var(--largura-sidebar-fechada);
 }
 
 /* ===== SIDEBAR HEADERS ===== */
@@ -609,23 +699,23 @@ select {
   font-size: 18px;
   font-weight: 700;
   background: rgba(255,255,255,0.9);
-  border: 1px solid #d7dde3;
+  border: 1px solid var(--borda-controle);
   border-radius: 10px;
   cursor: pointer;
-  color: #374151;
+  color: var(--cor-texto-suave);
   line-height: 1;
   transition: all 0.15s ease;
 }
 
 .sidebar-toggle-btn:hover {
-  background: #111827;
+  background: var(--cor-botao-ativo);
   color: #ffffff;
-  border-color: #111827;
+  border-color: var(--cor-botao-ativo);
 }
 
 #sidebar-left,
 #sidebar-right {
-  height: calc(100vh - 88px);
+  height: var(--altura-area-principal);
   overflow: visible;
   transition: width 0.3s ease, padding 0.3s ease, min-width 0.3s ease;
   position: relative;
@@ -641,8 +731,8 @@ select {
 
 /* Estado colapsado da sidebar esquerda */
 #sidebar-left.sidebar-colapsed {
-  width: 42px;
-  min-width: 42px;
+  width: var(--largura-sidebar-fechada);
+  min-width: var(--largura-sidebar-fechada);
   padding: 12px 6px;
 }
 
@@ -662,8 +752,8 @@ select {
 
 /* Estado colapsado da sidebar direita */
 #sidebar-right.sidebar-colapsed {
-  width: 42px;
-  min-width: 42px;
+  width: var(--largura-sidebar-fechada);
+  min-width: var(--largura-sidebar-fechada);
   padding: 12px 6px;
 }
 
@@ -682,8 +772,8 @@ select {
 }
 
 #map-wrap {
-  height: calc(100vh - 88px);
-  border: 2px solid rgba(255,255,255,0.75);
+  height: var(--altura-area-principal);
+  border: 2px solid var(--borda-mapa);
 }
 
 .bloco {
@@ -714,7 +804,7 @@ button {
 
 #desligarTudo {
   background: #f3f4f6;
-  color: #111827;
+  color: var(--cor-texto);
   border: 1px solid #d1d5db;
 }
 
@@ -723,7 +813,7 @@ button {
 }
 
 #limparFiltro {
-  background: #111827;
+  background: var(--cor-botao-ativo);
   color: #ffffff;
 }
 
@@ -737,7 +827,7 @@ label {
   margin-top: 10px;
   font-size: 12px;
   font-weight: 800;
-  color: #374151;
+  color: var(--cor-texto-suave);
 }
 
 label:first-of-type {
@@ -813,8 +903,8 @@ input[type="range"] {
   height: 42px;
   padding: 10px 12px;
   margin-bottom: 8px;
-  border: 1px solid #d7dde3;
-  border-radius: 12px;
+  border: 1px solid var(--borda-controle);
+  border-radius: var(--raio-controle);
   background: #ffffff;
   font-size: 14px;
   font-weight: 600;
@@ -822,7 +912,7 @@ input[type="range"] {
 
 input[type="range"] {
   padding: 0;
-  accent-color: #006600;
+  accent-color: var(--cor-acao-principal);
 }
 
 #printMapa {
@@ -830,7 +920,7 @@ input[type="range"] {
   margin-top: 6px;
   border: none;
   border-radius: 14px;
-  background: #006600;
+  background: var(--cor-acao-principal);
   color: #ffffff;
   font-weight: 900;
 }
@@ -957,6 +1047,8 @@ input[type="range"] {
 
 .tabela-servico {
   width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
 }
 
 /* ===== ESCALA GRÁFICA DINÂMICA ===== */
@@ -1118,20 +1210,19 @@ input[type="range"] {
 .north-arrow-control:hover svg {
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12));
 }
-  border-collapse: collapse;
-  font-size: 13px;
-}
 
 .tabela-servico th {
   background: #9e9e9e;
   color: #fff;
   padding: 6px;
-  text-align: left;
+  text-align: center;
 }
 
 .tabela-servico td {
   padding: 6px;
   border-bottom: 1px solid #eeeeee;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .tabela-servico tr:nth-child(even) {

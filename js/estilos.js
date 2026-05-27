@@ -1,3 +1,82 @@
+// Configuracoes visuais das camadas do mapa.
+// Para alterar cores, espessuras ou itens da legenda das linhas, comece aqui.
+// A logica que desenha e filtra as camadas fica em js/mapa.js.
+
+const MAPA_PANES = {
+  areasUrbanasPane: 240,
+  snvPane: 260,
+  sreBasePane: 300,
+  servicosPane: 500,
+  localidadesPane: 550,
+  oaePane: 600,
+  rotulosBasePane: 650,
+  anotacoesPane: 850,
+  medicaoPane: 875,
+  rotulosServicosPane: 900,
+  anotacoesTextoPane: 950
+};
+
+const MAPAS_BASE_CONFIG = {
+  "Claro limpo": {
+    inicial: true,
+    url: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
+    opcoes: {
+      attribution: "© OpenStreetMap © CARTO",
+      subdomains: "abcd",
+      maxZoom: 20
+    }
+  },
+  "Padrão": {
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    opcoes: {
+      attribution: "© OpenStreetMap contributors",
+      maxZoom: 19
+    }
+  },
+  "Escuro": {
+    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    opcoes: {
+      attribution: "© OpenStreetMap © CARTO",
+      subdomains: "abcd",
+      maxZoom: 20
+    }
+  },
+  "Satélite": {
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    opcoes: {
+      attribution: "Tiles © Esri",
+      maxZoom: 19
+    }
+  }
+};
+
+const ESTILO_ANOTACAO_PADRAO = {
+  pane: "anotacoesPane",
+  color: "#e11d48",
+  weight: 4,
+  opacity: 0.95,
+  fillColor: "#f43f5e",
+  fillOpacity: 0.14
+};
+
+const ESTILO_TEXTO_ANOTACAO_PADRAO = {
+  cor: "#111827",
+  tamanho: 13
+};
+
+const ESTILO_PONTO_ANOTACAO_PADRAO = {
+  formato: "circulo",
+  tamanho: 14
+};
+
+const FORMATOS_IMPRESSAO = {
+  A4: { largura: 210, altura: 297 },
+  A3: { largura: 297, altura: 420 },
+  A2: { largura: 420, altura: 594 },
+  A1: { largura: 594, altura: 841 },
+  A0: { largura: 841, altura: 1189 }
+};
+
 const REGRAS_ESTILO = [
     {
       legenda: "Pavimentação - Em Andamento",
@@ -177,7 +256,35 @@ const REGRAS_ESTILO = [
     PAV: { label: 'Pavimentada', tipo: 'simple', cor: '#33a21a' }
   };
 
+  const OBRAS_PONTOS_INFO = {
+    Projeto: {
+      label: 'Projeto',
+      classe: 'obra-ponto-projeto',
+      cor: '#b08a5a',
+      formato: 'quadrado'
+    },
+    Obra: {
+      label: 'Obra',
+      classe: 'obra-ponto-obra',
+      cor: '#b08a5a',
+      formato: 'losango'
+    },
+    Padrao: {
+      label: 'Outros',
+      classe: 'obra-ponto-padrao',
+      cor: '#6b7280',
+      formato: 'circulo'
+    }
+  };
+
+  window.MAPA_PANES = MAPA_PANES;
+  window.MAPAS_BASE_CONFIG = MAPAS_BASE_CONFIG;
+  window.ESTILO_ANOTACAO_PADRAO = ESTILO_ANOTACAO_PADRAO;
+  window.ESTILO_TEXTO_ANOTACAO_PADRAO = ESTILO_TEXTO_ANOTACAO_PADRAO;
+  window.ESTILO_PONTO_ANOTACAO_PADRAO = ESTILO_PONTO_ANOTACAO_PADRAO;
+  window.FORMATOS_IMPRESSAO = FORMATOS_IMPRESSAO;
   window.REGRAS_ESTILO = REGRAS_ESTILO;
   window.OAE_LEGENDA_INFO = OAE_LEGENDA_INFO;
   window.ROD_EST_INFO = ROD_EST_INFO;
-  window.REGRAS_ESTILO = REGRAS_ESTILO;
+  window.ROD_FED_INFO = ROD_FED_INFO;
+  window.OBRAS_PONTOS_INFO = OBRAS_PONTOS_INFO;

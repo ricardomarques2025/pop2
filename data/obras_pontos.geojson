@@ -1,0 +1,23 @@
+{
+"type": "FeatureCollection",
+"name": "obras_pontos",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::4674" } },
+"features": [
+{ "type": "Feature", "properties": { "SRE": "174EGO0195", "Trecho": "Ribeirão Porteiras", "RODOVIA": "GO-174", "LINK": "FP_0061_OAE_01", "LAT": -17.484041, "LONG": -51.139413, "EXT_M": 20 }, "geometry": { "type": "Point", "coordinates": [ -51.139412735637308, -17.484040907364744 ] } },
+{ "type": "Feature", "properties": { "SRE": "139EGO0088", "Trecho": "Córrego Andorinhas", "RODOVIA": "GO-139", "LINK": "FO_0046_OAE_01", "LAT": -17.535396, "LONG": -48.725643, "EXT_M": 40 }, "geometry": { "type": "Point", "coordinates": [ -48.725643148859994, -17.535396161604432 ] } },
+{ "type": "Feature", "properties": { "SRE": "542EGO0020", "Trecho": "Rio Diamantino", "RODOVIA": "GO-542", "LINK": "FO_0043_OAE_01", "LAT": -16.770752, "LONG": -52.826321, "EXT_M": 70 }, "geometry": { "type": "Point", "coordinates": [ -52.826320833310142, -16.770751951284407 ] } },
+{ "type": "Feature", "properties": { "SRE": "154EGO0505", "Trecho": "Rio Lageado", "RODOVIA": "GO-154", "LINK": "FO_0028_OAE_01", "LAT": -13.493733, "LONG": -49.645143, "EXT_M": 20 }, "geometry": { "type": "Point", "coordinates": [ -49.645142984407627, -13.493732894000885 ] } },
+{ "type": "Feature", "properties": { "SRE": "338EGO0114", "Trecho": "Rio das Almas", "RODOVIA": "GO-338", "LINK": "FO_0037_OAE_01", "LAT": -14.891912, "LONG": -49.277016, "EXT_M": 280 }, "geometry": { "type": "Point", "coordinates": [ -49.277016424733489, -14.891912153171139 ] } },
+{ "type": "Feature", "properties": { "SRE": "154EGO0505", "Trecho": "Rio Pintado", "RODOVIA": "GO-154", "LINK": "FO_0028_OAE_02", "LAT": -13.27246, "LONG": -49.524452, "EXT_M": 30 }, "geometry": { "type": "Point", "coordinates": [ -49.524452224585325, -13.272459692303178 ] } },
+{ "type": "Feature", "properties": { "SRE": "460EGO0025", "Trecho": "Ribeirão Olhos d'água", "RODOVIA": "GO-460", "LINK": "FO_0025_OAE_01", "LAT": -15.362829, "LONG": -49.865214, "EXT_M": 50 }, "geometry": { "type": "Point", "coordinates": [ -49.865213851010274, -15.36282929521389 ] } },
+{ "type": "Feature", "properties": { "SRE": "210EGO0050", "Trecho": "Rio São Marcos", "RODOVIA": "GO-210", "LINK": "FP_0065_OAE_01", "LAT": -18.107713, "LONG": -47.677488, "EXT_M": 500 }, "geometry": { "type": "Point", "coordinates": [ -47.677487744945715, -18.107713090469723 ] } },
+{ "type": "Feature", "properties": { "SRE": "174EGO0030", "Trecho": "Rio Corrente", "RODOVIA": "GO-174", "LINK": "FO_0044_OAE_01", "LAT": -19.105964, "LONG": -51.123378, "EXT_M": 130 }, "geometry": { "type": "Point", "coordinates": [ -51.123377670426237, -19.105964254053916 ] } },
+{ "type": "Feature", "properties": { "SRE": "174EGO0195", "Trecho": "Viaduto (OAE) sobre GO-210", "RODOVIA": "GO-174", "LINK": "FP_0053_OAE_01", "LAT": -17.730896, "LONG": -50.972672, "EXT_M": 80 }, "geometry": { "type": "Point", "coordinates": [ -50.972671959414249, -17.730895773441802 ] } },
+{ "type": "Feature", "properties": { "SRE": "174EGO0195", "Trecho": "Rio Verdinho", "RODOVIA": "GO-174", "LINK": "FP_0057_OAE_01", "LAT": -17.67674, "LONG": -51.039538, "EXT_M": 40 }, "geometry": { "type": "Point", "coordinates": [ -51.039538002011994, -17.676739760350266 ] } },
+{ "type": "Feature", "properties": { "SRE": "174EGO0195", "Trecho": "Ribeirão Não Identificado", "RODOVIA": "GO-174", "LINK": "FP_0058_OAE_01", "LAT": -17.624267, "LONG": -51.061694, "EXT_M": 30 }, "geometry": { "type": "Point", "coordinates": [ -51.061694491255281, -17.624266563724682 ] } },
+{ "type": "Feature", "properties": { "SRE": "174EGO0195", "Trecho": "Ribeirão Monte Alegre", "RODOVIA": "GO-174", "LINK": "FP_0059_OAE_01", "LAT": -17.583248, "LONG": -51.089735, "EXT_M": 30 }, "geometry": { "type": "Point", "coordinates": [ -51.089734827864298, -17.583247749808823 ] } },
+{ "type": "Feature", "properties": { "SRE": "174EGO0195", "Trecho": "Ribeirão Pindaíba", "RODOVIA": "GO-174", "LINK": "FP_0060_OAE_01", "LAT": -17.522918, "LONG": -51.11515, "EXT_M": 30 }, "geometry": { "type": "Point", "coordinates": [ -51.115150294361229, -17.522918021966969 ] } },
+{ "type": "Feature", "properties": { "SRE": "174EGO0210", "Trecho": "Rio Montividiu", "RODOVIA": "GO-174", "LINK": "FP_0062_OAE_01", "LAT": -17.438511, "LONG": -51.174125, "EXT_M": 40 }, "geometry": { "type": "Point", "coordinates": [ -51.174124826502428, -17.438510534947017 ] } },
+{ "type": "Feature", "properties": { "SRE": "139EGO0080", "Trecho": "Viaduto (OAE) sobre GO-213", "RODOVIA": "GO-139", "LINK": "FO_0046_OAE_02", "LAT": -17.699944, "LONG": -48.707953, "EXT_M": 80 }, "geometry": { "type": "Point", "coordinates": [ -48.707952795169007, -17.699944267386865 ] } }
+]
+}
