@@ -286,7 +286,7 @@ L.control.scale({
 // ---- SÍMBOLO DE NORTE (ROSA DOS VENTOS) ----
 var NortheArrowControl = L.Control.extend({
   options: {
-    position: 'topright'
+    position: 'bottomleft'
   },
 
   onAdd: function(map) {
@@ -294,8 +294,8 @@ var NortheArrowControl = L.Control.extend({
     
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 100 120');
-    svg.setAttribute('width', '56');
-    svg.setAttribute('height', '66');
+    svg.setAttribute('width', '45');
+    svg.setAttribute('height', '53');
     
     var backgroundCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     backgroundCircle.setAttribute('cx', '50');
@@ -331,6 +331,27 @@ var NortheArrowControl = L.Control.extend({
 });
 
 map.addControl(new NortheArrowControl());
+
+// ---- LOGO INSTITUCIONAL NO MAPA ----
+var LogoMapaControl = L.Control.extend({
+  options: {
+    position: 'topright'
+  },
+
+  onAdd: function(map) {
+    var container = L.DomUtil.create('div', 'logo-mapa-control');
+    var img = L.DomUtil.create('img', '', container);
+    img.src = 'data/Logo_GOINFRA_DPL_2025.png';
+    img.alt = 'GOINFRA DPL Governo de Goiás';
+
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.disableScrollPropagation(container);
+
+    return container;
+  }
+});
+
+map.addControl(new LogoMapaControl());
 
   map.on('zoomend', function() {
     atualizarVisibilidadeRotulos();
@@ -708,6 +729,39 @@ map.addControl(new NortheArrowControl());
       html: '<span class="anotacao-ponto-shape' + classeFormatoPonto(estiloPonto.formato) + '" style="' + style + '"></span>',
       iconSize: [tamanho + borda * 2, tamanho + borda * 2],
       iconAnchor: [(tamanho + borda * 2) / 2, (tamanho + borda * 2) / 2]
+    });
+  }
+
+  function criarIconeKmRodoviaAnotacao(texto, estiloForma, estiloPonto, estiloTexto, latlng) {
+    estiloForma = Object.assign({}, estiloAnotacao, estiloForma || {});
+    estiloPonto = Object.assign({}, estiloPontoAnotacao, estiloPonto || {});
+    estiloTexto = Object.assign({}, estiloTextoAnotacao, estiloTexto || {});
+    var tamanho = Number(estiloPonto.tamanho || estiloPontoAnotacao.tamanho);
+    var borda = Number(estiloForma.weight || estiloAnotacao.weight);
+    var cor = estiloCssCor(estiloForma.color, '#e11d48');
+    var corTexto = estiloCssCor(estiloTexto.cor, estiloTextoAnotacao.cor);
+    var tamanhoTexto = Number(estiloTexto.tamanho || estiloTextoAnotacao.tamanho);
+    var preenchimento = corHexParaRgba(estiloForma.fillColor || estiloForma.color, estiloForma.fillOpacity == null ? 0.14 : estiloForma.fillOpacity);
+    var pontoStyle = 'width:' + tamanho + 'px;height:' + tamanho + 'px;' +
+      'border-color:' + cor + ';border-width:' + borda + 'px;' +
+      'background:' + preenchimento + ';';
+    var textoStyle = 'color:' + corTexto + ';font-size:' + tamanhoTexto + 'px;';
+    var tamanhoIcone = tamanho + borda * 2;
+    var coordsHtml = latlng ?
+      '<span class="anotacao-km-coord">Lat: ' + escaparHtml(formatarCoordenadaKm(latlng.lat)) + '</span>' +
+      '<span class="anotacao-km-coord">Long: ' + escaparHtml(formatarCoordenadaKm(latlng.lng)) + '</span>' :
+      '';
+    return L.divIcon({
+      className: 'anotacao-km-icon',
+      html: '<span class="anotacao-km-wrap">' +
+        '<span class="anotacao-ponto-shape' + classeFormatoPonto(estiloPonto.formato) + '" style="' + pontoStyle + '"></span>' +
+        '<span class="anotacao-km-label" style="' + textoStyle + '">' +
+          '<span class="anotacao-km-titulo">' + escaparHtml(texto) + '</span>' +
+          coordsHtml +
+        '</span>' +
+        '</span>',
+      iconSize: [tamanhoIcone, tamanhoIcone],
+      iconAnchor: [tamanhoIcone / 2, tamanhoIcone / 2]
     });
   }
 
@@ -1238,10 +1292,14 @@ map.addControl(new NortheArrowControl());
         dashArray: estiloForma.dashArray || '8,6'
       }));
     } else if (tipo === 'ponto' && geom.type === 'Point') {
-      layer = L.marker([geom.coordinates[1], geom.coordinates[0]], {
+      var latlngPonto = L.latLng(geom.coordinates[1], geom.coordinates[0]);
+      var iconePonto = props.rotuloKm ?
+        criarIconeKmRodoviaAnotacao(props.rotuloKm, estiloForma, estiloPontoPorProps(props), estiloTextoPorProps(props), latlngPonto) :
+        criarIconePontoAnotacao(estiloForma, estiloPontoPorProps(props));
+      layer = L.marker(latlngPonto, {
         pane: 'anotacoesPane',
         draggable: false,
-        icon: criarIconePontoAnotacao(estiloForma, estiloPontoPorProps(props))
+        icon: iconePonto
       });
     } else if (tipo === 'retangulo' && geom.type === 'Polygon') {
       layer = L.polygon(coordsParaLatLngs(geom.coordinates[0] || []), estiloForma);
@@ -1302,6 +1360,173 @@ map.addControl(new NortheArrowControl());
       setStatusAnotacao('Não foi possível recuperar as anotações salvas');
       console.warn('Falha ao carregar anotações:', erro);
     }
+  }
+
+  function lerNumeroDecimal(valor) {
+    var texto = String(valor || '').trim();
+    texto = texto.indexOf(',') !== -1 ? texto.replace(/\./g, '').replace(',', '.') : texto;
+    var numero = Number(texto);
+    return isFinite(numero) ? numero : null;
+  }
+
+  function formatarKmRodovia(km) {
+    return Number(km).toLocaleString('pt-BR', {
+      minimumFractionDigits: Math.abs(km % 1) > 0.0001 ? 1 : 0,
+      maximumFractionDigits: 3
+    });
+  }
+
+  function formatarCoordenadaKm(valor) {
+    return Number(valor).toFixed(6).replace('.', ',');
+  }
+
+  function coordenadasLinhaFeature(feature) {
+    var geom = feature && feature.geometry;
+    if (!geom || !geom.coordinates) return [];
+    if (geom.type === 'LineString') return geom.coordinates;
+    if (geom.type === 'MultiLineString') {
+      var coords = [];
+      geom.coordinates.forEach(function(parte) {
+        if (Array.isArray(parte)) coords = coords.concat(parte);
+      });
+      return coords;
+    }
+    return [];
+  }
+
+  function interpolarPontoNaLinha(coords, fator) {
+    if (!coords || !coords.length) return null;
+    var pontos = coords
+      .filter(function(coord) { return coord && coord.length >= 2; })
+      .map(function(coord) { return L.latLng(Number(coord[1]), Number(coord[0])); })
+      .filter(function(latlng) { return isFinite(latlng.lat) && isFinite(latlng.lng); });
+
+    if (!pontos.length) return null;
+    if (pontos.length === 1) return pontos[0];
+
+    fator = Math.max(0, Math.min(1, Number(fator) || 0));
+    var distancias = [];
+    var total = 0;
+    for (var i = 1; i < pontos.length; i++) {
+      var d = pontos[i - 1].distanceTo(pontos[i]);
+      distancias.push(d);
+      total += d;
+    }
+    if (!total) return pontos[0];
+
+    var alvo = total * fator;
+    var acumulado = 0;
+    for (var j = 1; j < pontos.length; j++) {
+      var segmento = distancias[j - 1];
+      if (acumulado + segmento >= alvo) {
+        var t = segmento ? (alvo - acumulado) / segmento : 0;
+        return L.latLng(
+          pontos[j - 1].lat + (pontos[j].lat - pontos[j - 1].lat) * t,
+          pontos[j - 1].lng + (pontos[j].lng - pontos[j - 1].lng) * t
+        );
+      }
+      acumulado += segmento;
+    }
+    return pontos[pontos.length - 1];
+  }
+
+  function localizarKmNaRodovia(rodovia, km) {
+    if (!sreBaseData || !sreBaseData.features) return null;
+    var segmentos = sreBaseData.features
+      .filter(function(feature) {
+        return nomeRodoviaFeature(feature) === rodovia &&
+          valorSeguro(feature, 'km_ini') !== '' &&
+          valorSeguro(feature, 'km_fim') !== '';
+      })
+      .sort(function(a, b) {
+        return Number(valorSeguro(a, 'km_ini')) - Number(valorSeguro(b, 'km_ini')) ||
+          String(nomeSREFeature(a)).localeCompare(String(nomeSREFeature(b)), 'pt-BR');
+      });
+
+    for (var i = 0; i < segmentos.length; i++) {
+      var feature = segmentos[i];
+      var kmIni = Number(valorSeguro(feature, 'km_ini'));
+      var kmFim = Number(valorSeguro(feature, 'km_fim'));
+      if (!isFinite(kmIni) || !isFinite(kmFim)) continue;
+      var min = Math.min(kmIni, kmFim);
+      var max = Math.max(kmIni, kmFim);
+      if (km < min || km > max) continue;
+      var fator = kmFim === kmIni ? 0 : (km - kmIni) / (kmFim - kmIni);
+      var latlng = interpolarPontoNaLinha(coordenadasLinhaFeature(feature), fator);
+      if (latlng) return { feature: feature, latlng: latlng, kmIni: kmIni, kmFim: kmFim };
+    }
+
+    return null;
+  }
+
+  function intervaloKmRodovia(rodovia) {
+    if (!sreBaseData || !sreBaseData.features) return null;
+    var minimo = Infinity;
+    var maximo = -Infinity;
+    sreBaseData.features.forEach(function(feature) {
+      if (nomeRodoviaFeature(feature) !== rodovia) return;
+      var kmIni = Number(valorSeguro(feature, 'km_ini'));
+      var kmFim = Number(valorSeguro(feature, 'km_fim'));
+      if (!isFinite(kmIni) || !isFinite(kmFim)) return;
+      minimo = Math.min(minimo, kmIni, kmFim);
+      maximo = Math.max(maximo, kmIni, kmFim);
+    });
+    if (!isFinite(minimo) || !isFinite(maximo)) return null;
+    return { minimo: minimo, maximo: maximo };
+  }
+
+  function marcarKmRodoviaSelecionada() {
+    var rodovia = document.getElementById('rodoviaSelect').value;
+    var campoKm = document.getElementById('drawKmRodovia');
+    var km = lerNumeroDecimal(campoKm ? campoKm.value : '');
+
+    if (!rodovia) {
+      setStatusAnotacao('Selecione uma rodovia no filtro antes de localizar o km');
+      return;
+    }
+    if (km === null) {
+      setStatusAnotacao('Informe um km válido para localizar na rodovia');
+      return;
+    }
+
+    var resultado = localizarKmNaRodovia(rodovia, km);
+    if (!resultado) {
+      var intervalo = intervaloKmRodovia(rodovia);
+      var complemento = intervalo ?
+        ' Intervalo disponível: km ' + formatarKmRodovia(intervalo.minimo) + ' a km ' + formatarKmRodovia(intervalo.maximo) + '.' :
+        '';
+      setStatusAnotacao('Km não encontrado na rodovia selecionada.' + complemento);
+      return;
+    }
+
+    if (anotacaoFerramenta) ativarFerramentaAnotacao(anotacaoFerramenta);
+
+    var estiloPontoForma = lerEstiloFormaAnotacao();
+    var estiloPonto = lerEstiloPontoAnotacao();
+    var estiloTexto = lerEstiloTextoAnotacao();
+    var texto = rodovia + ', km ' + formatarKmRodovia(km);
+    var props = resultado.feature.properties || {};
+
+    adicionarAnotacao(L.marker(resultado.latlng, {
+      pane: 'anotacoesPane',
+      draggable: false,
+      icon: criarIconeKmRodoviaAnotacao(texto, estiloPontoForma, estiloPonto, estiloTexto, resultado.latlng)
+    }), 'ponto', {
+      estilo: estiloFormaDaCamada({ options: estiloPontoForma }),
+      estiloPonto: estiloPonto,
+      estiloTexto: estiloTexto,
+      rotuloKm: texto,
+      nomeLegenda: texto,
+      rodoviaKm: rodovia,
+      km: km,
+      latitude: Number(resultado.latlng.lat.toFixed(6)),
+      longitude: Number(resultado.latlng.lng.toFixed(6)),
+      sre: props.sre || props.SRE || '',
+      trecho: props.trecho || props.TRECHO || ''
+    });
+
+    map.setView(resultado.latlng, Math.max(map.getZoom(), 13));
+    setStatusAnotacao(texto + ' marcado no SRE ' + (props.sre || props.SRE || ''));
   }
 
   function ativarFerramentaAnotacao(tipo) {
@@ -1669,6 +1894,18 @@ map.addControl(new NortheArrowControl());
 
     var exportar = document.getElementById('drawExportar');
     if (exportar) exportar.addEventListener('click', exportarArquivoAnotacoes);
+
+    var localizarKm = document.getElementById('drawLocalizarKm');
+    var campoKmRodovia = document.getElementById('drawKmRodovia');
+    if (localizarKm) localizarKm.addEventListener('click', marcarKmRodoviaSelecionada);
+    if (campoKmRodovia) {
+      campoKmRodovia.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          marcarKmRodoviaSelecionada();
+        }
+      });
+    }
 
     var botaoLegendaAnotacoes = document.getElementById('toggleLegendaAnotacoes');
     if (botaoLegendaAnotacoes) {
@@ -3856,7 +4093,7 @@ map.addControl(new NortheArrowControl());
       var itemPonto = document.createElement('div');
       itemPonto.className = 'legenda-item';
       itemPonto.innerHTML =
-        '<span class="obra-ponto-simbolo legenda-ponto-simbolo ' + info.classe + '"></span>' +
+        criarHtmlSimboloObraPonto(info.classe, 'legenda-ponto-simbolo') +
         '<div class="legenda-texto">' + escapeHtml(info.label) + '</div>';
       alvo.appendChild(itemPonto);
       total++;
@@ -3882,7 +4119,7 @@ map.addControl(new NortheArrowControl());
       item.className = 'legenda-item';
       item.innerHTML =
         '<span class="legenda-linha-wrap">' +
-          '<span class="legenda-linha" style="height:7px;background:' + cor + ';"></span>' +
+          '<span class="legenda-linha" style="height:9px;background:' + cor + ';"></span>' +
         '</span>' +
         legenda;
       alvo.appendChild(item);
@@ -3932,7 +4169,7 @@ map.addControl(new NortheArrowControl());
       var info = ROD_EST_INFO[s];
       var item = document.createElement('div');
       item.className = 'legenda-item';
-      item.innerHTML = criarLegendaLinha(info.tipo, info.cor) + '<div class="legenda-texto"><b>' + info.label + '</b></div>';
+      item.innerHTML = criarLegendaLinha(info.tipo, info.cor) + '<div class="legenda-texto">' + info.label + '</div>';
       alvo.appendChild(item);
     }
     bloco.style.display = total > 0 ? '' : 'none';
@@ -3958,7 +4195,7 @@ map.addControl(new NortheArrowControl());
       var info = ROD_FED_INFO[s];
       var item = document.createElement('div');
       item.className = 'legenda-item';
-      item.innerHTML = criarLegendaLinha(info.tipo, info.cor) + '<div class="legenda-texto"><b>' + info.label + '</b></div>';
+      item.innerHTML = criarLegendaLinha(info.tipo, info.cor) + '<div class="legenda-texto">' + info.label + '</div>';
       alvo.appendChild(item);
     }
     bloco.style.display = total > 0 ? '' : 'none';
@@ -4105,11 +4342,25 @@ map.addControl(new NortheArrowControl());
     var estilo = estiloObraPonto(dados);
     return L.divIcon({
       className: 'obra-ponto-icon',
-      html: '<span class="obra-ponto-simbolo ' + estilo.classe + '"></span>',
+      html: criarHtmlSimboloObraPonto(estilo.classe),
       iconSize: [22, 22],
       iconAnchor: [11, 11],
       popupAnchor: [0, -10]
     });
+  }
+
+  function criarHtmlSimboloObraPonto(classe, classeExtra) {
+    var classes = ['obra-ponto-simbolo'];
+    if (classeExtra) classes.push(classeExtra);
+    if (classe) classes.push(classe);
+    return '<span class="' + classes.join(' ') + '">' +
+      '<svg viewBox="0 0 268.18307 268.18396" aria-hidden="true" focusable="false">' +
+        '<g transform="translate(-511.05083,580.11813)">' +
+          '<path fill="var(--obra-ponto-fill)" fill-opacity="1" d="m 640.89944,-312.84081 c -2.34343,-1.27137 -124.35457,-123.00021 -127.42572,-127.13088 -2.80683,-3.77514 -3.18674,-7.56496 -1.07818,-10.75574 2.27986,-3.45002 125.74826,-126.89418 128.24864,-128.22348 2.91343,-1.54889 6.08942,-1.55642 9.02824,-0.0214 2.6714,1.39535 126.92093,125.61018 128.51354,128.47769 1.49348,2.68893 1.3778,6.69768 -0.26493,9.18355 -2.27987,3.45003 -125.74824,126.89419 -128.24861,128.22349 -2.70759,1.43944 -6.38403,1.54285 -8.77298,0.24677 z"/>' +
+          '<path fill="currentColor" d="m 643.55505,-568.15193 c -5.90332,0.84574 -9.46768,4.85646 -13.49375,8.88254 l -15.34583,15.34583 -67.73333,67.73334 -16.13959,16.13958 c -4.24629,4.2463 -8.66487,8.80651 -7.86176,15.34584 1.10312,8.98202 10.60192,15.44017 16.59301,21.43126 l 45.50833,45.50833 41.27501,41.27501 c 5.4398,5.43981 11.39237,13.69469 20.10833,12.62426 5.88756,-0.72307 9.49533,-4.6571 13.49375,-8.65551 l 15.34583,-15.34584 67.99792,-67.99792 16.13959,-16.13958 c 4.24199,-4.24199 8.66344,-8.81814 7.86176,-15.34585 -1.10311,-8.98201 -10.60192,-15.44016 -16.59301,-21.43125 l -45.50834,-45.50833 -41.53958,-41.53959 c -5.44571,-5.44571 -11.37568,-13.5732 -20.10834,-12.32212 m 0,5.79369 c 7.3523,-1.22774 13.18051,7.80269 17.72709,12.34926 l 41.80417,41.80417 43.12708,43.12709 10.58333,10.58333 c 2.05803,2.05803 4.34183,4.07899 4.7137,7.14375 0.60783,5.00942 -2.79632,7.87222 -6.03661,11.11251 l -17.72709,17.72709 -65.35208,65.35209 -16.66875,16.66875 c -2.57409,2.57408 -5.17675,6.15527 -8.99584,6.79301 -7.35228,1.22775 -13.18051,-7.80269 -17.72708,-12.34926 l -41.80417,-41.80417 -43.12708,-43.12709 -10.58333,-10.58333 c -2.05803,-2.05803 -4.34185,-4.07899 -4.71371,-7.14376 -0.60782,-5.00942 2.79632,-7.8722 6.03662,-11.1125 l 17.72708,-17.72709 65.35209,-65.35209 16.66875,-16.66875 c 2.57408,-2.57408 5.17676,-6.15528 8.99583,-6.79301 m -39.95209,62.88468 c 2.93303,7.04287 8.59625,13.56279 10.6793,20.90209 0.58852,2.07356 0.16862,4.73414 0.16862,6.87917 v 14.2875 29.63334 c 0,4.47941 0.84252,9.91225 -0.1033,14.2875 -1.62753,7.52868 -9.13138,13.6056 -10.48003,21.16667 l 17.72709,9.26042 c 3.09961,-5.31063 5.67266,-10.96561 8.54547,-16.40417 1.47757,-2.79721 3.74647,-5.92419 4.53629,-8.99583 0.56091,-2.18136 0.1474,-4.8998 0.1474,-7.14375 v -14.55209 -36.77709 c 0,-5.03062 1.10433,-11.53622 -0.1474,-16.40417 -0.4847,-1.885 -1.79726,-3.83585 -2.70503,-5.55625 -2.60262,-4.93247 -5.14262,-9.89825 -7.77418,-14.81667 -0.60566,-1.132 -1.57431,-4.46746 -2.92348,-4.81109 -1.30583,-0.3326 -3.57083,1.53045 -4.70616,2.09994 -4.36032,2.18717 -8.75263,4.48378 -12.96459,6.94448 m 82.81459,106.89169 c -1.47148,-5.09824 -5.1193,-10.3894 -7.62963,-15.08125 -0.96813,-1.80947 -2.41265,-3.79596 -2.85039,-5.82084 -0.94584,-4.37523 -0.10331,-9.8081 -0.10331,-14.2875 v -29.63334 -14.2875 c 0,-2.14503 -0.4199,-4.80561 0.16863,-6.87917 2.08395,-7.34238 7.73435,-13.86592 10.67929,-20.90209 -4.05973,-2.6774 -8.68629,-4.64701 -12.96459,-6.96083 -1.12735,-0.6097 -3.35538,-2.42816 -4.70615,-2.08359 -1.31102,0.33443 -2.20229,3.46045 -2.81446,4.54651 -2.67746,4.75011 -5.18228,9.67727 -7.62596,14.55208 -0.96123,1.91754 -2.48673,3.99286 -2.96963,6.08542 -0.53072,2.29979 -0.14005,5.05499 -0.14005,7.40833 v 14.55209 50.27084 c 2.5e-4,3.67019 1.99589,6.64159 3.74093,9.78959 2.0142,3.63356 3.83674,7.4088 5.71956,11.1125 0.75622,1.48757 2.25613,5.90761 3.82502,6.55089 1.23756,0.5074 3.66574,-1.35425 4.70616,-1.94069 4.26056,-2.4015 8.87905,-4.29704 12.96458,-6.99145 z"/>' +
+        '</g>' +
+      '</svg>' +
+    '</span>';
   }
 
   function pontoEmAnel(lon, lat, anel) {

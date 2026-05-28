@@ -260,13 +260,13 @@ const REGRAS_ESTILO = [
     Projeto: {
       label: 'Projeto',
       classe: 'obra-ponto-projeto',
-      cor: '#b08a5a',
+      cor: '#00ffff',
       formato: 'quadrado'
     },
     Obra: {
       label: 'Obra',
       classe: 'obra-ponto-obra',
-      cor: '#b08a5a',
+      cor: '#ffcc00',
       formato: 'losango'
     },
     Padrao: {

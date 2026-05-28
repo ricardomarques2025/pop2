@@ -26,7 +26,7 @@
     <div class="scroll-inner" id="sidebar-left-content">
    
     <div class="bloco">
-      <div class="subtitulo">ORIGEM</div>
+      <div class="subtitulo subtitulo-painel">ORIGEM</div>
       <div class="grid-servicos" id="servicosLinearesBotoes">
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="FUNDEINFRA" type="button">FUNDEINFRA</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOR" type="button">DOR</button>
@@ -88,7 +88,7 @@
         <option value="">Todas</option>
       </select>
 
-      <div class="subtitulo">Malhas de base</div>
+      <div class="subtitulo subtitulo-painel">Malhas de base</div>
       <div class="grid-botoes">
         <button class="filtro-btn base-btn" id="toggleMunicipiosBase" type="button">Municípios</button>
         <button class="filtro-btn base-btn ativo-filtro" id="toggleSREBase" type="button">Malha Estadual</button>
@@ -101,7 +101,7 @@
       <button id="limparFiltro" type="button">Ligar Tudo / Limpar</button>
 
       <details class="painel-colapsavel">
-        <summary class="subtitulo">Anotações</summary>
+        <summary class="subtitulo subtitulo-painel">Anotações</summary>
         <div class="conteudo-colapsavel">
           <div class="anotacao-grupo-titulo">Desenho</div>
           <div class="grid-anotacoes">
@@ -118,6 +118,11 @@
             <button class="filtro-btn anotacao-btn" id="drawLimpar" type="button">Limpar</button>
             <button class="filtro-btn anotacao-btn" id="drawExportar" type="button">Exportar</button>
             <button class="filtro-btn anotacao-btn" id="drawImportar" type="button">Importar</button>
+          </div>
+          <div class="anotacao-grupo-titulo">Localizar km da rodovia</div>
+          <div class="anotacao-km-form">
+            <input id="drawKmRodovia" type="text" inputmode="decimal" placeholder="Ex.: 21,1" />
+            <button class="filtro-btn anotacao-btn" id="drawLocalizarKm" type="button">Marcar km</button>
           </div>
           <button class="filtro-btn anotacao-btn" id="toggleLegendaAnotacoes" type="button">Legenda das anotações</button>
           <div class="anotacao-opcoes">
@@ -153,7 +158,7 @@
       </details>
 
       <details class="painel-colapsavel">
-        <summary class="subtitulo">Impressão / PDF</summary>
+        <summary class="subtitulo subtitulo-painel">Impressão / PDF</summary>
         <div class="conteudo-colapsavel">
           <label for="printFormato">Formato</label>
           <select id="printFormato">
