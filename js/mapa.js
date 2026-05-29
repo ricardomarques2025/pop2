@@ -38,12 +38,15 @@ function desenharMascaraBrasil() {
   if (!mascaraBrasilData) return;
   if (mascaraBrasilLayer) map.removeLayer(mascaraBrasilLayer);
 
+  var municipioSelecionado = document.getElementById('municipioSelect') ? document.getElementById('municipioSelect').value : '';
+  var corMascara = municipioSelecionado ? '#d9d9d9' : '#808080';
+
   mascaraBrasilLayer = L.geoJSON(mascaraBrasilData, {
     style: {
-      color: '#808080',
+      color: corMascara,
       weight: 1,
-      fillColor: '#808080',
-      fillOpacity: 0.25
+      fillColor: corMascara,
+      fillOpacity: municipioSelecionado ? 1 : 0.25
     },
     interactive: false
   }).addTo(map);
@@ -2650,10 +2653,23 @@ map.addControl(new LogoMapaControl());
     }).addTo(map);
   }
 
+  function corPastelMunicipio(nome) {
+    var texto = String(nome || '');
+    var hash = 0;
+    for (var i = 0; i < texto.length; i++) {
+      hash = ((hash << 5) - hash) + texto.charCodeAt(i);
+      hash |= 0;
+    }
+    var hue = Math.abs(hash) % 360;
+    return 'hsl(' + hue + ', 45%, 88%)';
+  }
+
   function desenharMunicipiosBase(featuresSelecionados) {
     if (municipiosLayer) map.removeLayer(municipiosLayer);
 
-    if (!municipioBaseFiltroAtivo) {
+    var municipioSelecionadoFiltro = document.getElementById('municipioSelect').value;
+
+    if (!municipioBaseFiltroAtivo && !municipioSelecionadoFiltro) {
       municipiosLayer = null;
       return;
     }
@@ -2666,12 +2682,34 @@ map.addControl(new LogoMapaControl());
 
     var haSelecao = selecionados.size > 0 &&
                     selecionados.size < municipiosData.features.length;
+    var mascaraMunicipioSelecionado = !!municipioSelecionadoFiltro;
 
     municipiosLayer = L.geoJSON(municipiosData, {
+      pane: 'municipiosPane',
       interactive: false,
       style: function(feature) {
         var nome = valorSeguro(feature, 'NM_MUN');
         var selecionado = selecionados.has(nome);
+
+        if (mascaraMunicipioSelecionado) {
+          if (nome === municipioSelecionadoFiltro) {
+            return {
+              color: '#888888',
+              weight: 2,
+              dashArray: '8, 5, 1, 5',
+              fillColor: '#ffffff',
+              fillOpacity: 0
+            };
+          }
+
+          return {
+            color: '#888888',
+            weight: 1,
+            dashArray: '8, 5, 1, 5',
+            fillColor: corPastelMunicipio(nome),
+            fillOpacity: 1
+          };
+        }
 
         if (!haSelecao) {
           return {
@@ -3477,6 +3515,111 @@ map.addControl(new LogoMapaControl());
     }
 
     return filtrados;
+  }
+
+  function adicionarReferenciaProposta(lista, origem, proposta) {
+    if (proposta === null || proposta === undefined || String(proposta).trim() === '') return;
+    var chave = origem + '|' + String(proposta);
+    for (var i = 0; i < lista.length; i++) {
+      if (lista[i].chave === chave) return;
+    }
+    lista.push({ origem: origem, proposta: proposta, chave: chave });
+  }
+
+  function referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos) {
+    var referencias = [];
+    if (dadosFund) adicionarReferenciaProposta(referencias, 'FUNDEINFRA', dadosFund.PROPOSTA);
+    for (var i = 0; i < dadosDorTodos.length; i++) {
+      adicionarReferenciaProposta(referencias, 'DOR', dadosDorTodos[i].PROPOSTA);
+    }
+    return referencias;
+  }
+
+  function featureAtendeReferenciaProposta(feature, referencia) {
+    if (!referencia) return false;
+    if (referencia.origem === 'FUNDEINFRA') {
+      return !!dadosFundeinfraDaFeatureFiltrado(feature, referencia.proposta);
+    }
+    if (referencia.origem === 'DOR') {
+      return dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, referencia.proposta).length > 0;
+    }
+    return false;
+  }
+
+  function featuresSrePorReferenciasProposta(featureClicada, referencias) {
+    var features = [];
+    var vistos = {};
+    var origem = sreData && sreData.features ? sreData.features : [];
+
+    for (var i = 0; i < origem.length; i++) {
+      var feature = origem[i];
+      var atende = false;
+      for (var r = 0; r < referencias.length; r++) {
+        if (featureAtendeReferenciaProposta(feature, referencias[r])) {
+          atende = true;
+          break;
+        }
+      }
+      if (!atende) continue;
+
+      var chave = [
+        nomeSREFeature(feature),
+        nomeRodoviaFeature(feature),
+        valorSeguro(feature, 'TRECHO') || valorSeguro(feature, 'trecho_go'),
+        valorSeguro(feature, 'EXT_KM')
+      ].join('|');
+      if (vistos[chave]) continue;
+      vistos[chave] = true;
+      features.push(feature);
+    }
+
+    if (!features.length && featureClicada) features.push(featureClicada);
+    features.sort(function(a, b) {
+      return String(nomeRodoviaFeature(a)).localeCompare(String(nomeRodoviaFeature(b)), 'pt-BR', { numeric: true }) ||
+        String(nomeSREFeature(a)).localeCompare(String(nomeSREFeature(b)), 'pt-BR', { numeric: true });
+    });
+    return features;
+  }
+
+  function htmlTabelaDadosSre(features, referencias) {
+    var propostas = [];
+    for (var i = 0; i < referencias.length; i++) {
+      adicionarUnico(propostas, String(referencias[i].proposta));
+    }
+    var titulo = 'Dados do SRE';
+    if (propostas.length) titulo += ' - Proposta ' + propostas.join(', ');
+
+    var html = `
+        <div class="bloco-servico">
+          <div class="titulo-servico titulo-cinza">${escapeHtml(titulo)}</div>
+          <table class="tabela-servico">
+            <tr><th>SRE</th><th>Rodovia</th><th>Trecho</th><th>Extensão</th></tr>`;
+
+    var totalExtensao = 0;
+    for (var f = 0; f < features.length; f++) {
+      var p = features[f].properties || {};
+      var extensao = p.EXT_KM || '';
+      var numeroExtensao = Number(String(extensao).replace(',', '.'));
+      if (isFinite(numeroExtensao)) totalExtensao += numeroExtensao;
+      html += `
+            <tr>
+              <td>${escapeHtml(p.sre || p.SRE || '')}</td>
+              <td>${escapeHtml(p.RODOVIA || p.rodovia || '')}</td>
+              <td>${escapeHtml(p.TRECHO || p.trecho_go || '')}</td>
+              <td>${escapeHtml(extensao)} km</td>
+            </tr>`;
+    }
+
+    html += `
+            <tr>
+              <th colspan="3">Total</th>
+              <th>${escapeHtml(totalExtensao.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))} km</th>
+            </tr>`;
+
+    html += `
+          </table>
+        </div>`;
+    return html;
   }
 
   function dadosObrasPontosDaFeatureTodos(feature) {
@@ -4635,24 +4778,13 @@ map.addControl(new LogoMapaControl());
   }
 
     function atualizarPainelInferior(feature) {
-      var p = feature.properties || {};
       var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
       var dadosFund = dadosFundeinfraDaFeatureFiltrado(feature, propostaSelecionada);
       var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, propostaSelecionada) : [];
+      var referenciasProposta = referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos);
+      var featuresSre = featuresSrePorReferenciasProposta(feature, referenciasProposta);
 
-      var html = `
-        <div class="bloco-servico">
-          <div class="titulo-servico titulo-cinza">Dados do SRE</div>
-          <table class="tabela-servico">
-            <tr><th>SRE</th><th>Rodovia</th><th>Trecho</th><th>Extensão</th></tr>
-            <tr>
-              <td>${p.sre || p.SRE || ''}</td>
-              <td>${p.RODOVIA || p.rodovia || ''}</td>
-              <td>${p.TRECHO || p.trecho_go || ''}</td>
-              <td>${p.EXT_KM || ''} km</td>
-            </tr>
-          </table>
-        </div>`;
+      var html = htmlTabelaDadosSre(featuresSre, referenciasProposta);
 
       if (dadosFund) {
         html += `
@@ -4661,12 +4793,12 @@ map.addControl(new LogoMapaControl());
           <table class="tabela-servico">
             <tr><th>Proposta</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th></tr>
             <tr>
-              <td>${dadosFund.PROPOSTA || ''}</td>
-              <td>${dadosFund.SERVICO || ''}</td>
-              <td>${dadosFund.ETAPA || ''}</td>
-              <td>${dadosFund.STATUS || ''}</td>
-              <td>${dadosFund.SEI || ''}</td>
-              <td>${dadosFund.CONCLUSAO || ''}</td>
+              <td>${escapeHtml(dadosFund.PROPOSTA || '')}</td>
+              <td>${escapeHtml(dadosFund.SERVICO || '')}</td>
+              <td>${escapeHtml(dadosFund.ETAPA || '')}</td>
+              <td>${escapeHtml(dadosFund.STATUS || '')}</td>
+              <td>${escapeHtml(dadosFund.SEI || '')}</td>
+              <td>${escapeHtml(dadosFund.CONCLUSAO || '')}</td>
             </tr>
           </table>
         </div>`;
@@ -4682,12 +4814,12 @@ map.addControl(new LogoMapaControl());
           var dadosDor = dadosDorTodos[i];
           html += `
             <tr>
-              <td>${dadosDor.PROPOSTA || ''}</td>
-              <td>${dadosDor.SERVICO || ''}</td>
-              <td>${dadosDor.ETAPA || ''}</td>
-              <td>${dadosDor.STATUS || ''}</td>
-              <td>${dadosDor.SEI || ''}</td>
-              <td>${dadosDor.CONCLUSAO || ''}</td>
+              <td>${escapeHtml(dadosDor.PROPOSTA || '')}</td>
+              <td>${escapeHtml(dadosDor.SERVICO || '')}</td>
+              <td>${escapeHtml(dadosDor.ETAPA || '')}</td>
+              <td>${escapeHtml(dadosDor.STATUS || '')}</td>
+              <td>${escapeHtml(dadosDor.SEI || '')}</td>
+              <td>${escapeHtml(dadosDor.CONCLUSAO || '')}</td>
             </tr>`;
         }
         html += `
@@ -4752,7 +4884,8 @@ map.addControl(new LogoMapaControl());
         span.textContent = '';
       }
     }
-  }function aplicarFiltros() {
+  }function aplicarFiltros(opcoes) {
+    opcoes = opcoes || {};
     desenharMascaraBrasil();
     atualizarBotoesBase();
     var feats = municipiosFiltrados();
@@ -4766,21 +4899,23 @@ map.addControl(new LogoMapaControl());
     atualizarIndicadoresProgramaMunicipio(municipioSelecionado);
     atualizarIndicadoresServicoEOAE(municipioSelecionado);
 
-    var localidadeSelecionada = document.getElementById('localidadeSelect').value;
-    if (localidadeFiltroAtivo && localidadeSelecionada) {
-      zoomParaLocalidade(localidadeSelecionada);
-    } else {
-      var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
-      var sreSelecionado = document.getElementById('sreSelect').value;
-      var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
-      var featsZoom = obterFeaturesZoomServicos();
-
-      if ((rodoviaSelecionada || sreSelecionado || propostaSelecionada) && featsZoom.length > 0) {
-        zoomParaSelecao(featsZoom);
-      } else if (feats.length > 0 && feats.length < municipiosData.features.length) {
-        zoomParaSelecao(feats);
+    if (!opcoes.preservarZoom) {
+      var localidadeSelecionada = document.getElementById('localidadeSelect').value;
+      if (localidadeFiltroAtivo && localidadeSelecionada) {
+        zoomParaLocalidade(localidadeSelecionada);
       } else {
-        zoomParaGoias();
+        var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
+        var sreSelecionado = document.getElementById('sreSelect').value;
+        var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+        var featsZoom = obterFeaturesZoomServicos();
+
+        if ((rodoviaSelecionada || sreSelecionado || propostaSelecionada) && featsZoom.length > 0) {
+          zoomParaSelecao(featsZoom);
+        } else if (feats.length > 0 && feats.length < municipiosData.features.length) {
+          zoomParaSelecao(feats);
+        } else {
+          zoomParaGoias();
+        }
       }
     }
 
@@ -5251,7 +5386,7 @@ map.addControl(new LogoMapaControl());
       preencherRodovias();
       preencherSREs();
       preencherPropostas();
-      aplicarFiltros();
+      aplicarFiltros({ preservarZoom: true });
     });
   }
 

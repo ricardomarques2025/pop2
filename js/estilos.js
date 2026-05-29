@@ -4,6 +4,7 @@
 
 const MAPA_PANES = {
   areasUrbanasPane: 240,
+  municipiosPane: 250,
   snvPane: 260,
   sreBasePane: 300,
   servicosPane: 500,
