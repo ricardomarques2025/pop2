@@ -391,7 +391,8 @@ map.addControl(new LogoMapaControl());
 
     var servicosAtivos = {
       FUNDEINFRA: true,
-      DOR: true
+      DOR: true,
+      DMA: true
     };
     var servicoFiltroAtivo = '';
 
@@ -1967,6 +1968,8 @@ map.addControl(new LogoMapaControl());
   var obrasFundeinfraPorLink = {};
   var obrasDorData = [];
   var obrasDorPorLink = {};
+  var obrasDmaData = [];
+  var obrasDmaPorLink = {};
   var obrasPontosTabelaData = [];
   var obrasPontosPorLink = {};
 
@@ -2055,8 +2058,40 @@ map.addControl(new LogoMapaControl());
       });
   }
 
+  function carregarTabelasDma() {
+    fetch('data/OBRAS_LINHAS_DMA.json')
+      .then(function(r) { return r.json(); })
+      .then(function(resultado) {
+        obrasDmaData = Array.isArray(resultado) ? resultado : [];
+        obrasDmaPorLink = {};
+
+        for (var i = 0; i < obrasDmaData.length; i++) {
+          var item = obrasDmaData[i];
+          var link = item && (item.LINK_DMA || item.LINK_DOR || item.LINK_FUND);
+          if (link) {
+            var chave = String(link);
+            if (!obrasDmaPorLink[chave]) obrasDmaPorLink[chave] = [];
+            obrasDmaPorLink[chave].push(item);
+          }
+        }
+
+        console.log('OBRAS_LINHAS_DMA carregado:', obrasDmaData.length);
+        preencherServicos();
+        if (sreData && municipiosData) {
+          preencherRodovias();
+          preencherSREs();
+          preencherPropostas();
+          aplicarFiltros();
+        }
+      })
+      .catch(function(e) {
+        console.warn('Falha ao carregar OBRAS_LINHAS_DMA:', e);
+      });
+  }
+
   carregarTabelasFundeinfra();
   carregarTabelasDor();
+  carregarTabelasDma();
   carregarTabelaObrasPontos();
   
   
@@ -2100,6 +2135,22 @@ map.addControl(new LogoMapaControl());
     if (!obj || !obj.properties) return '';
     if (obj.properties[campo] === null || obj.properties[campo] === undefined) return '';
     return obj.properties[campo];
+  }
+
+  function featureComOrigemServico(feature, origem) {
+    if (!feature) return feature;
+    var props = Object.assign({}, feature.properties || {});
+    props.__ORIGEM_SERVICO = origem;
+    return {
+      type: feature.type || 'Feature',
+      id: feature.id,
+      properties: props,
+      geometry: feature.geometry
+    };
+  }
+
+  function origemServicoFeature(feature) {
+    return valorSeguro(feature, '__ORIGEM_SERVICO');
   }
 
   function numeroSeguro(v) {
@@ -2303,7 +2354,6 @@ map.addControl(new LogoMapaControl());
 
     function considerarFeature(feature) {
       var dadosFund = dadosFundeinfraDaFeature(feature);
-      var dadosDorTodos = dadosDorDaFeatureTodos(feature);
 
       var sre = nomeSREFeature(feature);
       var rodovia = nomeRodoviaFeature(feature);
@@ -2317,14 +2367,6 @@ map.addControl(new LogoMapaControl());
 
       if (servicosAtivos.FUNDEINFRA && dadosFund && dadosFund.PROPOSTA !== null && dadosFund.PROPOSTA !== undefined && String(dadosFund.PROPOSTA).trim() !== '') {
         adicionarUnico(propostas, String(dadosFund.PROPOSTA));
-      }
-      if (servicosAtivos.DOR) {
-        for (var i = 0; i < dadosDorTodos.length; i++) {
-          var dadosDor = dadosDorTodos[i];
-          if (dadosDor.PROPOSTA !== null && dadosDor.PROPOSTA !== undefined && String(dadosDor.PROPOSTA).trim() !== '') {
-            adicionarUnico(propostas, String(dadosDor.PROPOSTA));
-          }
-        }
       }
     }
 
@@ -2358,6 +2400,7 @@ map.addControl(new LogoMapaControl());
   function preencherServicos() {
     var select = document.getElementById('servicoSelect');
     if (!select) return;
+    var valorAtual = select.value;
     select.innerHTML = '<option value="">Todos</option>';
 
     var servicos = [];
@@ -2369,8 +2412,9 @@ map.addControl(new LogoMapaControl());
       }
     }
 
-    addServicos(obrasFundeinfraData);
-    addServicos(obrasDorData);
+    if (servicosAtivos.FUNDEINFRA) addServicos(obrasFundeinfraData);
+    if (servicosAtivos.DOR) addServicos(obrasDorData);
+    if (servicosAtivos.DMA) addServicos(obrasDmaData);
 
     servicos.sort(function(a, b) {
       return String(a).localeCompare(String(b), 'pt-BR');
@@ -2382,6 +2426,14 @@ map.addControl(new LogoMapaControl());
       opt.textContent = s;
       select.appendChild(opt);
     });
+
+    if (valorAtual && servicos.indexOf(valorAtual) !== -1) {
+      select.value = valorAtual;
+      servicoFiltroAtivo = valorAtual;
+    } else {
+      select.value = '';
+      servicoFiltroAtivo = '';
+    }
   }
 
   function obterFeaturesZoomServicos() {
@@ -2406,8 +2458,7 @@ map.addControl(new LogoMapaControl());
       if (sreSelecionado && sre !== sreSelecionado) return;
       if (propostaSelecionada) {
         var dadosFund = servicosAtivos.FUNDEINFRA ? dadosFundeinfraDaFeatureFiltrado(f, propostaSelecionada) : null;
-        var dadosDorFiltrados = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(f, servicoFiltroAtivo, propostaSelecionada) : [];
-        if (!dadosFund && !dadosDorFiltrados.length) return;
+        if (!dadosFund) return;
       }
 
       feats.push(f);
@@ -2436,6 +2487,48 @@ map.addControl(new LogoMapaControl());
       }
     }
     return feats;
+  }
+
+  function obterFeaturesZoomPropostaFundeinfra(propostaSelecionada) {
+    var rgSelecionada = document.getElementById('rgPlanSelect').value;
+    var municipioSelecionado = document.getElementById('municipioSelect').value;
+    var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
+    var sreSelecionado = document.getElementById('sreSelect').value;
+    var feats = [];
+
+    if (!propostaSelecionada || !sreData || !sreData.features) return feats;
+
+    for (var i = 0; i < sreData.features.length; i++) {
+      var feature = sreData.features[i];
+      var dadosFund = dadosFundeinfraDaFeature(feature);
+      if (!dadosFund || String(dadosFund.PROPOSTA) !== String(propostaSelecionada)) continue;
+      if (servicoFiltroAtivo && dadosFund.SERVICO !== servicoFiltroAtivo) continue;
+
+      var nmMun = valorSeguro(feature, 'NM_MUN');
+      var rgPlan = valorSeguro(feature, 'RG_PLAN');
+      var rodovia = nomeRodoviaFeature(feature);
+      var sre = nomeSREFeature(feature);
+
+      if (municipioSelecionado && nmMun && nmMun !== municipioSelecionado) continue;
+      if (!municipioSelecionado && rgSelecionada && rgPlan && rgPlan !== rgSelecionada) continue;
+      if (rodoviaSelecionada && rodovia !== rodoviaSelecionada) continue;
+      if (sreSelecionado && sre !== sreSelecionado) continue;
+
+      feats.push(feature);
+    }
+
+    return feats;
+  }
+
+  function zoomParaPropostaFundeinfra() {
+    var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+    if (!propostaSelecionada) return false;
+
+    var featsProposta = obterFeaturesZoomPropostaFundeinfra(propostaSelecionada);
+    if (!featsProposta.length) return false;
+
+    zoomParaSelecao(featsProposta);
+    return true;
   }
 
   function preencherRodovias() {
@@ -2846,9 +2939,11 @@ map.addControl(new LogoMapaControl());
   function featureTemServicoAtivo(feature) {
     var linkFund = valorSeguro(feature, 'LINK_FUND');
     var linkDor = valorSeguro(feature, 'LINK_DOR');
+    var linkDma = valorSeguro(feature, 'LINK_DMA');
     return (
       (servicosAtivos.FUNDEINFRA && linkFund && dadosFundeinfraDaFeature(feature)) ||
-      (servicosAtivos.DOR && linkDor && dadosDorDaFeature(feature))
+      (servicosAtivos.DOR && linkDor && dadosDorDaFeature(feature)) ||
+      (servicosAtivos.DMA && linkDma && dadosDmaDaFeature(feature))
     );
   }
 
@@ -3517,6 +3612,31 @@ map.addControl(new LogoMapaControl());
     return filtrados;
   }
 
+  function dadosDmaDaFeature(feature) {
+    var dados = dadosDmaDaFeatureTodos(feature);
+    return dados.length ? dados[0] : null;
+  }
+
+  function dadosDmaDaFeatureTodos(feature) {
+    var link = valorSeguro(feature, 'LINK_DMA');
+    if (!link) return [];
+    var dados = obrasDmaPorLink[String(link)] || [];
+    return Array.isArray(dados) ? dados : [dados];
+  }
+
+  function dadosDmaDaFeatureFiltrados(feature, servico, proposta) {
+    var todos = dadosDmaDaFeatureTodos(feature);
+    var filtrados = [];
+
+    for (var i = 0; i < todos.length; i++) {
+      var item = todos[i];
+      if (servico && item.SERVICO !== servico) continue;
+      filtrados.push(item);
+    }
+
+    return filtrados;
+  }
+
   function adicionarReferenciaProposta(lista, origem, proposta) {
     if (proposta === null || proposta === undefined || String(proposta).trim() === '') return;
     var chave = origem + '|' + String(proposta);
@@ -3526,12 +3646,9 @@ map.addControl(new LogoMapaControl());
     lista.push({ origem: origem, proposta: proposta, chave: chave });
   }
 
-  function referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos) {
+  function referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos) {
     var referencias = [];
     if (dadosFund) adicionarReferenciaProposta(referencias, 'FUNDEINFRA', dadosFund.PROPOSTA);
-    for (var i = 0; i < dadosDorTodos.length; i++) {
-      adicionarReferenciaProposta(referencias, 'DOR', dadosDorTodos[i].PROPOSTA);
-    }
     return referencias;
   }
 
@@ -3539,9 +3656,6 @@ map.addControl(new LogoMapaControl());
     if (!referencia) return false;
     if (referencia.origem === 'FUNDEINFRA') {
       return !!dadosFundeinfraDaFeatureFiltrado(feature, referencia.proposta);
-    }
-    if (referencia.origem === 'DOR') {
-      return dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, referencia.proposta).length > 0;
     }
     return false;
   }
@@ -3641,7 +3755,6 @@ map.addControl(new LogoMapaControl());
     for (var i = 0; i < todos.length; i++) {
       var item = todos[i];
       if (!servicosAtivos.FUNDEINFRA) continue;
-      if (proposta && String(item.PROPOSTA) !== String(proposta)) continue;
       filtrados.push(item);
     }
 
@@ -3657,23 +3770,33 @@ map.addControl(new LogoMapaControl());
 
     function estiloDor(dados) {
       var servico = String((dados && dados.SERVICO) || '').toLowerCase();
+      var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
       var cor = '#666666';
+      var tipoLinha = 'NORMAL';
 
       if (servico.indexOf('pavimenta') >= 0) cor = '#dc0101';
       else if (servico.indexOf('duplica') >= 0) cor = '#001efe';
       else if (servico.indexOf('restaura') >= 0) cor = '#10a000';
+      else if (servico.indexOf('revitaliza') >= 0) cor = '#7db0b4';
+      else if (servico.indexOf('terraplenagem') >= 0) cor = '#91522d';
       else if (servico.indexOf('melhoria') >= 0) cor = '#ff9601';
       else if (servico === 'drenagem') cor = '#b398f3';
       else if (servico.indexOf('amplia') >= 0) cor = '#ff7bbd';
       else if (servico.indexOf('reforma') >= 0) cor = '#14b8a6';
 
+      if (servico.indexOf('revitaliza') >= 0 && etapa.indexOf('planejamento') >= 0) tipoLinha = 'COM LINHA BRANCA DOR';
+
       return {
         cor: cor,
-        tipo_linha: 'NORMAL',
+        tipo_linha: tipoLinha,
         espessura: 7,
         legenda: ((dados && dados.SERVICO) || 'Serviço') + ' - ' + ((dados && dados.ETAPA) || 'Etapa')
       };
     }
+
+  function estiloDma(dados) {
+    return estiloDor(dados);
+  }
 
   function estiloFundeinfra(dados) {
     var servico = String((dados && dados.SERVICO) || '').toLowerCase();
@@ -3753,7 +3876,12 @@ map.addControl(new LogoMapaControl());
 
   function criarRotuloObra(latlng, dados, origem, link, cor, angulo) {
     var sigla = siglaOrigemEtapa(dados, origem, link);
-    var proposta = dados && dados.PROPOSTA !== null && dados.PROPOSTA !== undefined ? String(dados.PROPOSTA) : '';
+    var identificador = '';
+    if (origem === 'FUNDEINFRA') {
+      identificador = dados && dados.PROPOSTA !== null && dados.PROPOSTA !== undefined ? String(dados.PROPOSTA) : '';
+    } else {
+      identificador = dados && dados.ITEM !== null && dados.ITEM !== undefined ? String(dados.ITEM) : '';
+    }
     var titulo = origem + ' - ' + ((dados && dados.SERVICO) || 'Servico') + ' - ' + ((dados && dados.ETAPA) || 'Etapa');
     var anguloOffset = isFinite(angulo) ? angulo + 90 : 0;
 
@@ -3769,7 +3897,7 @@ map.addControl(new LogoMapaControl());
           '<div class="obra-label-offset">' +
           '<div class="obra-label" title="' + escapeHtml(titulo) + '">' +
             '<div class="obra-label-top">' + escapeHtml(sigla) + '</div>' +
-            '<div class="obra-label-bottom" style="background:' + cor + ';">' + escapeHtml(proposta) + '</div>' +
+            '<div class="obra-label-bottom" style="background:' + cor + ';">' + escapeHtml(identificador) + '</div>' +
           '</div>' +
           '</div>',
         iconSize: [42, 46],
@@ -4004,7 +4132,8 @@ map.addControl(new LogoMapaControl());
       var p = feature.properties || {};
       var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
       var dadosFund = dadosFundeinfraDaFeatureFiltrado(feature, propostaSelecionada);
-      var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, propostaSelecionada) : [];
+      var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
+      var dadosDmaTodos = servicosAtivos.DMA ? dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
 
       var html = '';
       html += '<b>SRE:</b> ' + escapeHtml(p.sre || p.SRE || '') + '<br>';
@@ -4030,7 +4159,7 @@ map.addControl(new LogoMapaControl());
             if (i > 0) html += '<br>';
             html += '<b>Registro ' + (i + 1) + '</b><br>';
           }
-          html += '<b>Proposta:</b> ' + escapeHtml(dadosDor.PROPOSTA || '') + '<br>';
+          html += '<b>Item:</b> ' + escapeHtml(dadosDor.ITEM || '') + '<br>';
           html += '<b>Servico:</b> ' + escapeHtml(dadosDor.SERVICO || '') + '<br>';
           html += '<b>Etapa:</b> ' + escapeHtml(dadosDor.ETAPA || '') + '<br>';
           html += '<b>Status:</b> ' + escapeHtml(dadosDor.STATUS || '') + '<br>';
@@ -4040,14 +4169,22 @@ map.addControl(new LogoMapaControl());
         }
       }
 
-      if (false) {
-        html += '<br><br><b>— DOR —</b><br>';
-        html += '<b>Proposta:</b> ' + escapeHtml(dadosDor.PROPOSTA || '') + '<br>';
-        html += '<b>Serviço:</b> ' + escapeHtml(dadosDor.SERVICO || '') + '<br>';
-        html += '<b>Etapa:</b> ' + escapeHtml(dadosDor.ETAPA || '') + '<br>';
-        html += '<b>Status:</b> ' + escapeHtml(dadosDor.STATUS || '') + '<br>';
-        html += '<b>SEI:</b> ' + escapeHtml(dadosDor.SEI || '') + '<br>';
-        html += '<b>Conclusão:</b> ' + escapeHtml(dadosDor.CONCLUSAO || '');
+      if (dadosDmaTodos.length) {
+        html += '<br><br><b>-- DMA --</b><br>';
+        for (var d = 0; d < dadosDmaTodos.length; d++) {
+          var dadosDma = dadosDmaTodos[d];
+          if (dadosDmaTodos.length > 1) {
+            if (d > 0) html += '<br>';
+            html += '<b>Registro ' + (d + 1) + '</b><br>';
+          }
+          html += '<b>Item:</b> ' + escapeHtml(dadosDma.ITEM || '') + '<br>';
+          html += '<b>Servico:</b> ' + escapeHtml(dadosDma.SERVICO || '') + '<br>';
+          html += '<b>Etapa:</b> ' + escapeHtml(dadosDma.ETAPA || '') + '<br>';
+          html += '<b>Status:</b> ' + escapeHtml(dadosDma.STATUS || '') + '<br>';
+          html += '<b>SEI:</b> ' + escapeHtml(dadosDma.SEI || '') + '<br>';
+          html += '<b>Conclusao:</b> ' + escapeHtml(dadosDma.CONCLUSAO || '');
+          if (d < dadosDmaTodos.length - 1) html += '<br>';
+        }
       }
 
       return html;
@@ -4245,6 +4382,29 @@ map.addControl(new LogoMapaControl());
     bloco.style.display = total > 0 ? '' : 'none';
   }
 
+  function corLegendaServico(info) {
+    if (info && typeof info === 'object') return info.cor || '#666666';
+    return info || '#666666';
+  }
+
+  function tipoLinhaLegendaServico(info) {
+    if (info && typeof info === 'object') return info.tipo_linha || 'NORMAL';
+    return 'NORMAL';
+  }
+
+  function htmlLegendaServico(info) {
+    var cor = corLegendaServico(info);
+    if (tipoLinhaLegendaServico(info) === 'COM LINHA BRANCA DOR' || tipoLinhaLegendaServico(info) === 'COM LINHA BRANCA') {
+      return '<span class="legenda-linha-wrap">' +
+        '<span class="legenda-linha-projeto-base" style="height:9px;background:' + cor + ';"></span>' +
+        '<span class="legenda-linha-projeto-topo" style="height:4.5px;"></span>' +
+      '</span>';
+    }
+    return '<span class="legenda-linha-wrap">' +
+      '<span class="legenda-linha" style="height:9px;background:' + cor + ';"></span>' +
+    '</span>';
+  }
+
     function renderizarLegendaDor(legendasVisiveis) {
     var alvo = document.getElementById('legendaDor'); if(!alvo) return;
     var bloco = document.getElementById('legendaDor').closest('.bloco');
@@ -4257,13 +4417,36 @@ map.addControl(new LogoMapaControl());
 
     for (var i = 0; i < nomes.length; i++) {
       var legenda = nomes[i];
-      var cor = legendasVisiveis[legenda] || '#666666';
+      var infoLegenda = legendasVisiveis[legenda] || '#666666';
       var item = document.createElement('div');
       item.className = 'legenda-item';
       item.innerHTML =
-        '<span class="legenda-linha-wrap">' +
-          '<span class="legenda-linha" style="height:9px;background:' + cor + ';"></span>' +
-        '</span>' +
+        htmlLegendaServico(infoLegenda) +
+        legenda;
+      alvo.appendChild(item);
+      total++;
+    }
+
+    bloco.style.display = total > 0 ? '' : 'none';
+  }
+
+  function renderizarLegendaDma(legendasVisiveis) {
+    var alvo = document.getElementById('legendaDma'); if(!alvo) return;
+    var bloco = document.getElementById('legendaDma').closest('.bloco');
+    alvo.innerHTML = '';
+
+    var total = 0;
+    var nomes = Object.keys(legendasVisiveis || {}).sort(function(a, b) {
+      return String(a).localeCompare(String(b), 'pt-BR');
+    });
+
+    for (var i = 0; i < nomes.length; i++) {
+      var legenda = nomes[i];
+      var infoLegenda = legendasVisiveis[legenda] || '#666666';
+      var item = document.createElement('div');
+      item.className = 'legenda-item';
+      item.innerHTML =
+        htmlLegendaServico(infoLegenda) +
         legenda;
       alvo.appendChild(item);
       total++;
@@ -4535,6 +4718,7 @@ map.addControl(new LogoMapaControl());
           break;
         }
       }
+
       if (!emBuraco) return true;
     }
 
@@ -4624,7 +4808,7 @@ map.addControl(new LogoMapaControl());
     var resultadoObrasPontos = desenharObrasPontos(rodoviaSelecionada, sreSelecionado, propostaSelecionada, featuresMunicipios);
     var totalObrasPontos = resultadoObrasPontos.total;
 
-        var linhasBase = [];
+    var linhasBase = [];
     var linksFundIncluidos = {};
 
         // --- FUNDEINFRA ---
@@ -4641,7 +4825,7 @@ map.addControl(new LogoMapaControl());
         if (propostaSelecionada) {
           if (!dadosF || String(dadosF.PROPOSTA) !== String(propostaSelecionada)) continue;
         }
-        linhasBase.push(f);
+        linhasBase.push(featureComOrigemServico(f, 'FUNDEINFRA'));
         linksFundIncluidos[String(link)] = true;
       }
     }
@@ -4652,45 +4836,78 @@ map.addControl(new LogoMapaControl());
         var fd = sreData.features[d];
         var linkDor = valorSeguro(fd, 'LINK_DOR');
         if (!linkDor) continue;
-        var dadosDFiltrados = dadosDorDaFeatureFiltrados(fd, servicoFiltroAtivo, propostaSelecionada);
+        var dadosDFiltrados = dadosDorDaFeatureFiltrados(fd, servicoFiltroAtivo, '');
         if (!dadosDFiltrados.length) continue;
         // Se já tem LINK_FUND e FUNDEINFRA está ativo, pula (prioridade FUNDEINFRA)
         if (servicosAtivos.FUNDEINFRA && valorSeguro(fd, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fd, 'LINK_FUND'))]) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(fd) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(fd) !== sreSelecionado) continue;
-        linhasBase.push(fd);
+        linhasBase.push(featureComOrigemServico(fd, 'DOR'));
+      }
+    }
+
+    // --- DMA (independente da DOR, mesmo quando compartilham a mesma geometria) ---
+    if (sreData && sreData.features && servicosAtivos.DMA) {
+      for (var dm = 0; dm < sreData.features.length; dm++) {
+        var fdm = sreData.features[dm];
+        var linkDma = valorSeguro(fdm, 'LINK_DMA');
+        if (!linkDma) continue;
+        var dadosDmaFiltrados = dadosDmaDaFeatureFiltrados(fdm, servicoFiltroAtivo, '');
+        if (!dadosDmaFiltrados.length) continue;
+        if (servicosAtivos.FUNDEINFRA && valorSeguro(fdm, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fdm, 'LINK_FUND'))]) continue;
+        if (rodoviaSelecionada && nomeRodoviaFeature(fdm) !== rodoviaSelecionada) continue;
+        if (sreSelecionado && nomeSREFeature(fdm) !== sreSelecionado) continue;
+        linhasBase.push(featureComOrigemServico(fdm, 'DMA'));
       }
     }
 
         var grupos = {};
     var servicosVisiveis = {};
     var servicosVisiveisDor = {};
+    var servicosVisiveisDma = {};
     var idsUnicos = {};
 
         for (var k = 0; k < linhasBase.length; k++) {
       var feat = linhasBase[k];
       var linkFund = valorSeguro(feat, 'LINK_FUND');
       var linkDor = valorSeguro(feat, 'LINK_DOR');
+      var linkDma = valorSeguro(feat, 'LINK_DMA');
 
-      var dados, estilo, chaveId;
+      var dados, estilo, chaveId, origemDados;
 
-      // Prioridade FUNDEINFRA se ambos existirem e FUNDEINFRA estiver ativo
-      if (linkFund && dadosFundeinfraDaFeature(feat) && servicosAtivos.FUNDEINFRA) {
+      var origemPreferida = origemServicoFeature(feat);
+
+      if (origemPreferida === 'FUNDEINFRA' && linkFund && dadosFundeinfraDaFeature(feat) && servicosAtivos.FUNDEINFRA) {
         dados = dadosFundeinfraDaFeature(feat);
         estilo = estiloFundeinfra(dados);
         chaveId = 'FUND_' + String(linkFund) + '_' + k;
-      } else if (linkDor && dadosDorDaFeature(feat) && servicosAtivos.DOR) {
-        dados = dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, propostaSelecionada)[0] || dadosDorDaFeature(feat);
+        origemDados = 'FUNDEINFRA';
+      } else if (origemPreferida === 'DOR' && linkDor && dadosDorDaFeature(feat) && servicosAtivos.DOR) {
+        dados = dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDorDaFeature(feat);
         estilo = estiloDor(dados);
         chaveId = 'DOR_' + String(linkDor) + '_' + k;
+        origemDados = 'DOR';
+      } else if (origemPreferida === 'DMA' && linkDma && dadosDmaDaFeature(feat) && servicosAtivos.DMA) {
+        dados = dadosDmaDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDmaDaFeature(feat);
+        estilo = estiloDma(dados);
+        chaveId = 'DMA_' + String(linkDma) + '_' + k;
+        origemDados = 'DMA';
+      // Prioridade FUNDEINFRA se ambos existirem e FUNDEINFRA estiver ativo
       } else if (linkFund && dadosFundeinfraDaFeature(feat)) {
         dados = dadosFundeinfraDaFeature(feat);
         estilo = estiloFundeinfra(dados);
         chaveId = 'FUND_' + String(linkFund) + '_' + k;
+        origemDados = 'FUNDEINFRA';
       } else if (linkDor && dadosDorDaFeature(feat)) {
-        dados = dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, propostaSelecionada)[0] || dadosDorDaFeature(feat);
+        dados = dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDorDaFeature(feat);
         estilo = estiloDor(dados);
         chaveId = 'DOR_' + String(linkDor) + '_' + k;
+        origemDados = 'DOR';
+      } else if (linkDma && dadosDmaDaFeature(feat)) {
+        dados = dadosDmaDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDmaDaFeature(feat);
+        estilo = estiloDma(dados);
+        chaveId = 'DMA_' + String(linkDma) + '_' + k;
+        origemDados = 'DMA';
       } else {
         continue;
       }
@@ -4698,10 +4915,12 @@ map.addControl(new LogoMapaControl());
       var chave = estilo.legenda + '|' + estilo.cor + '|' + estilo.tipo_linha;
       if (!grupos[chave]) grupos[chave] = { features: [], estilo: estilo };
       grupos[chave].features.push(feat);
-      if (linkFund) {
+      if (origemDados === 'FUNDEINFRA') {
         servicosVisiveis[estilo.legenda] = estilo.cor;
-      } else {
-        servicosVisiveisDor[estilo.legenda] = estilo.cor;
+      } else if (origemDados === 'DMA') {
+        servicosVisiveisDma[estilo.legenda] = estilo;
+      } else if (origemDados === 'DOR') {
+        servicosVisiveisDor[estilo.legenda] = estilo;
       }
       idsUnicos[chaveId] = true;
     }
@@ -4726,21 +4945,28 @@ map.addControl(new LogoMapaControl());
       var featRotulo = linhasBase[rl];
       var linkFundRotulo = valorSeguro(featRotulo, 'LINK_FUND');
       var linkDorRotulo = valorSeguro(featRotulo, 'LINK_DOR');
+      var linkDmaRotulo = valorSeguro(featRotulo, 'LINK_DMA');
       var dadosRotulo = null;
       var estiloRotulo = null;
       var origemRotulo = '';
       var linkRotulo = '';
+      var origemPreferidaRotulo = origemServicoFeature(featRotulo);
 
-      if (linkFundRotulo && dadosFundeinfraDaFeature(featRotulo) && servicosAtivos.FUNDEINFRA) {
+      if (origemPreferidaRotulo === 'FUNDEINFRA' && linkFundRotulo && dadosFundeinfraDaFeature(featRotulo) && servicosAtivos.FUNDEINFRA) {
         dadosRotulo = dadosFundeinfraDaFeature(featRotulo);
         estiloRotulo = estiloFundeinfra(dadosRotulo);
         origemRotulo = 'FUNDEINFRA';
         linkRotulo = linkFundRotulo;
-      } else if (linkDorRotulo && dadosDorDaFeature(featRotulo) && servicosAtivos.DOR) {
-        dadosRotulo = dadosDorDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, propostaSelecionada)[0] || dadosDorDaFeature(featRotulo);
+      } else if (origemPreferidaRotulo === 'DOR' && linkDorRotulo && dadosDorDaFeature(featRotulo) && servicosAtivos.DOR) {
+        dadosRotulo = dadosDorDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, '')[0] || dadosDorDaFeature(featRotulo);
         estiloRotulo = estiloDor(dadosRotulo);
         origemRotulo = 'DOR';
         linkRotulo = linkDorRotulo;
+      } else if (origemPreferidaRotulo === 'DMA' && linkDmaRotulo && dadosDmaDaFeature(featRotulo) && servicosAtivos.DMA) {
+        dadosRotulo = dadosDmaDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, '')[0] || dadosDmaDaFeature(featRotulo);
+        estiloRotulo = estiloDma(dadosRotulo);
+        origemRotulo = 'DMA';
+        linkRotulo = linkDmaRotulo;
       }
 
       if (!dadosRotulo || !estiloRotulo) continue;
@@ -4758,20 +4984,31 @@ map.addControl(new LogoMapaControl());
 
     var countFund = 0;
     var countDor = 0;
+    var countDma = 0;
     for (var ci = 0; ci < linhasBase.length; ci++) {
-      if (valorSeguro(linhasBase[ci], 'LINK_FUND')) countFund++;
-      if (valorSeguro(linhasBase[ci], 'LINK_DOR')) countDor++;
+      var origemContador = origemServicoFeature(linhasBase[ci]);
+      if (origemContador === 'FUNDEINFRA') countFund++;
+      else if (origemContador === 'DOR') countDor++;
+      else if (origemContador === 'DMA') countDma++;
+      else {
+        if (valorSeguro(linhasBase[ci], 'LINK_FUND')) countFund++;
+        if (valorSeguro(linhasBase[ci], 'LINK_DOR')) countDor++;
+        if (valorSeguro(linhasBase[ci], 'LINK_DMA')) countDma++;
+      }
     }
     document.getElementById('countOAE').textContent = countFund;
     var contadorObrasPontos = document.getElementById('countObrasPontos');
     if (contadorObrasPontos) contadorObrasPontos.textContent = totalObrasPontos;
     document.getElementById('countDor').textContent = countDor;
+    var contadorDma = document.getElementById('countDma');
+    if (contadorDma) contadorDma.textContent = countDma;
 
         renderizarLegendaServicos({
       linhas: servicosVisiveis,
       pontos: resultadoObrasPontos.legenda
     });
     renderizarLegendaDor(servicosVisiveisDor);
+    renderizarLegendaDma(servicosVisiveisDma);
     renderizarLegendaOAE({});
     renderizarLegendaRodEst(situacoesEstVisiveis);
     renderizarLegendaRodFed(situacoesFedVisiveis);
@@ -4780,8 +5017,9 @@ map.addControl(new LogoMapaControl());
     function atualizarPainelInferior(feature) {
       var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
       var dadosFund = dadosFundeinfraDaFeatureFiltrado(feature, propostaSelecionada);
-      var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, propostaSelecionada) : [];
-      var referenciasProposta = referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos);
+      var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
+      var dadosDmaTodos = servicosAtivos.DMA ? dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
+      var referenciasProposta = referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos);
       var featuresSre = featuresSrePorReferenciasProposta(feature, referenciasProposta);
 
       var html = htmlTabelaDadosSre(featuresSre, referenciasProposta);
@@ -4809,12 +5047,12 @@ map.addControl(new LogoMapaControl());
         <div class="bloco-servico">
           <div class="titulo-servico">Dados DOR</div>
           <table class="tabela-servico">
-            <tr><th>Proposta</th><th>Servico</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusao</th></tr>`;
+            <tr><th>Item</th><th>Servico</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusao</th></tr>`;
         for (var i = 0; i < dadosDorTodos.length; i++) {
           var dadosDor = dadosDorTodos[i];
           html += `
             <tr>
-              <td>${escapeHtml(dadosDor.PROPOSTA || '')}</td>
+              <td>${escapeHtml(dadosDor.ITEM || '')}</td>
               <td>${escapeHtml(dadosDor.SERVICO || '')}</td>
               <td>${escapeHtml(dadosDor.ETAPA || '')}</td>
               <td>${escapeHtml(dadosDor.STATUS || '')}</td>
@@ -4827,20 +5065,25 @@ map.addControl(new LogoMapaControl());
         </div>`;
       }
 
-      if (false) {
+      if (dadosDmaTodos.length) {
         html += `
         <div class="bloco-servico">
-          <div class="titulo-servico">Dados DOR</div>
+          <div class="titulo-servico">Dados DMA</div>
           <table class="tabela-servico">
-            <tr><th>Proposta</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th></tr>
+            <tr><th>Item</th><th>Servico</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusao</th></tr>`;
+        for (var d = 0; d < dadosDmaTodos.length; d++) {
+          var dadosDma = dadosDmaTodos[d];
+          html += `
             <tr>
-              <td>${dadosDor.PROPOSTA || ''}</td>
-              <td>${dadosDor.SERVICO || ''}</td>
-              <td>${dadosDor.ETAPA || ''}</td>
-              <td>${dadosDor.STATUS || ''}</td>
-              <td>${dadosDor.SEI || ''}</td>
-              <td>${dadosDor.CONCLUSAO || ''}</td>
-            </tr>
+              <td>${escapeHtml(dadosDma.ITEM || '')}</td>
+              <td>${escapeHtml(dadosDma.SERVICO || '')}</td>
+              <td>${escapeHtml(dadosDma.ETAPA || '')}</td>
+              <td>${escapeHtml(dadosDma.STATUS || '')}</td>
+              <td>${escapeHtml(dadosDma.SEI || '')}</td>
+              <td>${escapeHtml(dadosDma.CONCLUSAO || '')}</td>
+            </tr>`;
+        }
+        html += `
           </table>
         </div>`;
       }
@@ -4872,16 +5115,17 @@ map.addControl(new LogoMapaControl());
       var span = topbarLeft.querySelector('span');
       var fundAtivo = servicosAtivos.FUNDEINFRA;
       var dorAtivo = servicosAtivos.DOR;
+      var dmaAtivo = servicosAtivos.DMA;
 
       strong.textContent = 'PLANO GOINFRA';
-      if (fundAtivo && dorAtivo) {
+      if (fundAtivo && dorAtivo && dmaAtivo) {
         span.textContent = '';
-      } else if (fundAtivo && !dorAtivo) {
-        span.textContent = '- FUNDEINFRA';
-      } else if (!fundAtivo && dorAtivo) {
-        span.textContent = '- DOR';
       } else {
-        span.textContent = '';
+        var origensAtivas = [];
+        if (fundAtivo) origensAtivas.push('FUNDEINFRA');
+        if (dorAtivo) origensAtivas.push('DOR');
+        if (dmaAtivo) origensAtivas.push('DMA');
+        span.textContent = origensAtivas.length ? '- ' + origensAtivas.join(' / ') : '';
       }
     }
   }function aplicarFiltros(opcoes) {
@@ -4909,7 +5153,9 @@ map.addControl(new LogoMapaControl());
         var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
         var featsZoom = obterFeaturesZoomServicos();
 
-        if ((rodoviaSelecionada || sreSelecionado || propostaSelecionada) && featsZoom.length > 0) {
+        if (propostaSelecionada && zoomParaPropostaFundeinfra()) {
+          // Zoom aplicado ao trecho FUNDEINFRA da proposta.
+        } else if ((rodoviaSelecionada || sreSelecionado || propostaSelecionada) && featsZoom.length > 0) {
           zoomParaSelecao(featsZoom);
         } else if (feats.length > 0 && feats.length < municipiosData.features.length) {
           zoomParaSelecao(feats);
@@ -4940,6 +5186,7 @@ map.addControl(new LogoMapaControl());
     snvFiltroAtivo = false;
     areasUrbanasFiltroAtivo = false;
     servicoFiltroAtivo = '';
+    preencherServicos();
 
     var btnOAEOff = document.getElementById('toggleOAE');
     if (btnOAEOff) btnOAEOff.classList.remove('ativo-filtro');
@@ -4970,11 +5217,13 @@ map.addControl(new LogoMapaControl());
     var b3 = document.getElementById('blocoLegendaOAE');
         var b4 = document.getElementById('legendaServicos') ? document.getElementById('legendaServicos').closest('.bloco') : null;
     var b5 = document.getElementById('legendaDor') ? document.getElementById('legendaDor').closest('.bloco') : null;
+    var bDma = document.getElementById('legendaDma') ? document.getElementById('legendaDma').closest('.bloco') : null;
     if (b1) b1.style.display = 'none';
     if (b2) b2.style.display = 'none';
     if (b3) b3.style.display = 'none';
     if (b4) b4.style.display = 'none';
     if (b5) b5.style.display = 'none';
+    if (bDma) bDma.style.display = 'none';
 
     desenharEstados();
     desenharMunicipiosBase(municipiosFiltrados());
@@ -4985,6 +5234,8 @@ map.addControl(new LogoMapaControl());
     var contadorObrasPontosOff = document.getElementById('countObrasPontos');
     if (contadorObrasPontosOff) contadorObrasPontosOff.textContent = '0';
     document.getElementById('countDor').textContent = '0';
+    var contadorDmaOff = document.getElementById('countDma');
+    if (contadorDmaOff) contadorDmaOff.textContent = '0';
 
     atualizarTituloTopBar();
   }
@@ -5007,6 +5258,7 @@ map.addControl(new LogoMapaControl());
     snvFiltroAtivo = true;
     areasUrbanasFiltroAtivo = false;
     servicoFiltroAtivo = '';
+    preencherServicos();
 
     var btnOAEOn = document.getElementById('toggleOAE');
     if (btnOAEOn) btnOAEOn.classList.add('ativo-filtro');
@@ -5383,6 +5635,7 @@ map.addControl(new LogoMapaControl());
     botoesServico[iServ].addEventListener('click', function() {
       var chave = this.getAttribute('data-servico');
       servicosAtivos[chave] = !servicosAtivos[chave];
+      preencherServicos();
       preencherRodovias();
       preencherSREs();
       preencherPropostas();

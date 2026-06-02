@@ -198,6 +198,7 @@
 
     if (servicosAtivos.DOR) nomesServico.push('OBRAS');
     if (servicosAtivos.FUNDEINFRA) nomesServico.push('FUNDEINFRA');
+    if (servicosAtivos.DMA) nomesServico.push('DMA');
 
     if (servico) servico.textContent = nomesServico.join(' / ');
     if (data) data.textContent = textoMesAnoAtualImpressao();
@@ -256,17 +257,19 @@
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
     var linhasFund = [];
     var linhasDor = [];
+    var linhasDma = [];
     var vistosFund = {};
     var vistosDor = {};
+    var vistosDma = {};
 
     function valorTabela(valor) {
       return escapeHtml(valor === null || valor === undefined ? '' : valor);
     }
 
-    function linhaTabela(dados, feature) {
+    function linhaTabela(dados, feature, campoIdentificador) {
       var p = feature.properties || {};
       return '<tr>' +
-        '<td>' + valorTabela(dados.PROPOSTA) + '</td>' +
+        '<td>' + valorTabela(dados[campoIdentificador || 'PROPOSTA']) + '</td>' +
         '<td>' + valorTabela(p.RODOVIA || p.rodovia) + '</td>' +
         '<td>' + valorTabela(p.TRECHO || p.trecho_go) + '</td>' +
         '<td>' + valorTabela(p.EXT_KM || p.ext) + '</td>' +
@@ -278,25 +281,27 @@
       '</tr>';
     }
 
-    function blocoTabela(titulo, linhas) {
+    function blocoTabela(titulo, linhas, rotuloIdentificador) {
       if (!linhas.length) return '';
       return '<div class="bloco-servico">' +
         '<div class="titulo-servico">' + escapeHtml(titulo) + '</div>' +
         '<table class="tabela-servico">' +
-          '<tr><th>Proposta</th><th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th></tr>' +
+          '<tr><th>' + escapeHtml(rotuloIdentificador || 'Proposta') + '</th><th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th></tr>' +
           linhas.join('') +
         '</table>' +
       '</div>';
     }
 
-    function compararProposta(a, b) {
-      var propostaA = a && a.PROPOSTA;
-      var propostaB = b && b.PROPOSTA;
-      var numeroA = Number(propostaA);
-      var numeroB = Number(propostaB);
+    function compararCampo(campo) {
+      return function(a, b) {
+        var valorA = a && a[campo];
+        var valorB = b && b[campo];
+        var numeroA = Number(valorA);
+        var numeroB = Number(valorB);
 
-      if (isFinite(numeroA) && isFinite(numeroB)) return numeroA - numeroB;
-      return String(propostaA || '').localeCompare(String(propostaB || ''), 'pt-BR', { numeric: true });
+        if (isFinite(numeroA) && isFinite(numeroB)) return numeroA - numeroB;
+        return String(valorA || '').localeCompare(String(valorB || ''), 'pt-BR', { numeric: true });
+      };
     }
 
     if (sreData && sreData.features) {
@@ -324,10 +329,10 @@
         if (servicosAtivos.DOR) {
           var linkDor = valorSeguro(feature, 'LINK_DOR');
           if (linkDor) {
-            var dadosDor = dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, propostaSelecionada);
+            var dadosDor = dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
             for (var j = 0; j < dadosDor.length; j++) {
               var itemDor = dadosDor[j];
-              var chaveDor = String(linkDor) + '|' + String(itemDor.PROPOSTA || '') + '|' + String(itemDor.SERVICO || '') + '|' + String(itemDor.SEI || '');
+              var chaveDor = String(linkDor) + '|' + String(itemDor.ITEM || '') + '|' + String(itemDor.SERVICO || '') + '|' + String(itemDor.SEI || '');
               if (!vistosDor[chaveDor]) {
                 linhasDor.push({ dados: itemDor, feature: feature });
                 vistosDor[chaveDor] = true;
@@ -335,15 +340,32 @@
             }
           }
         }
+
+        if (servicosAtivos.DMA) {
+          var linkDma = valorSeguro(feature, 'LINK_DMA');
+          if (linkDma) {
+            var dadosDma = dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
+            for (var d = 0; d < dadosDma.length; d++) {
+              var itemDma = dadosDma[d];
+              var chaveDma = String(linkDma) + '|' + String(itemDma.ITEM || '') + '|' + String(itemDma.SERVICO || '') + '|' + String(itemDma.SEI || '');
+              if (!vistosDma[chaveDma]) {
+                linhasDma.push({ dados: itemDma, feature: feature });
+                vistosDma[chaveDma] = true;
+              }
+            }
+          }
+        }
       }
     }
 
-    linhasFund.sort(function(a, b) { return compararProposta(a.dados, b.dados); });
-    linhasDor.sort(function(a, b) { return compararProposta(a.dados, b.dados); });
+    linhasFund.sort(function(a, b) { return compararCampo('PROPOSTA')(a.dados, b.dados); });
+    linhasDor.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
+    linhasDma.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
 
     destino.innerHTML =
-      blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
-      blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature); }));
+      blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature, 'PROPOSTA'); }), 'Proposta') +
+      blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
+      blocoTabela('Dados DMA', linhasDma.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item');
     destino.style.display = destino.children.length ? 'block' : 'none';
   }
 

@@ -30,6 +30,7 @@
       <div class="grid-servicos" id="servicosLinearesBotoes">
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="FUNDEINFRA" type="button">FUNDEINFRA</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOR" type="button">DOR</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DMA" type="button">DMA</button>
       </div>
 
       <label for="servicoSelect">Serviço</label>
@@ -83,7 +84,7 @@
         <option value="">Todos</option>
       </select>
 
-      <label for="propostaSelect">Proposta</label>
+      <label for="propostaSelect">Proposta FUNDEINFRA</label>
       <select id="propostaSelect">
         <option value="">Todas</option>
       </select>
@@ -213,7 +214,8 @@
         Linhas: <span id="countLinhas">0</span><br>
         Obras FUNDEINFRA: <span id="countOAE">0</span><br>
         Obras Pontuais: <span id="countObrasPontos">0</span><br>
-        Obras DOR: <span id="countDor">0</span>
+        Obras DOR: <span id="countDor">0</span><br>
+        Obras DMA: <span id="countDma">0</span>
       </div>
     </div>
   </div></aside>
@@ -253,6 +255,11 @@
       <div class="bloco legenda-categoria">
         <div class="subtitulo">DOR</div>
         <div id="legendaDor"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DMA</div>
+        <div id="legendaDma"></div>
       </div>
 
       <div class="bloco legenda-categoria" id="blocoLegendaRodEst">

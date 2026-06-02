@@ -1,0 +1,592 @@
+[
+  {
+    "ITEM": 1,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_MF_0001",
+    "SEI": 202300036011426,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "ago/2025",
+    "CONTRATO": "077/2024"
+  },
+  {
+    "ITEM": 2,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_MF_0002",
+    "SEI": 202300036011533,
+    "STATUS": "Obra em andamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "058/2024"
+  },
+  {
+    "ITEM": 3,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_MF_0003",
+    "SEI": 202300036011784,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "142/2024"
+  },
+  {
+    "ITEM": 4,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_MF_0004",
+    "SEI": 202300036010515,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jun/2025",
+    "CONTRATO": "067/2024"
+  },
+  {
+    "ITEM": 5,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_MF_0005",
+    "SEI": 202300036010515,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jun/2025",
+    "CONTRATO": "067/2024"
+  },
+  {
+    "ITEM": 6,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_MF_0006",
+    "SEI": 202300036010279,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "088/2024"
+  },
+  {
+    "ITEM": 7,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_MF_0007",
+    "SEI": 202300036010279,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "088/2024"
+  },
+  {
+    "ITEM": 8,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_MF_0008",
+    "SEI": 202300036010515,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "jun/2025",
+    "CONTRATO": "067/2024"
+  },
+  {
+    "ITEM": 9,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_MF_0009",
+    "SEI": 202300036010279,
+    "STATUS": "Obra Concluída",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "088/2024"
+  },
+  {
+    "ITEM": 10,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0001",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 11,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0002",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 12,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0003",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 13,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0004",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 14,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0005",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 15,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0006",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 16,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0007",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 17,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0008",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 18,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0009",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 19,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0010",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 20,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0011",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 21,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0012",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 22,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0013",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 23,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0014",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 24,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0015",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 25,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0016",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 26,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0017",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 27,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0018",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 28,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_REV_0019",
+    "SEI": 202300036012155,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 29,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0020",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 30,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0021",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 31,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0022",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 32,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0023",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 33,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0024",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 34,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0025",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 35,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0026",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 36,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0027",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 37,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0028",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 38,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0029",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 39,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0030",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 40,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0031",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 41,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0032",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 42,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0033",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 43,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0034",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 44,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_REV_0035",
+    "SEI": 202300036013311,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 45,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0036",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 46,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0037",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 47,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0038",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 48,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0039",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 49,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0040",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 50,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0041",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 51,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0042",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 52,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0043",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 53,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0044",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 54,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0045",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 55,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0046",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 56,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0047",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 57,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0048",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 58,
+    "SERVICO": "Revitalização",
+    "ETAPA": "Planejamento",
+    "LINK_DMA": "DMA_REV_0049",
+    "SEI": "Não Identificado",
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 59,
+    "SERVICO": "Serviços de Terraplenagem",
+    "ETAPA": "Obra",
+    "LINK_DMA": "DMA_TERR_0001",
+    "SEI": 202400005007411,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  }
+]
