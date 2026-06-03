@@ -199,6 +199,7 @@
     if (servicosAtivos.DOR) nomesServico.push('OBRAS');
     if (servicosAtivos.FUNDEINFRA) nomesServico.push('FUNDEINFRA');
     if (servicosAtivos.DMA) nomesServico.push('DMA');
+    if (servicosAtivos.DPL) nomesServico.push('DPL');
 
     if (servico) servico.textContent = nomesServico.join(' / ');
     if (data) data.textContent = textoMesAnoAtualImpressao();
@@ -258,9 +259,11 @@
     var linhasFund = [];
     var linhasDor = [];
     var linhasDma = [];
+    var linhasDpl = [];
     var vistosFund = {};
     var vistosDor = {};
     var vistosDma = {};
+    var vistosDpl = {};
 
     function valorTabela(valor) {
       return escapeHtml(valor === null || valor === undefined ? '' : valor);
@@ -355,17 +358,34 @@
             }
           }
         }
+
+        if (servicosAtivos.DPL) {
+          var linkDpl = valorSeguro(feature, 'LINK_DPL');
+          if (linkDpl) {
+            var dadosDpl = dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
+            for (var p = 0; p < dadosDpl.length; p++) {
+              var itemDpl = dadosDpl[p];
+              var chaveDpl = String(linkDpl) + '|' + String(itemDpl.ITEM || '') + '|' + String(itemDpl.SERVICO || '') + '|' + String(itemDpl.SEI || '');
+              if (!vistosDpl[chaveDpl]) {
+                linhasDpl.push({ dados: itemDpl, feature: feature });
+                vistosDpl[chaveDpl] = true;
+              }
+            }
+          }
+        }
       }
     }
 
     linhasFund.sort(function(a, b) { return compararCampo('PROPOSTA')(a.dados, b.dados); });
     linhasDor.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
     linhasDma.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
+    linhasDpl.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
 
     destino.innerHTML =
       blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature, 'PROPOSTA'); }), 'Proposta') +
       blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
-      blocoTabela('Dados DMA', linhasDma.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item');
+      blocoTabela('Dados DMA', linhasDma.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
+      blocoTabela('Dados DPL', linhasDpl.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item');
     destino.style.display = destino.children.length ? 'block' : 'none';
   }
 

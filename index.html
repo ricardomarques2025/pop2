@@ -31,72 +31,83 @@
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="FUNDEINFRA" type="button">FUNDEINFRA</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOR" type="button">DOR</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DMA" type="button">DMA</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DPL" type="button">DPL</button>
       </div>
+    </div>
 
-      <label for="servicoSelect">Serviço</label>
-      <select id="servicoSelect">
-        <option value="">Todos</option>
-      </select>
+    <details class="painel-colapsavel">
+      <summary class="subtitulo subtitulo-painel">Filtros</summary>
+      <div class="conteudo-colapsavel">
+        <label for="servicoSelect">Serviço</label>
+        <select id="servicoSelect">
+          <option value="">Todos</option>
+        </select>
 
-      <label for="rgPlanSelect">Região de Planejamento</label>
-      <select id="rgPlanSelect">
-        <option value="">Todas</option>
-      </select>
+        <label for="propostaSelect">Proposta FUNDEINFRA</label>
+        <select id="propostaSelect">
+          <option value="">Todas</option>
+        </select>
 
-      <label for="municipioBusca">Município</label>
+        <label for="rodoviaSelect">Rodovia</label>
+        <select id="rodoviaSelect">
+          <option value="">Todas</option>
+        </select>
 
-      <div class="autocomplete-wrap">
-        <input 
-          type="text" 
-          id="municipioBusca" 
-          placeholder="Digite o nome do município..."
-          autocomplete="off"
-        />
-        <div id="municipioSugestoes" class="autocomplete-list"></div>
+        <label for="sreSelect">SRE</label>
+        <select id="sreSelect">
+          <option value="">Todos</option>
+        </select>
+
+        <label for="localidadeBusca">Localidade</label>
+        <div class="autocomplete-wrap">
+          <input
+            type="text"
+            id="localidadeBusca"
+            placeholder="Digite o nome da localidade..."
+            autocomplete="off"
+          />
+          <div id="localidadeSugestoes" class="autocomplete-list"></div>
+        </div>
+
+        <select id="localidadeSelect">
+          <option value="">Todas</option>
+        </select>
+
+        <label for="municipioBusca">Município</label>
+
+        <div class="autocomplete-wrap">
+          <input 
+            type="text" 
+            id="municipioBusca" 
+            placeholder="Digite o nome do município..."
+            autocomplete="off"
+          />
+          <div id="municipioSugestoes" class="autocomplete-list"></div>
+        </div>
+
+        <select id="municipioSelect">
+          <option value="">Todos</option>
+        </select>
+
+        <label for="rgPlanSelect">Região de Planejamento</label>
+        <select id="rgPlanSelect">
+          <option value="">Todas</option>
+        </select>
       </div>
+    </details>
 
-      <select id="municipioSelect">
-        <option value="">Todos</option>
-      </select>
-
-      <label for="localidadeBusca">Localidade</label>
-      <div class="autocomplete-wrap">
-        <input
-          type="text"
-          id="localidadeBusca"
-          placeholder="Digite o nome da localidade..."
-          autocomplete="off"
-        />
-        <div id="localidadeSugestoes" class="autocomplete-list"></div>
+    <details class="painel-colapsavel">
+      <summary class="subtitulo subtitulo-painel">Malhas de base</summary>
+      <div class="conteudo-colapsavel">
+        <div class="grid-botoes">
+          <button class="filtro-btn base-btn" id="toggleMunicipiosBase" type="button">Municípios</button>
+          <button class="filtro-btn base-btn ativo-filtro" id="toggleSREBase" type="button">Malha Estadual</button>
+          <button class="filtro-btn base-btn ativo-filtro" id="toggleSNV" type="button">Malha Federal</button>
+          <button class="filtro-btn base-btn ativo-filtro" id="toggleLocalidades" type="button">Localidades</button>
+          <button class="filtro-btn base-btn" id="toggleAreasUrbanas" type="button">Áreas urbanas</button>
+        </div>
       </div>
-
-      <select id="localidadeSelect">
-        <option value="">Todas</option>
-      </select>
-
-      <label for="rodoviaSelect">Rodovia</label>
-      <select id="rodoviaSelect">
-        <option value="">Todas</option>
-      </select>
-
-      <label for="sreSelect">SRE</label>
-      <select id="sreSelect">
-        <option value="">Todos</option>
-      </select>
-
-      <label for="propostaSelect">Proposta FUNDEINFRA</label>
-      <select id="propostaSelect">
-        <option value="">Todas</option>
-      </select>
-
-      <div class="subtitulo subtitulo-painel">Malhas de base</div>
-      <div class="grid-botoes">
-        <button class="filtro-btn base-btn" id="toggleMunicipiosBase" type="button">Municípios</button>
-        <button class="filtro-btn base-btn ativo-filtro" id="toggleSREBase" type="button">Malha Estadual</button>
-        <button class="filtro-btn base-btn ativo-filtro" id="toggleSNV" type="button">Malha Federal</button>
-        <button class="filtro-btn base-btn ativo-filtro" id="toggleLocalidades" type="button">Localidades</button>
-        <button class="filtro-btn base-btn" id="toggleAreasUrbanas" type="button">Áreas urbanas</button>
-      </div>
+    </details>
 
       <button id="desligarTudo" type="button">Desligar Tudo</button>
       <button id="limparFiltro" type="button">Ligar Tudo / Limpar</button>
@@ -209,16 +220,28 @@
         </div>
       </details>
 
-      <div class="contador">
-        Municípios: <span id="countMunicipios">0</span><br>
-        Linhas: <span id="countLinhas">0</span><br>
-        Obras FUNDEINFRA: <span id="countOAE">0</span><br>
-        Obras Pontuais: <span id="countObrasPontos">0</span><br>
-        Obras DOR: <span id="countDor">0</span><br>
-        Obras DMA: <span id="countDma">0</span>
+      <details class="painel-colapsavel">
+        <summary class="subtitulo subtitulo-painel">Exportação</summary>
+        <div class="conteudo-colapsavel">
+          <button id="exportarTabelaFiltrada" type="button">Exportar tabela filtrada</button>
+        </div>
+      </details>
+
+      <div class="contador" hidden>
+        <span id="countMunicipios">0</span>
+        <span id="countLinhas">0</span>
+        <span id="countOAE">0</span>
+        <span id="countObrasPontos">0</span>
+        <span id="countDor">0</span>
+        <span id="countDma">0</span>
+        <span id="countDpl">0</span>
+      </div>
+
+      <div class="rodape-versao">
+        GOINFRA / PL-GEREF / RPM / VER. 1.8
       </div>
     </div>
-  </div></aside>
+  </aside>
 
  <div id="centro-mapa">
   <main id="map-wrap">
@@ -226,6 +249,7 @@
   </main>
 
   <section id="painelTabela" class="painel-fechado">
+    <div id="painelTabelaResize" aria-hidden="true"></div>
     <div id="painelTabelaHeader">
       <strong>Detalhes do trecho selecionado</strong>
       <button id="togglePainelTabela" type="button">Mostrar tabela</button>
@@ -260,6 +284,11 @@
       <div class="bloco legenda-categoria">
         <div class="subtitulo">DMA</div>
         <div id="legendaDma"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DPL</div>
+        <div id="legendaDpl"></div>
       </div>
 
       <div class="bloco legenda-categoria" id="blocoLegendaRodEst">

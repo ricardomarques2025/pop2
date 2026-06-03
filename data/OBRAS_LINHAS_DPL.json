@@ -1,0 +1,712 @@
+[
+  {
+    "ITEM": 1,
+    "SERVICO": "Ampliação de Capacidade",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_AMP_0001",
+    "SEI": 202500036016838,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 2,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_DUP_0001",
+    "SEI": 202500036002025,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 3,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_DUP_0002",
+    "SEI": 202500036001255,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 4,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_DUP_0003",
+    "SEI": 202500036004013,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "mai/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 5,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_DUP_0004",
+    "SEI": 202200036008937,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 6,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_DUP_0005",
+    "SEI": 202600036002448,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 7,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_DUP_0006",
+    "SEI": 202500036001255,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "mar/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 8,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_DUP_0007",
+    "SEI": 202300036015925,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "abr/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 9,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_DUP_0008",
+    "SEI": 202500036001255,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 10,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_DUP_0009",
+    "SEI": 202500005019062,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 11,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_MF_0001",
+    "SEI": 202520920000554,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 12,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_MF_0002",
+    "SEI": 202500036000607,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "abr/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 13,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0001",
+    "SEI": 202500036013280,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 14,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0002",
+    "SEI": 202500036006437,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 15,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0003",
+    "SEI": 202500036017225,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "mai/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 16,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0004",
+    "SEI": 202300036007680,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 17,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0005",
+    "SEI": 202100036001796,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 18,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0006",
+    "SEI": 202500036002618,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 19,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0007",
+    "SEI": 202500063001505,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 20,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0008",
+    "SEI": 202500063000426,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 21,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0009",
+    "SEI": 202500036006437,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 22,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0010",
+    "SEI": 202500036010764,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "abr/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 23,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0011",
+    "SEI": 202500063000877,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 24,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0012",
+    "SEI": 202300036014702,
+    "STATUS": "Concepção preliminar",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 25,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0013",
+    "SEI": 202520920001520,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 26,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0014",
+    "SEI": 202500036014090,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 27,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0015",
+    "SEI": 202500036009019,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 28,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0016",
+    "SEI": 202400005044321,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "mar/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0017",
+    "SEI": 202518037003553,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 30,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0018",
+    "SEI": 202500036001255,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 31,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0019",
+    "SEI": 202500036001255,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "fev/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 32,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0020",
+    "SEI": 202500036009219,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 33,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0021",
+    "SEI": 202500036009188,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "jan/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 34,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0022",
+    "SEI": 202500036006437,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "abr/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 35,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0023",
+    "SEI": 202500036011953,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "abr/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 36,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0024",
+    "SEI": 202500036011951,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "mai/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 37,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0025",
+    "SEI": 202320920001345,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "mar/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 38,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0026",
+    "SEI": 202500005043272,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "fev/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 39,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0027",
+    "SEI": 202320920001365,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "mar/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 40,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0028",
+    "SEI": 202500005043272,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 41,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0029",
+    "SEI": 202500005016147,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "jan/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 42,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0030",
+    "SEI": 202500036002646,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 43,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0031",
+    "SEI": 202400005043273,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 44,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0032",
+    "SEI": 202400005043272,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "mai/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 45,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0033",
+    "SEI": 202500005019183,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "mai/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 46,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0034",
+    "SEI": 202400005043273,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 47,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0035",
+    "SEI": 202500036002618,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 48,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0036",
+    "SEI": 202400005044325,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 49,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0037",
+    "SEI": 202500005019183,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "abr/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 50,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0038",
+    "SEI": 202500012000276,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 51,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0039",
+    "SEI": 202500036012526,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 52,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0040",
+    "SEI": 202500036008994,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 53,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0041",
+    "SEI": 202500036015039,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 54,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0042",
+    "SEI": 202500036015040,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 55,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0043",
+    "SEI": 202500005038002,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 56,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0044",
+    "SEI": 202400005044326,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 57,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0045",
+    "SEI": 202500036001255,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 58,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0045",
+    "SEI": 202500036001255,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "mai/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 59,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0046",
+    "SEI": 202500036007584,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 60,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0047",
+    "SEI": 202500036008981,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 61,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0048",
+    "SEI": 202500036001255,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 62,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0049",
+    "SEI": 202400005043269,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "mar/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 63,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0050",
+    "SEI": 202500036009754,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 64,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0051",
+    "SEI": 202500036018412,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 65,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_PAV_0052",
+    "SEI": 202500005019183,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 66,
+    "SERVICO": "Restauração",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_REST_0001",
+    "SEI": 202500036014660,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 67,
+    "SERVICO": "Restauração",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_REST_0002",
+    "SEI": 202300036012166,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "set/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 68,
+    "SERVICO": "Restauração",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_REST_0003",
+    "SEI": 202500036009019,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 69,
+    "SERVICO": "Restauração",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_REST_0004",
+    "SEI": 202500036009582,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 70,
+    "SERVICO": "Restauração",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_REST_0005",
+    "SEI": 202500036018278,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 71,
+    "SERVICO": "Restauração",
+    "ETAPA": "Planejamento",
+    "LINK_DPL": "DPL_REST_0006",
+    "SEI": 202000036005124,
+    "STATUS": "Planejamento",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "023/2021"
+  }
+]

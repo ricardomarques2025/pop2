@@ -362,6 +362,16 @@
       padding-top: 4px;
     }
 
+    .rodape-versao {
+      margin-top: 14px;
+      padding: 8px 2px 2px;
+      color: #6b7280;
+      font-size: 10px;
+      line-height: 1.4;
+      text-align: center;
+      letter-spacing: 0;
+    }
+
     .legenda-item {
       display: flex;
       align-items: center;
@@ -1054,6 +1064,16 @@ input[type="range"] {
   font-weight: 700;
 }
 
+.rodape-versao {
+  margin-top: 14px;
+  padding: 8px 2px 2px;
+  color: #6b7280;
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: center;
+  letter-spacing: 0;
+}
+
 /* ===== ESTADO DOS FILTROS ===== */
 
 .filtro-btn {
@@ -1064,6 +1084,21 @@ input[type="range"] {
   background: #111827;
   color: white;
   opacity: 1;
+}
+
+.servico-btn.ativo-filtro {
+  background: var(--cor-topbar);
+  border-color: var(--cor-topbar);
+}
+
+#limparFiltro {
+  background: #f3f4f6;
+  color: var(--cor-texto);
+  border: 1px solid #d1d5db;
+}
+
+#limparFiltro:hover {
+  background: #e5e7eb;
 }
 
 .filtro-btn:not(.ativo-filtro):hover {
@@ -1407,7 +1442,7 @@ input[type="range"] {
   min-width: 0;
   height: calc(100vh - 88px);
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   gap: 10px;
 }
 
@@ -1422,11 +1457,43 @@ input[type="range"] {
   box-shadow: 0 14px 28px rgba(0,0,0,0.08);
   overflow: hidden;
   transition: height 0.3s ease;
-  height: 35vh;
+  height: var(--painel-tabela-altura, 35vh);
+  position: relative;
 }
 
 #painelTabela.painel-fechado {
   height: 42px;
+}
+
+#painelTabelaResize {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  cursor: ns-resize;
+  z-index: 2;
+}
+
+#painelTabelaResize::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 52px;
+  height: 3px;
+  border-radius: 999px;
+  background: #cbd5e1;
+  transform: translateX(-50%);
+}
+
+#painelTabela.painel-fechado #painelTabelaResize {
+  display: none;
+}
+
+body.redimensionando-painel-tabela {
+  cursor: ns-resize;
+  user-select: none;
 }
 
 #painelTabelaHeader {
@@ -2006,7 +2073,8 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 
 #painelTabelaConteudo {
   padding: 10px;
-  max-height: 28vh;
+  height: calc(100% - 42px);
+  max-height: none;
   overflow-y: auto;
 }
 
