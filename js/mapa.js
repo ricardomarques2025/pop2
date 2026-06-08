@@ -30,7 +30,7 @@ function criarMapasBase() {
   return mapas;
 }
 
-// --- MÁSCARA DO BRASIL (Brasil menos Goiás) com 50% de transparência ---
+// --- MÁSCARA DO BRASIL (Brasil menos Goiás) ---
 var mascaraBrasilData = null;
 var mascaraBrasilLayer = null;
 
@@ -39,14 +39,16 @@ function desenharMascaraBrasil() {
   if (mascaraBrasilLayer) map.removeLayer(mascaraBrasilLayer);
 
   var municipioSelecionado = document.getElementById('municipioSelect') ? document.getElementById('municipioSelect').value : '';
-  var corMascara = municipioSelecionado ? '#d9d9d9' : '#808080';
+  var rgSelecionada = document.getElementById('rgPlanSelect') ? document.getElementById('rgPlanSelect').value : '';
+  var filtroEspacialSelecionado = !!(municipioSelecionado || rgSelecionada);
+  var corMascara = filtroEspacialSelecionado ? '#d9d9d9' : '#808080';
 
   mascaraBrasilLayer = L.geoJSON(mascaraBrasilData, {
     style: {
       color: corMascara,
       weight: 1,
       fillColor: corMascara,
-      fillOpacity: municipioSelecionado ? 1 : 0.25
+      fillOpacity: filtroEspacialSelecionado ? 1 : 0.25
     },
     interactive: false
   }).addTo(map);
@@ -393,7 +395,8 @@ map.addControl(new LogoMapaControl());
       FUNDEINFRA: true,
       DOR: true,
       DMA: true,
-      DPL: true
+      DPL: true,
+      DPJ: true
     };
     var servicoFiltroAtivo = '';
 
@@ -1973,6 +1976,8 @@ map.addControl(new LogoMapaControl());
   var obrasDmaPorLink = {};
   var obrasDplData = [];
   var obrasDplPorLink = {};
+  var obrasDpjData = [];
+  var obrasDpjPorLink = {};
   var obrasPontosTabelaData = [];
   var obrasPontosPorLink = {};
 
@@ -2123,10 +2128,42 @@ map.addControl(new LogoMapaControl());
       });
   }
 
+  function carregarTabelasDpj() {
+    fetch('data/OBRAS_LINHAS_DPJ.json')
+      .then(function(r) { return r.json(); })
+      .then(function(resultado) {
+        obrasDpjData = Array.isArray(resultado) ? resultado : [];
+        obrasDpjPorLink = {};
+
+        for (var i = 0; i < obrasDpjData.length; i++) {
+          var item = obrasDpjData[i];
+          var link = item && (item.LINK_DPJ || item.LINK_DPL || item.LINK_DMA || item.LINK_DOR || item.LINK_FUND);
+          if (link) {
+            var chave = String(link);
+            if (!obrasDpjPorLink[chave]) obrasDpjPorLink[chave] = [];
+            obrasDpjPorLink[chave].push(item);
+          }
+        }
+
+        console.log('OBRAS_LINHAS_DPJ carregado:', obrasDpjData.length);
+        preencherServicos();
+        if (sreData && municipiosData) {
+          preencherRodovias();
+          preencherSREs();
+          preencherPropostas();
+          aplicarFiltros();
+        }
+      })
+      .catch(function(e) {
+        console.warn('Falha ao carregar OBRAS_LINHAS_DPJ:', e);
+      });
+  }
+
   carregarTabelasFundeinfra();
   carregarTabelasDor();
   carregarTabelasDma();
   carregarTabelasDpl();
+  carregarTabelasDpj();
   carregarTabelaObrasPontos();
   
   
@@ -2440,6 +2477,7 @@ map.addControl(new LogoMapaControl());
     if (!respeitarOrigem || servicosAtivos.DOR) addServicos(obrasDorData);
     if (!respeitarOrigem || servicosAtivos.DMA) addServicos(obrasDmaData);
     if (!respeitarOrigem || servicosAtivos.DPL) addServicos(obrasDplData);
+    if (!respeitarOrigem || servicosAtivos.DPJ) addServicos(obrasDpjData);
 
     servicos.sort(function(a, b) {
       return String(a).localeCompare(String(b), 'pt-BR');
@@ -2770,23 +2808,20 @@ map.addControl(new LogoMapaControl());
     }).addTo(map);
   }
 
-  function corPastelMunicipio(nome) {
-    var texto = String(nome || '');
-    var hash = 0;
-    for (var i = 0; i < texto.length; i++) {
-      hash = ((hash << 5) - hash) + texto.charCodeAt(i);
-      hash |= 0;
-    }
-    var hue = Math.abs(hash) % 360;
-    return 'hsl(' + hue + ', 45%, 88%)';
+  function corPastelMunicipio(feature) {
+    var regiao = parseInt(valorSeguro(feature, 'REGIAO'), 10);
+    var base = isNaN(regiao) ? parseInt(valorSeguro(feature, 'ORD_MUN'), 10) : regiao;
+    var hue = (Math.abs(base || 0) * 37) % 360;
+    return 'hsl(' + hue + ', 15%, 75%)';
   }
 
   function desenharMunicipiosBase(featuresSelecionados) {
     if (municipiosLayer) map.removeLayer(municipiosLayer);
 
     var municipioSelecionadoFiltro = document.getElementById('municipioSelect').value;
+    var rgSelecionadaFiltro = document.getElementById('rgPlanSelect').value;
 
-    if (!municipioBaseFiltroAtivo && !municipioSelecionadoFiltro) {
+    if (!municipioBaseFiltroAtivo && !municipioSelecionadoFiltro && !rgSelecionadaFiltro) {
       municipiosLayer = null;
       return;
     }
@@ -2800,12 +2835,14 @@ map.addControl(new LogoMapaControl());
     var haSelecao = selecionados.size > 0 &&
                     selecionados.size < municipiosData.features.length;
     var mascaraMunicipioSelecionado = !!municipioSelecionadoFiltro;
+    var mascaraRegiaoSelecionada = !municipioSelecionadoFiltro && !!rgSelecionadaFiltro;
 
     municipiosLayer = L.geoJSON(municipiosData, {
       pane: 'municipiosPane',
       interactive: false,
       style: function(feature) {
         var nome = valorSeguro(feature, 'NM_MUN');
+        var rgPlan = valorSeguro(feature, 'RG_PLAN');
         var selecionado = selecionados.has(nome);
 
         if (mascaraMunicipioSelecionado) {
@@ -2823,7 +2860,27 @@ map.addControl(new LogoMapaControl());
             color: '#888888',
             weight: 1,
             dashArray: '8, 5, 1, 5',
-            fillColor: corPastelMunicipio(nome),
+            fillColor: corPastelMunicipio(feature),
+            fillOpacity: 1
+          };
+        }
+
+        if (mascaraRegiaoSelecionada) {
+          if (rgPlan === rgSelecionadaFiltro) {
+            return {
+              color: '#888888',
+              weight: 1.5,
+              dashArray: '8, 5, 1, 5',
+              fillColor: '#ffffff',
+              fillOpacity: 0
+            };
+          }
+
+          return {
+            color: '#888888',
+            weight: 1,
+            dashArray: '8, 5, 1, 5',
+            fillColor: corPastelMunicipio(feature),
             fillOpacity: 1
           };
         }
@@ -2978,11 +3035,13 @@ map.addControl(new LogoMapaControl());
     var linkDor = valorSeguro(feature, 'LINK_DOR');
     var linkDma = valorSeguro(feature, 'LINK_DMA');
     var linkDpl = valorSeguro(feature, 'LINK_DPL');
+    var linkDpj = valorSeguro(feature, 'LINK_DPJ');
     return (
       (servicosAtivos.FUNDEINFRA && linkFund && dadosFundeinfraDaFeature(feature)) ||
       (servicosAtivos.DOR && linkDor && dadosDorDaFeature(feature)) ||
       (servicosAtivos.DMA && linkDma && dadosDmaDaFeature(feature)) ||
-      (servicosAtivos.DPL && linkDpl && dadosDplDaFeature(feature))
+      (servicosAtivos.DPL && linkDpl && dadosDplDaFeature(feature)) ||
+      (servicosAtivos.DPJ && linkDpj && dadosDpjDaFeature(feature))
     );
   }
 
@@ -3008,6 +3067,7 @@ map.addControl(new LogoMapaControl());
     if ((!respeitarOrigem || servicosAtivos.DOR) && dadosDorDaFeatureFiltrados(feature, servico, '').length) return true;
     if ((!respeitarOrigem || servicosAtivos.DMA) && dadosDmaDaFeatureFiltrados(feature, servico, '').length) return true;
     if ((!respeitarOrigem || servicosAtivos.DPL) && dadosDplDaFeatureFiltrados(feature, servico, '').length) return true;
+    if ((!respeitarOrigem || servicosAtivos.DPJ) && dadosDpjDaFeatureFiltrados(feature, servico, '').length) return true;
 
     return false;
   }
@@ -3727,6 +3787,31 @@ map.addControl(new LogoMapaControl());
     return filtrados;
   }
 
+  function dadosDpjDaFeature(feature) {
+    var dados = dadosDpjDaFeatureTodos(feature);
+    return dados.length ? dados[0] : null;
+  }
+
+  function dadosDpjDaFeatureTodos(feature) {
+    var link = valorSeguro(feature, 'LINK_DPJ');
+    if (!link) return [];
+    var dados = obrasDpjPorLink[String(link)] || [];
+    return Array.isArray(dados) ? dados : [dados];
+  }
+
+  function dadosDpjDaFeatureFiltrados(feature, servico, proposta) {
+    var todos = dadosDpjDaFeatureTodos(feature);
+    var filtrados = [];
+
+    for (var i = 0; i < todos.length; i++) {
+      var item = todos[i];
+      if (servico && item.SERVICO !== servico) continue;
+      filtrados.push(item);
+    }
+
+    return filtrados;
+  }
+
   function adicionarReferenciaProposta(lista, origem, proposta) {
     if (proposta === null || proposta === undefined || String(proposta).trim() === '') return;
     var chave = origem + '|' + String(proposta);
@@ -3745,7 +3830,7 @@ map.addControl(new LogoMapaControl());
     lista.push({ origem: origem, item: item, chave: chave });
   }
 
-  function referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos, dadosDplTodos) {
+  function referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos) {
     var referencias = [];
     if (dadosFund) adicionarReferenciaProposta(referencias, 'FUNDEINFRA', dadosFund.PROPOSTA);
     for (var i = 0; i < dadosDorTodos.length; i++) {
@@ -3756,6 +3841,9 @@ map.addControl(new LogoMapaControl());
     }
     for (var p = 0; p < dadosDplTodos.length; p++) {
       adicionarReferenciaItem(referencias, 'DPL', dadosDplTodos[p].ITEM);
+    }
+    for (var j = 0; j < dadosDpjTodos.length; j++) {
+      adicionarReferenciaItem(referencias, 'DPJ', dadosDpjTodos[j].ITEM);
     }
     return referencias;
   }
@@ -3781,6 +3869,12 @@ map.addControl(new LogoMapaControl());
       var dadosDpl = dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
       for (var p = 0; p < dadosDpl.length; p++) {
         if (String(dadosDpl[p].ITEM) === String(referencia.item)) return true;
+      }
+    }
+    if (referencia.origem === 'DPJ') {
+      var dadosDpj = dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
+      for (var j = 0; j < dadosDpj.length; j++) {
+        if (String(dadosDpj[j].ITEM) === String(referencia.item)) return true;
       }
     }
     return false;
@@ -3826,6 +3920,7 @@ map.addControl(new LogoMapaControl());
     var itensDor = [];
     var itensDma = [];
     var itensDpl = [];
+    var itensDpj = [];
     for (var i = 0; i < referencias.length; i++) {
       if (referencias[i].origem === 'DOR') {
         adicionarUnico(itensDor, String(referencias[i].item));
@@ -3833,6 +3928,8 @@ map.addControl(new LogoMapaControl());
         adicionarUnico(itensDma, String(referencias[i].item));
       } else if (referencias[i].origem === 'DPL') {
         adicionarUnico(itensDpl, String(referencias[i].item));
+      } else if (referencias[i].origem === 'DPJ') {
+        adicionarUnico(itensDpj, String(referencias[i].item));
       } else {
         adicionarUnico(propostas, String(referencias[i].proposta));
       }
@@ -3842,6 +3939,7 @@ map.addControl(new LogoMapaControl());
     if (itensDor.length) titulo += ' - Item DOR ' + itensDor.join(', ');
     if (itensDma.length) titulo += ' - Item DMA ' + itensDma.join(', ');
     if (itensDpl.length) titulo += ' - Item DPL ' + itensDpl.join(', ');
+    if (itensDpj.length) titulo += ' - Item DPJ ' + itensDpj.join(', ');
 
     var html = `
         <div class="bloco-servico">
@@ -3913,7 +4011,8 @@ map.addControl(new LogoMapaControl());
     var linkCampo = origem === 'FUNDEINFRA' ? 'LINK_FUND' :
       origem === 'DOR' ? 'LINK_DOR' :
       origem === 'DMA' ? 'LINK_DMA' :
-      origem === 'DPL' ? 'LINK_DPL' : 'LINK';
+      origem === 'DPL' ? 'LINK_DPL' :
+      origem === 'DPJ' ? 'LINK_DPJ' : 'LINK';
     var link = valorSeguro(feature, linkCampo) || valorSeguro(feature, 'LINK');
 
     return {
@@ -3979,6 +4078,11 @@ map.addControl(new LogoMapaControl());
         if (servicosAtivos.DPL) {
           if (servicosAtivos.FUNDEINFRA && valorSeguro(feature, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(feature, 'LINK_FUND'))]) continue;
           adicionarRegistrosObraLinear(linhas, feature, 'DPL', dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, ''));
+        }
+
+        if (servicosAtivos.DPJ) {
+          if (servicosAtivos.FUNDEINFRA && valorSeguro(feature, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(feature, 'LINK_FUND'))]) continue;
+          adicionarRegistrosObraLinear(linhas, feature, 'DPJ', dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, ''));
         }
       }
     }
@@ -4110,6 +4214,13 @@ map.addControl(new LogoMapaControl());
     return estilo;
   }
 
+  function estiloDpj(dados) {
+    var estilo = estiloDpl(dados);
+    var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
+    if (etapa.indexOf('projeto') >= 0) estilo.tipo_linha = 'COM LINHA BRANCA';
+    return estilo;
+  }
+
   function estiloFundeinfra(dados) {
     var servico = String((dados && dados.SERVICO) || '').toLowerCase();
     var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
@@ -4177,6 +4288,7 @@ map.addControl(new LogoMapaControl());
     var prefixo = linkTxt.split('_')[0];
     if (origem === 'DMA' || prefixo === 'DMA') return 'Ma';
     if (origem === 'DPL' || prefixo === 'DPL') return 'Pl';
+    if (origem === 'DPJ' || prefixo === 'DPJ') return 'Pj';
     if (prefixo && prefixo.length <= 3) {
       return prefixo.charAt(0).toUpperCase() + prefixo.slice(1).toLowerCase();
     }
@@ -4449,6 +4561,7 @@ map.addControl(new LogoMapaControl());
       var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
       var dadosDmaTodos = servicosAtivos.DMA ? dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
       var dadosDplTodos = servicosAtivos.DPL ? dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
+      var dadosDpjTodos = servicosAtivos.DPJ ? dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
 
       var html = '';
       html += '<b>SRE:</b> ' + escapeHtml(p.sre || p.SRE || '') + '<br>';
@@ -4517,6 +4630,24 @@ map.addControl(new LogoMapaControl());
           html += '<b>SEI:</b> ' + escapeHtml(dadosDpl.SEI || '') + '<br>';
           html += '<b>Conclusao:</b> ' + escapeHtml(dadosDpl.CONCLUSAO || '');
           if (p < dadosDplTodos.length - 1) html += '<br>';
+        }
+      }
+
+      if (dadosDpjTodos.length) {
+        html += '<br><br><b>-- DPJ --</b><br>';
+        for (var j = 0; j < dadosDpjTodos.length; j++) {
+          var dadosDpj = dadosDpjTodos[j];
+          if (dadosDpjTodos.length > 1) {
+            if (j > 0) html += '<br>';
+            html += '<b>Registro ' + (j + 1) + '</b><br>';
+          }
+          html += '<b>Item:</b> ' + escapeHtml(dadosDpj.ITEM || '') + '<br>';
+          html += '<b>Servico:</b> ' + escapeHtml(dadosDpj.SERVICO || '') + '<br>';
+          html += '<b>Etapa:</b> ' + escapeHtml(dadosDpj.ETAPA || '') + '<br>';
+          html += '<b>Status:</b> ' + escapeHtml(dadosDpj.STATUS || '') + '<br>';
+          html += '<b>SEI:</b> ' + escapeHtml(dadosDpj.SEI || '') + '<br>';
+          html += '<b>Conclusao:</b> ' + escapeHtml(dadosDpj.CONCLUSAO || '');
+          if (j < dadosDpjTodos.length - 1) html += '<br>';
         }
       }
 
@@ -4868,6 +4999,31 @@ map.addControl(new LogoMapaControl());
   function renderizarLegendaDpl(legendasVisiveis) {
     var alvo = document.getElementById('legendaDpl'); if(!alvo) return;
     var bloco = document.getElementById('legendaDpl').closest('.bloco');
+    alvo.innerHTML = '';
+
+    var total = 0;
+    var nomes = Object.keys(legendasVisiveis || {}).sort(function(a, b) {
+      return String(a).localeCompare(String(b), 'pt-BR');
+    });
+
+    for (var i = 0; i < nomes.length; i++) {
+      var legenda = nomes[i];
+      var infoLegenda = legendasVisiveis[legenda] || '#666666';
+      var item = document.createElement('div');
+      item.className = 'legenda-item';
+      item.innerHTML =
+        htmlLegendaServico(infoLegenda) +
+        legenda;
+      alvo.appendChild(item);
+      total++;
+    }
+
+    bloco.style.display = total > 0 ? '' : 'none';
+  }
+
+  function renderizarLegendaDpj(legendasVisiveis) {
+    var alvo = document.getElementById('legendaDpj'); if(!alvo) return;
+    var bloco = document.getElementById('legendaDpj').closest('.bloco');
     alvo.innerHTML = '';
 
     var total = 0;
@@ -5311,11 +5467,27 @@ map.addControl(new LogoMapaControl());
       }
     }
 
+    // --- DPJ (independente das demais origens, mesmo quando compartilham a mesma geometria) ---
+    if (sreData && sreData.features && servicosAtivos.DPJ) {
+      for (var dj = 0; dj < sreData.features.length; dj++) {
+        var fdj = sreData.features[dj];
+        var linkDpj = valorSeguro(fdj, 'LINK_DPJ');
+        if (!linkDpj) continue;
+        var dadosDpjFiltrados = dadosDpjDaFeatureFiltrados(fdj, servicoFiltroAtivo, '');
+        if (!dadosDpjFiltrados.length) continue;
+        if (servicosAtivos.FUNDEINFRA && valorSeguro(fdj, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fdj, 'LINK_FUND'))]) continue;
+        if (rodoviaSelecionada && nomeRodoviaFeature(fdj) !== rodoviaSelecionada) continue;
+        if (sreSelecionado && nomeSREFeature(fdj) !== sreSelecionado) continue;
+        linhasBase.push(featureComOrigemServico(fdj, 'DPJ'));
+      }
+    }
+
         var grupos = {};
     var servicosVisiveis = {};
     var servicosVisiveisDor = {};
     var servicosVisiveisDma = {};
     var servicosVisiveisDpl = {};
+    var servicosVisiveisDpj = {};
     var idsUnicos = {};
 
         for (var k = 0; k < linhasBase.length; k++) {
@@ -5324,6 +5496,7 @@ map.addControl(new LogoMapaControl());
       var linkDor = valorSeguro(feat, 'LINK_DOR');
       var linkDma = valorSeguro(feat, 'LINK_DMA');
       var linkDpl = valorSeguro(feat, 'LINK_DPL');
+      var linkDpj = valorSeguro(feat, 'LINK_DPJ');
 
       var dados, estilo, chaveId, origemDados;
 
@@ -5349,6 +5522,11 @@ map.addControl(new LogoMapaControl());
         estilo = estiloDpl(dados);
         chaveId = 'DPL_' + String(linkDpl) + '_' + k;
         origemDados = 'DPL';
+      } else if (origemPreferida === 'DPJ' && linkDpj && dadosDpjDaFeature(feat) && servicosAtivos.DPJ) {
+        dados = dadosDpjDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDpjDaFeature(feat);
+        estilo = estiloDpj(dados);
+        chaveId = 'DPJ_' + String(linkDpj) + '_' + k;
+        origemDados = 'DPJ';
       // Prioridade FUNDEINFRA se ambos existirem e FUNDEINFRA estiver ativo
       } else if (linkFund && dadosFundeinfraDaFeature(feat)) {
         dados = dadosFundeinfraDaFeature(feat);
@@ -5370,6 +5548,11 @@ map.addControl(new LogoMapaControl());
         estilo = estiloDpl(dados);
         chaveId = 'DPL_' + String(linkDpl) + '_' + k;
         origemDados = 'DPL';
+      } else if (linkDpj && dadosDpjDaFeature(feat)) {
+        dados = dadosDpjDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDpjDaFeature(feat);
+        estilo = estiloDpj(dados);
+        chaveId = 'DPJ_' + String(linkDpj) + '_' + k;
+        origemDados = 'DPJ';
       } else {
         continue;
       }
@@ -5383,6 +5566,8 @@ map.addControl(new LogoMapaControl());
         servicosVisiveisDma[estilo.legenda] = estilo;
       } else if (origemDados === 'DPL') {
         servicosVisiveisDpl[estilo.legenda] = estilo;
+      } else if (origemDados === 'DPJ') {
+        servicosVisiveisDpj[estilo.legenda] = estilo;
       } else if (origemDados === 'DOR') {
         servicosVisiveisDor[estilo.legenda] = estilo;
       }
@@ -5413,6 +5598,7 @@ map.addControl(new LogoMapaControl());
       var linkDorRotulo = valorSeguro(featRotulo, 'LINK_DOR');
       var linkDmaRotulo = valorSeguro(featRotulo, 'LINK_DMA');
       var linkDplRotulo = valorSeguro(featRotulo, 'LINK_DPL');
+      var linkDpjRotulo = valorSeguro(featRotulo, 'LINK_DPJ');
       var dadosRotulo = null;
       var estiloRotulo = null;
       var origemRotulo = '';
@@ -5439,6 +5625,11 @@ map.addControl(new LogoMapaControl());
         estiloRotulo = estiloDpl(dadosRotulo);
         origemRotulo = 'DPL';
         linkRotulo = linkDplRotulo;
+      } else if (origemPreferidaRotulo === 'DPJ' && linkDpjRotulo && dadosDpjDaFeature(featRotulo) && servicosAtivos.DPJ) {
+        dadosRotulo = dadosDpjDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, '')[0] || dadosDpjDaFeature(featRotulo);
+        estiloRotulo = estiloDpj(dadosRotulo);
+        origemRotulo = 'DPJ';
+        linkRotulo = linkDpjRotulo;
       }
 
       if (!dadosRotulo || !estiloRotulo) continue;
@@ -5458,17 +5649,20 @@ map.addControl(new LogoMapaControl());
     var countDor = 0;
     var countDma = 0;
     var countDpl = 0;
+    var countDpj = 0;
     for (var ci = 0; ci < linhasBase.length; ci++) {
       var origemContador = origemServicoFeature(linhasBase[ci]);
       if (origemContador === 'FUNDEINFRA') countFund++;
       else if (origemContador === 'DOR') countDor++;
       else if (origemContador === 'DMA') countDma++;
       else if (origemContador === 'DPL') countDpl++;
+      else if (origemContador === 'DPJ') countDpj++;
       else {
         if (valorSeguro(linhasBase[ci], 'LINK_FUND')) countFund++;
         if (valorSeguro(linhasBase[ci], 'LINK_DOR')) countDor++;
         if (valorSeguro(linhasBase[ci], 'LINK_DMA')) countDma++;
         if (valorSeguro(linhasBase[ci], 'LINK_DPL')) countDpl++;
+        if (valorSeguro(linhasBase[ci], 'LINK_DPJ')) countDpj++;
       }
     }
     document.getElementById('countOAE').textContent = countFund;
@@ -5479,6 +5673,8 @@ map.addControl(new LogoMapaControl());
     if (contadorDma) contadorDma.textContent = countDma;
     var contadorDpl = document.getElementById('countDpl');
     if (contadorDpl) contadorDpl.textContent = countDpl;
+    var contadorDpj = document.getElementById('countDpj');
+    if (contadorDpj) contadorDpj.textContent = countDpj;
 
         renderizarLegendaServicos({
       linhas: servicosVisiveis,
@@ -5487,6 +5683,7 @@ map.addControl(new LogoMapaControl());
     renderizarLegendaDor(servicosVisiveisDor);
     renderizarLegendaDma(servicosVisiveisDma);
     renderizarLegendaDpl(servicosVisiveisDpl);
+    renderizarLegendaDpj(servicosVisiveisDpj);
     renderizarLegendaOAE({});
     renderizarLegendaRodEst(situacoesEstVisiveis);
     renderizarLegendaRodFed(situacoesFedVisiveis);
@@ -5498,7 +5695,8 @@ map.addControl(new LogoMapaControl());
       var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
       var dadosDmaTodos = servicosAtivos.DMA ? dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
       var dadosDplTodos = servicosAtivos.DPL ? dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
-      var referenciasProposta = referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos, dadosDplTodos);
+      var dadosDpjTodos = servicosAtivos.DPJ ? dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
+      var referenciasProposta = referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos);
       var featuresSre = featuresSrePorReferenciasProposta(feature, referenciasProposta);
 
       var html = htmlTabelaDadosSre(featuresSre, referenciasProposta);
@@ -5590,6 +5788,29 @@ map.addControl(new LogoMapaControl());
         </div>`;
       }
 
+      if (dadosDpjTodos.length) {
+        html += `
+        <div class="bloco-servico">
+          <div class="titulo-servico">Dados DPJ</div>
+          <table class="tabela-servico">
+            <tr><th>Item</th><th>Servico</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusao</th></tr>`;
+        for (var j = 0; j < dadosDpjTodos.length; j++) {
+          var dadosDpj = dadosDpjTodos[j];
+          html += `
+            <tr>
+              <td>${escapeHtml(dadosDpj.ITEM || '')}</td>
+              <td>${escapeHtml(dadosDpj.SERVICO || '')}</td>
+              <td>${escapeHtml(dadosDpj.ETAPA || '')}</td>
+              <td>${escapeHtml(dadosDpj.STATUS || '')}</td>
+              <td>${escapeHtml(dadosDpj.SEI || '')}</td>
+              <td>${escapeHtml(dadosDpj.CONCLUSAO || '')}</td>
+            </tr>`;
+        }
+        html += `
+          </table>
+        </div>`;
+      }
+
       document.getElementById('painelTabelaConteudo').innerHTML = html;
     }
   
@@ -5619,9 +5840,10 @@ map.addControl(new LogoMapaControl());
       var dorAtivo = servicosAtivos.DOR;
       var dmaAtivo = servicosAtivos.DMA;
       var dplAtivo = servicosAtivos.DPL;
+      var dpjAtivo = servicosAtivos.DPJ;
 
       strong.textContent = 'PLANO GOINFRA';
-      if (fundAtivo && dorAtivo && dmaAtivo && dplAtivo) {
+      if (fundAtivo && dorAtivo && dmaAtivo && dplAtivo && dpjAtivo) {
         span.textContent = '';
       } else {
         var origensAtivas = [];
@@ -5629,6 +5851,7 @@ map.addControl(new LogoMapaControl());
         if (dorAtivo) origensAtivas.push('DOR');
         if (dmaAtivo) origensAtivas.push('DMA');
         if (dplAtivo) origensAtivas.push('DPL');
+        if (dpjAtivo) origensAtivas.push('DPJ');
         span.textContent = origensAtivas.length ? '- ' + origensAtivas.join(' / ') : '';
       }
     }
@@ -5723,6 +5946,7 @@ map.addControl(new LogoMapaControl());
     var b5 = document.getElementById('legendaDor') ? document.getElementById('legendaDor').closest('.bloco') : null;
     var bDma = document.getElementById('legendaDma') ? document.getElementById('legendaDma').closest('.bloco') : null;
     var bDpl = document.getElementById('legendaDpl') ? document.getElementById('legendaDpl').closest('.bloco') : null;
+    var bDpj = document.getElementById('legendaDpj') ? document.getElementById('legendaDpj').closest('.bloco') : null;
     if (b1) b1.style.display = 'none';
     if (b2) b2.style.display = 'none';
     if (b3) b3.style.display = 'none';
@@ -5730,6 +5954,7 @@ map.addControl(new LogoMapaControl());
     if (b5) b5.style.display = 'none';
     if (bDma) bDma.style.display = 'none';
     if (bDpl) bDpl.style.display = 'none';
+    if (bDpj) bDpj.style.display = 'none';
 
     desenharEstados();
     desenharMunicipiosBase(municipiosFiltrados());
@@ -5744,6 +5969,8 @@ map.addControl(new LogoMapaControl());
     if (contadorDmaOff) contadorDmaOff.textContent = '0';
     var contadorDplOff = document.getElementById('countDpl');
     if (contadorDplOff) contadorDplOff.textContent = '0';
+    var contadorDpjOff = document.getElementById('countDpj');
+    if (contadorDpjOff) contadorDpjOff.textContent = '0';
 
     atualizarTituloTopBar();
   }

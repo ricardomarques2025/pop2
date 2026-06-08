@@ -1,0 +1,1012 @@
+[
+  {
+    "ITEM": 1,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0001",
+    "SEI": 202600036000332,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "fev/2026",
+    "CONTRATO": "012/2026"
+  },
+  {
+    "ITEM": 2,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0002",
+    "SEI": 202520920000410,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "ago/2026",
+    "CONTRATO": "092/2023"
+  },
+  {
+    "ITEM": 3,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0003",
+    "SEI": 202500036001255,
+    "STATUS": "Elaboração Anteprojeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 4,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0004",
+    "SEI": 202500036001255,
+    "STATUS": "Elaboração Anteprojeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 5,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0005",
+    "SEI": 202200036011033,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "jan/2026",
+    "CONTRATO": "174/2021"
+  },
+  {
+    "ITEM": 6,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0006",
+    "SEI": 202300036004034,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2025",
+    "CONTRATO": "092/2023"
+  },
+  {
+    "ITEM": 7,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0007",
+    "SEI": 202520920000410,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "ago/2026",
+    "CONTRATO": "092/2023"
+  },
+  {
+    "ITEM": 48,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0007",
+    "SEI": 202300036012179,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 10,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0010",
+    "SEI": 202500005019185,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "jan/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 11,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0011",
+    "SEI": 202200036011033,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "jan/2026",
+    "CONTRATO": "174/2021"
+  },
+  {
+    "ITEM": 12,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0012",
+    "SEI": 202500005029343,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "mar/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 13,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0013",
+    "SEI": 202500036001255,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 14,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0014",
+    "SEI": 202500005027007,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "fev/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 15,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0015",
+    "SEI": 202520920000410,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": "092/2023"
+  },
+  {
+    "ITEM": 16,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0016",
+    "SEI": 202300036004034,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": "092/2023"
+  },
+  {
+    "ITEM": 18,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0018",
+    "SEI": 202400036011080,
+    "STATUS": "Elaboração Anteprojeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "Doação"
+  },
+  {
+    "ITEM": 19,
+    "SERVICO": "Duplicação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_DUP_0019",
+    "SEI": 202300036004480,
+    "STATUS": "Projeto Concluído",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 98,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_MF_0001",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 99,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_MF_0002",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 100,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_MF_0003",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 101,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_MF_0004",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 102,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_MF_0005",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "fev/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 103,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_MF_0006",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 104,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_MF_0007",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 105,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_MF_0008",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 106,
+    "SERVICO": "Melhoria Funcional",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_MF_0009",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 20,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0001",
+    "SEI": 202400005044321,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "jan/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 21,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0002",
+    "SEI": 202500036012484,
+    "STATUS": "Licitação (Integrada)",
+    "CONCLUSAO": "Não informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 22,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0003",
+    "SEI": 202400005044325,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 23,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0004",
+    "SEI": 202400005043270,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 24,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0005",
+    "SEI": 202500036019838,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não informado",
+    "CONTRATO": "016/2026"
+  },
+  {
+    "ITEM": 25,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0006",
+    "SEI": 202500036019838,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "016/2026"
+  },
+  {
+    "ITEM": 26,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0007",
+    "SEI": 202300036007682,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": "099/2023"
+  },
+  {
+    "ITEM": 27,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0008",
+    "SEI": 202400036017644,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 28,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0009",
+    "SEI": 202400036016350,
+    "STATUS": "Elaboração Anteprojeto",
+    "CONCLUSAO": "jan/2028",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 29,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0010",
+    "SEI": 202500005019183,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "mar/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 30,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0011",
+    "SEI": 202500005019183,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 31,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0012",
+    "SEI": 202500005022824,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 32,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0013",
+    "SEI": 202400005043270,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "jan/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 33,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0014",
+    "SEI": 202400005044326,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "116/2023 - Rescindido"
+  },
+  {
+    "ITEM": 34,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0015",
+    "SEI": 202400005044326,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "abr/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 35,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0016",
+    "SEI": 202500036008606,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "mar/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 36,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0017",
+    "SEI": 202600036001174,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": "013/2026"
+  },
+  {
+    "ITEM": 37,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0018",
+    "SEI": 202300036007682,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": "099/2023"
+  },
+  {
+    "ITEM": 38,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0019",
+    "SEI": 202500036019024,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "nov/2026",
+    "CONTRATO": "176/2025"
+  },
+  {
+    "ITEM": 39,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0020",
+    "SEI": 202400005044325,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "jun/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 40,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0021",
+    "SEI": 202500036019024,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "176/2025"
+  },
+  {
+    "ITEM": 41,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0022",
+    "SEI": 202320920000821,
+    "STATUS": "Elaboração Anteprojeto",
+    "CONCLUSAO": "ago/2028",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 42,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0023",
+    "SEI": 202400005043272,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 43,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0024",
+    "SEI": 202500005038002,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 44,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0025",
+    "SEI": 202500005038002,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "mai/2027",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 45,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0026",
+    "SEI": 202500036016205,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 46,
+    "SERVICO": "Pavimentação",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_PAV_0027",
+    "SEI": 202500036005979,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 47,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0001",
+    "SEI": 202300036012179,
+    "STATUS": "Em Contratação de Obra",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "094/2023"
+  },
+  {
+    "ITEM": 49,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0002",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não informado",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 50,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0003",
+    "SEI": 202300036012166,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não informado",
+    "CONTRATO": "096/2023"
+  },
+  {
+    "ITEM": 51,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0004",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "mai/2027",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 52,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0005",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "mai/2026",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 53,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0006",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "jan/2026",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 54,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0007",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "mai/2026",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 55,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0008",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 56,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0009",
+    "SEI": 202300036012179,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "abr/2026",
+    "CONTRATO": "094/2023"
+  },
+  {
+    "ITEM": 57,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0010",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "out/2026",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 58,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0011",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 59,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0012",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 60,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0013",
+    "SEI": 202300036012166,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2025",
+    "CONTRATO": "096/2023"
+  },
+  {
+    "ITEM": 61,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0014",
+    "SEI": 202500036009582,
+    "STATUS": "Elaboração Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 62,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0015",
+    "SEI": 202520920000585,
+    "STATUS": "Elaboração Anteprojeto",
+    "CONCLUSAO": "dez/2025",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 63,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0016",
+    "SEI": 202520920000586,
+    "STATUS": "Elaboração Anteprojeto",
+    "CONCLUSAO": "dez/2025",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 64,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0017",
+    "SEI": 202300036012166,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2025",
+    "CONTRATO": "096/2023"
+  },
+  {
+    "ITEM": 65,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0018",
+    "SEI": 202300036012166,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "jan/2026",
+    "CONTRATO": "096/2023"
+  },
+  {
+    "ITEM": 66,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0019",
+    "SEI": 202300036012179,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "abr/2026",
+    "CONTRATO": "094/2023"
+  },
+  {
+    "ITEM": 67,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0020",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "abr/2026",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 68,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0021",
+    "SEI": 202300036004034,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "out/2025",
+    "CONTRATO": "092/2023"
+  },
+  {
+    "ITEM": 69,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0022",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "abr/2026",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 70,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0023",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "abr/2026",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 71,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0024",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "mai/2026",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 72,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0025",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "abr/2027",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 73,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0026",
+    "SEI": 202300036012166,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "dez/2026",
+    "CONTRATO": "096/2023"
+  },
+  {
+    "ITEM": 74,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0027",
+    "SEI": 202300036004034,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 75,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0028",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 76,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0029",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "abr/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 77,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0030",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não informado",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 78,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0031",
+    "SEI": 202300036012166,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "out/2025",
+    "CONTRATO": "096/2023"
+  },
+  {
+    "ITEM": 79,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0032",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "mar/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 80,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0033",
+    "SEI": 202500036005655,
+    "STATUS": "Licitação de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 81,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0034",
+    "SEI": 202300036012166,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "abr/2026",
+    "CONTRATO": "096/2023"
+  },
+  {
+    "ITEM": 82,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0035",
+    "SEI": 202400036009828,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "jan/2026",
+    "CONTRATO": "094/2023"
+  },
+  {
+    "ITEM": 85,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0036",
+    "SEI": 202500036005655,
+    "STATUS": "Licitação de Integrada",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 86,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0037",
+    "SEI": 202300036012166,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "nov/2025",
+    "CONTRATO": "096/2023"
+  },
+  {
+    "ITEM": 87,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0038",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "mai/2026",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 88,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0039",
+    "SEI": 202500036000607,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "mai/2026",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 89,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0040",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "abr/2026",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 90,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0041",
+    "SEI": 202300036012163,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "097/2023"
+  },
+  {
+    "ITEM": 91,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0042",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 92,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0043",
+    "SEI": 202300036012179,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "set/2026",
+    "CONTRATO": "094/2023"
+  },
+  {
+    "ITEM": 93,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0044",
+    "SEI": 202300036012179,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "set/2026",
+    "CONTRATO": "094/2023"
+  },
+  {
+    "ITEM": 94,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0045",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "nov/2025",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 95,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0046",
+    "SEI": 202500036016686,
+    "STATUS": "Projeto Concluído",
+    "CONCLUSAO": "nov/2025",
+    "CONTRATO": null
+  },
+  {
+    "ITEM": 96,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0047",
+    "SEI": 202300036012168,
+    "STATUS": "Elaboração de Projeto",
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "095/2023"
+  },
+  {
+    "ITEM": 97,
+    "SERVICO": "Restauração",
+    "ETAPA": "Projeto",
+    "LINK_DPJ": "DPJ_REST_0048",
+    "SEI": 202520920000587,
+    "STATUS": "Elaboração Anteprojeto",
+    "CONCLUSAO": "fev/2027",
+    "CONTRATO": "002/2025"
+  }
+]

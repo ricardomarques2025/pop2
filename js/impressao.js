@@ -200,6 +200,7 @@
     if (servicosAtivos.FUNDEINFRA) nomesServico.push('FUNDEINFRA');
     if (servicosAtivos.DMA) nomesServico.push('DMA');
     if (servicosAtivos.DPL) nomesServico.push('DPL');
+    if (servicosAtivos.DPJ) nomesServico.push('DPJ');
 
     if (servico) servico.textContent = nomesServico.join(' / ');
     if (data) data.textContent = textoMesAnoAtualImpressao();
@@ -260,10 +261,12 @@
     var linhasDor = [];
     var linhasDma = [];
     var linhasDpl = [];
+    var linhasDpj = [];
     var vistosFund = {};
     var vistosDor = {};
     var vistosDma = {};
     var vistosDpl = {};
+    var vistosDpj = {};
 
     function valorTabela(valor) {
       return escapeHtml(valor === null || valor === undefined ? '' : valor);
@@ -373,6 +376,21 @@
             }
           }
         }
+
+        if (servicosAtivos.DPJ) {
+          var linkDpj = valorSeguro(feature, 'LINK_DPJ');
+          if (linkDpj) {
+            var dadosDpj = dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
+            for (var q = 0; q < dadosDpj.length; q++) {
+              var itemDpj = dadosDpj[q];
+              var chaveDpj = String(linkDpj) + '|' + String(itemDpj.ITEM || '') + '|' + String(itemDpj.SERVICO || '') + '|' + String(itemDpj.SEI || '');
+              if (!vistosDpj[chaveDpj]) {
+                linhasDpj.push({ dados: itemDpj, feature: feature });
+                vistosDpj[chaveDpj] = true;
+              }
+            }
+          }
+        }
       }
     }
 
@@ -380,12 +398,14 @@
     linhasDor.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
     linhasDma.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
     linhasDpl.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
+    linhasDpj.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
 
     destino.innerHTML =
       blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature, 'PROPOSTA'); }), 'Proposta') +
       blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
       blocoTabela('Dados DMA', linhasDma.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
-      blocoTabela('Dados DPL', linhasDpl.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item');
+      blocoTabela('Dados DPL', linhasDpl.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
+      blocoTabela('Dados DPJ', linhasDpj.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item');
     destino.style.display = destino.children.length ? 'block' : 'none';
   }
 
