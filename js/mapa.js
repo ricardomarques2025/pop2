@@ -6,6 +6,20 @@
 var originalCenter = map.getCenter();
 var originalZoom = map.getZoom();
 
+// CONFIGURACOES DOS ICONES DE AERODROMOS E AEROPORTOS.
+// Altere os tamanhos em pixels ou os arquivos SVG aqui.
+var CONFIG_AERO = {
+  zoomMinimo: 8,
+  aerodromo: {
+    tamanho: 25,
+    icone: 'data/aerodromo.svg'
+  },
+  aeroporto: {
+    tamanho: 30,
+    icone: 'data/aeroporto.svg'
+  }
+};
+
 function criarPanesMapa() {
   Object.keys(MAPA_PANES).forEach(function(nomePane) {
     map.createPane(nomePane);
@@ -14,6 +28,32 @@ function criarPanesMapa() {
 }
 
 criarPanesMapa();
+
+var hoverIconeServicoAtivo = 0;
+
+function alvoHoverIconeServico(el) {
+  return el && el.closest && el.closest('.obra-ponto-icon, .obras-pontos-cluster, .marker-cluster');
+}
+
+function atualizarPrimeiroPlanoIconesServico(ativo) {
+  var pane = map.getPane('oaePane');
+  if (!pane) return;
+  pane.style.zIndex = ativo ? 1300 : MAPA_PANES.oaePane;
+}
+
+map.getContainer().addEventListener('mouseover', function(e) {
+  if (!alvoHoverIconeServico(e.target)) return;
+  hoverIconeServicoAtivo++;
+  atualizarPrimeiroPlanoIconesServico(true);
+}, true);
+
+map.getContainer().addEventListener('mouseout', function(e) {
+  var alvo = alvoHoverIconeServico(e.target);
+  if (!alvo) return;
+  if (e.relatedTarget && alvo.contains(e.relatedTarget)) return;
+  hoverIconeServicoAtivo = Math.max(0, hoverIconeServicoAtivo - 1);
+  if (!hoverIconeServicoAtivo) atualizarPrimeiroPlanoIconesServico(false);
+}, true);
 
 function criarMapasBase() {
   var mapas = {};
@@ -362,6 +402,8 @@ map.addControl(new LogoMapaControl());
     atualizarVisibilidadeRotulos();
     atualizarVisibilidadeRotulosSRE();
     atualizarVisibilidadeRotulosObras();
+    atualizarVisibilidadeIconesAeroObras();
+    desenharAero();
   });
 
   var municipiosData = null;
@@ -370,6 +412,8 @@ map.addControl(new LogoMapaControl());
   var sreBaseData = null;
   var sreData = null;
   var obrasPontosData = null;
+  var aeroData = null;
+  var aeroObrasData = null;
   var oaeData = null;
   var estadosData = null;
   var snvData = null;
@@ -382,6 +426,9 @@ map.addControl(new LogoMapaControl());
   var sreBaseLabelLayer = null;
   var snvLabelLayer = null;
   var obrasPontosLayer = null;
+  var aeroLayer = null;
+  var aeroObrasIconLayer = null;
+  var aeroObrasClusterRefs = [];
   var oaeLayer = null;
   var snvLayer = null;
   var obrasLabelLayer = null;
@@ -396,7 +443,8 @@ map.addControl(new LogoMapaControl());
       DOR: true,
       DMA: true,
       DPL: true,
-      DPJ: true
+      DPJ: true,
+      DOC: true
     };
     var servicoFiltroAtivo = '';
 
@@ -1964,6 +2012,7 @@ map.addControl(new LogoMapaControl());
   var sreBaseFiltroAtivo = true;
   var snvFiltroAtivo = true;
   var localidadeFiltroAtivo = true;
+  var aeroFiltroAtivo = true;
   var municipioBaseFiltroAtivo = true;
   var areasUrbanasFiltroAtivo = false;
   var densidadeRotulos = 0;
@@ -1978,8 +2027,55 @@ map.addControl(new LogoMapaControl());
   var obrasDplPorLink = {};
   var obrasDpjData = [];
   var obrasDpjPorLink = {};
+  var obrasAeroTabelaPromise = null;
   var obrasPontosTabelaData = [];
   var obrasPontosPorLink = {};
+
+  function carregarTabelaObrasAero() {
+    if (!obrasAeroTabelaPromise) {
+      obrasAeroTabelaPromise = fetch('data/OBRAS_AERO.json')
+        .then(function(r) { return r.json(); })
+        .then(function(resultado) {
+          return Array.isArray(resultado) ? resultado : [];
+        })
+        .catch(function(e) {
+          console.warn('Falha ao carregar OBRAS_AERO:', e);
+          return [];
+        });
+    }
+    return obrasAeroTabelaPromise;
+  }
+
+  function origemTabelaAero(item) {
+    return String((item && item.ORIGEM) || '').trim().toUpperCase();
+  }
+
+  function registrosAeroPorOrigem(registros, origem) {
+    var filtrados = [];
+    var origemNormalizada = String(origem || '').trim().toUpperCase();
+    for (var i = 0; i < registros.length; i++) {
+      if (origemTabelaAero(registros[i]) === origemNormalizada) filtrados.push(registros[i]);
+    }
+    return filtrados;
+  }
+
+  function indexarObrasPorLink(registros, camposLink) {
+    var indice = {};
+    for (var i = 0; i < registros.length; i++) {
+      var item = registros[i];
+      var link = '';
+      for (var c = 0; c < camposLink.length; c++) {
+        link = item && item[camposLink[c]];
+        if (link) break;
+      }
+      if (link) {
+        var chave = String(link);
+        if (!indice[chave]) indice[chave] = [];
+        indice[chave].push(item);
+      }
+    }
+    return indice;
+  }
 
     function carregarTabelasFundeinfra() {
     fetch('data/OBRAS_LINHAS_FUNDEINFRA.json')
@@ -2011,23 +2107,17 @@ map.addControl(new LogoMapaControl());
   }
 
   function carregarTabelasDor() {
-    fetch('data/OBRAS_LINHAS_DOR.json')
-      .then(function(r) { return r.json(); })
+    Promise.all([
+      fetch('data/OBRAS_LINHAS_DOR.json').then(function(r) { return r.json(); }),
+      carregarTabelaObrasAero()
+    ])
       .then(function(resultado) {
-        obrasDorData = Array.isArray(resultado) ? resultado : [];
-        obrasDorPorLink = {};
+        var linhas = Array.isArray(resultado[0]) ? resultado[0] : [];
+        var aeros = registrosAeroPorOrigem(Array.isArray(resultado[1]) ? resultado[1] : [], 'DOR');
+        obrasDorData = linhas.concat(aeros);
+        obrasDorPorLink = indexarObrasPorLink(obrasDorData, ['LINK_DOR', 'LINK_FUND']);
 
-        for (var i = 0; i < obrasDorData.length; i++) {
-          var item = obrasDorData[i];
-          var link = item && (item.LINK_DOR || item.LINK_FUND);
-          if (link) {
-            var chave = String(link);
-            if (!obrasDorPorLink[chave]) obrasDorPorLink[chave] = [];
-            obrasDorPorLink[chave].push(item);
-          }
-        }
-
-        console.log('OBRAS_LINHAS_DOR carregado:', obrasDorData.length);
+        console.log('OBRAS_LINHAS_DOR/OBRAS_AERO(DOR) carregados:', obrasDorData.length);
         preencherServicos();
         if (sreData && municipiosData) {
           preencherRodovias();
@@ -2052,7 +2142,7 @@ map.addControl(new LogoMapaControl());
           var item = obrasPontosTabelaData[i];
           var link = item && item.LINK;
           if (!link) continue;
-          var chave = String(link);
+          var chave = String(link).trim();
           if (!obrasPontosPorLink[chave]) obrasPontosPorLink[chave] = [];
           obrasPontosPorLink[chave].push(item);
         }
@@ -2067,23 +2157,17 @@ map.addControl(new LogoMapaControl());
   }
 
   function carregarTabelasDma() {
-    fetch('data/OBRAS_LINHAS_DMA.json')
-      .then(function(r) { return r.json(); })
+    Promise.all([
+      fetch('data/OBRAS_LINHAS_DMA.json').then(function(r) { return r.json(); }),
+      carregarTabelaObrasAero()
+    ])
       .then(function(resultado) {
-        obrasDmaData = Array.isArray(resultado) ? resultado : [];
-        obrasDmaPorLink = {};
+        var linhas = Array.isArray(resultado[0]) ? resultado[0] : [];
+        var aeros = registrosAeroPorOrigem(Array.isArray(resultado[1]) ? resultado[1] : [], 'DMA');
+        obrasDmaData = linhas.concat(aeros);
+        obrasDmaPorLink = indexarObrasPorLink(obrasDmaData, ['LINK_DMA', 'LINK_DOR', 'LINK_FUND']);
 
-        for (var i = 0; i < obrasDmaData.length; i++) {
-          var item = obrasDmaData[i];
-          var link = item && (item.LINK_DMA || item.LINK_DOR || item.LINK_FUND);
-          if (link) {
-            var chave = String(link);
-            if (!obrasDmaPorLink[chave]) obrasDmaPorLink[chave] = [];
-            obrasDmaPorLink[chave].push(item);
-          }
-        }
-
-        console.log('OBRAS_LINHAS_DMA carregado:', obrasDmaData.length);
+        console.log('OBRAS_LINHAS_DMA/OBRAS_AERO(DMA) carregados:', obrasDmaData.length);
         preencherServicos();
         if (sreData && municipiosData) {
           preencherRodovias();
@@ -2129,23 +2213,17 @@ map.addControl(new LogoMapaControl());
   }
 
   function carregarTabelasDpj() {
-    fetch('data/OBRAS_LINHAS_DPJ.json')
-      .then(function(r) { return r.json(); })
+    Promise.all([
+      fetch('data/OBRAS_LINHAS_DPJ.json').then(function(r) { return r.json(); }),
+      carregarTabelaObrasAero()
+    ])
       .then(function(resultado) {
-        obrasDpjData = Array.isArray(resultado) ? resultado : [];
-        obrasDpjPorLink = {};
+        var linhas = Array.isArray(resultado[0]) ? resultado[0] : [];
+        var aeros = registrosAeroPorOrigem(Array.isArray(resultado[1]) ? resultado[1] : [], 'DPJ');
+        obrasDpjData = linhas.concat(aeros);
+        obrasDpjPorLink = indexarObrasPorLink(obrasDpjData, ['LINK_DPJ', 'LINK_DPL', 'LINK_DMA', 'LINK_DOR', 'LINK_FUND']);
 
-        for (var i = 0; i < obrasDpjData.length; i++) {
-          var item = obrasDpjData[i];
-          var link = item && (item.LINK_DPJ || item.LINK_DPL || item.LINK_DMA || item.LINK_DOR || item.LINK_FUND);
-          if (link) {
-            var chave = String(link);
-            if (!obrasDpjPorLink[chave]) obrasDpjPorLink[chave] = [];
-            obrasDpjPorLink[chave].push(item);
-          }
-        }
-
-        console.log('OBRAS_LINHAS_DPJ carregado:', obrasDpjData.length);
+        console.log('OBRAS_LINHAS_DPJ/OBRAS_AERO(DPJ) carregados:', obrasDpjData.length);
         preencherServicos();
         if (sreData && municipiosData) {
           preencherRodovias();
@@ -2176,6 +2254,10 @@ map.addControl(new LogoMapaControl());
     if (btnLocalidades) {
       btnLocalidades.classList.toggle('ativo-filtro', localidadeFiltroAtivo);
     }
+    var btnAero = document.getElementById('toggleAero');
+    if (btnAero) {
+      btnAero.classList.toggle('ativo-filtro', aeroFiltroAtivo);
+    }
     var btnMunicipios = document.getElementById('toggleMunicipiosBase');
     if (btnMunicipios) {
       btnMunicipios.classList.toggle('ativo-filtro', municipioBaseFiltroAtivo);
@@ -2200,13 +2282,18 @@ map.addControl(new LogoMapaControl());
       map.removeLayer(obrasPontosLayer);
       obrasPontosLayer = null;
     }
+    if (aeroObrasIconLayer) {
+      map.removeLayer(aeroObrasIconLayer);
+      aeroObrasIconLayer = null;
+    }
+    aeroObrasClusterRefs = [];
   }
 
 
   function valorSeguro(obj, campo) {
     if (!obj || !obj.properties) return '';
     if (obj.properties[campo] === null || obj.properties[campo] === undefined) return '';
-    return obj.properties[campo];
+    return typeof obj.properties[campo] === 'string' ? obj.properties[campo].trim() : obj.properties[campo];
   }
 
   function featureComOrigemServico(feature, origem) {
@@ -2440,6 +2527,7 @@ map.addControl(new LogoMapaControl());
       for (var p = 0; p < obrasPontosData.features.length; p++) {
         var featurePonto = obrasPontosData.features[p];
         var dadosPonto = dadosObrasPontosDaFeature(featurePonto);
+        if (!dadosPonto || origemObraPonto(dadosPonto) !== 'FUNDEINFRA') continue;
         if (dadosPonto && dadosPonto.PROPOSTA !== null && dadosPonto.PROPOSTA !== undefined && String(dadosPonto.PROPOSTA).trim() !== '') {
           adicionarUnico(propostas, String(dadosPonto.PROPOSTA));
         }
@@ -2472,12 +2560,23 @@ map.addControl(new LogoMapaControl());
       }
     }
 
+    function addServicosPontos(lista) {
+      for (var i = 0; i < lista.length; i++) {
+        var item = lista[i];
+        var origem = origemObraPonto(item);
+        if (respeitarOrigem && !servicosAtivos[origem]) continue;
+        var s = valorFiltroObraPonto(item);
+        if (s && servicos.indexOf(s) === -1) servicos.push(s);
+      }
+    }
+
     var respeitarOrigem = algumaOrigemAtiva();
     if (!respeitarOrigem || servicosAtivos.FUNDEINFRA) addServicos(obrasFundeinfraData);
     if (!respeitarOrigem || servicosAtivos.DOR) addServicos(obrasDorData);
     if (!respeitarOrigem || servicosAtivos.DMA) addServicos(obrasDmaData);
     if (!respeitarOrigem || servicosAtivos.DPL) addServicos(obrasDplData);
     if (!respeitarOrigem || servicosAtivos.DPJ) addServicos(obrasDpjData);
+    addServicosPontos(obrasPontosTabelaData);
 
     servicos.sort(function(a, b) {
       return String(a).localeCompare(String(b), 'pt-BR');
@@ -2536,7 +2635,7 @@ map.addControl(new LogoMapaControl());
     if (snvData && snvData.features && rodoviaSelecionada && !propostaSelecionada) {
       for (var k = 0; k < snvData.features.length; k++) considerarFeature(snvData.features[k], true);
     }
-    if (obrasPontosData && obrasPontosData.features && servicosAtivos.FUNDEINFRA) {
+    if (obrasPontosData && obrasPontosData.features && algumaOrigemObraPontoAtiva()) {
       for (var p = 0; p < obrasPontosData.features.length; p++) {
         var featurePonto = obrasPontosData.features[p];
         var coordsPonto = featurePonto.geometry && featurePonto.geometry.coordinates;
@@ -2544,8 +2643,7 @@ map.addControl(new LogoMapaControl());
         if (!pontoDentroSelecaoMunicipios(coordsPonto[0], coordsPonto[1], featuresMunicipios)) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(featurePonto) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(featurePonto) !== sreSelecionado) continue;
-        if (servicoFiltroAtivo) continue;
-        if (propostaSelecionada && !dadosObrasPontosFiltrados(featurePonto, propostaSelecionada).length) continue;
+        if (!dadosObrasPontosFiltrados(featurePonto, propostaSelecionada).length) continue;
         feats.push(featurePonto);
       }
     }
@@ -3007,6 +3105,108 @@ map.addControl(new LogoMapaControl());
 
     // Atualizar visibilidade dos rótulos baseado no zoom
     atualizarVisibilidadeRotulos();
+  }
+
+  function tipoAeroFeature(feature) {
+    var tipo = String(valorSeguro(feature, 'TIPO') || '').toLowerCase();
+    return tipo.indexOf('aeroporto') >= 0 ? 'aeroporto' : 'aerodromo';
+  }
+
+  function criarIconeAero(tipo) {
+    var aeroporto = tipo === 'aeroporto';
+    var config = aeroporto ? CONFIG_AERO.aeroporto : CONFIG_AERO.aerodromo;
+    var tamanho = config.tamanho;
+    var icone = config.icone;
+    return L.divIcon({
+      className: 'aero-icon',
+      html: '<img class="aero-simbolo" src="' + icone + '" alt="" aria-hidden="true" style="width:' + tamanho + 'px;height:' + tamanho + 'px;" />',
+      iconSize: [tamanho, tamanho],
+      iconAnchor: [tamanho / 2, tamanho / 2],
+      popupAnchor: [0, -tamanho / 2]
+    });
+  }
+
+  function construirPopupAero(feature) {
+    var p = feature.properties || {};
+    var linhas = [
+      ['Tipo', p.TIPO],
+      ['Código', p.COD],
+      ['Nome', p.NOME],
+      ['Município', p.MUNICIPIO],
+      ['Altitude', p.ALT_M ? p.ALT_M + ' m' : ''],
+      ['Comprimento', p.COMP_M ? p.COMP_M + ' m' : ''],
+      ['Largura', p.LARG_M ? p.LARG_M + ' m' : ''],
+      ['Revestimento', p.REVESTIMENTO]
+    ];
+    var html = '<b>' + escaparHtml(p.NOME || p.TIPO || 'Aeródromo') + '</b>';
+    for (var i = 0; i < linhas.length; i++) {
+      if (linhas[i][1] === null || linhas[i][1] === undefined || linhas[i][1] === '') continue;
+      html += '<br><b>' + escaparHtml(linhas[i][0]) + ':</b> ' + escaparHtml(linhas[i][1]);
+    }
+    return html;
+  }
+
+  function desenharAero() {
+    if (aeroLayer) {
+      map.removeLayer(aeroLayer);
+      aeroLayer = null;
+    }
+
+    renderizarLegendaAero({});
+
+    if (!aeroFiltroAtivo || map.getZoom() < CONFIG_AERO.zoomMinimo || !aeroData || !aeroData.features) return;
+
+    var tiposVisiveis = {};
+    aeroLayer = L.layerGroup();
+
+    aeroData.features.forEach(function(feature) {
+      var coords = feature.geometry && feature.geometry.coordinates;
+      if (!coords || coords.length < 2) return;
+
+      var tipo = tipoAeroFeature(feature);
+      tiposVisiveis[tipo] = true;
+
+      var marker = L.marker([coords[1], coords[0]], {
+        pane: 'aeroPane',
+        icon: criarIconeAero(tipo),
+        title: valorSeguro(feature, 'NOME') || valorSeguro(feature, 'TIPO') || '',
+        zIndexOffset: tipo === 'aeroporto' ? 20 : 10
+      });
+
+      marker.bindPopup(construirPopupAero(feature));
+      aeroLayer.addLayer(marker);
+    });
+
+    if (aeroLayer.getLayers().length) aeroLayer.addTo(map);
+    renderizarLegendaAero(tiposVisiveis);
+  }
+
+  function renderizarLegendaAero(tiposVisiveis) {
+    var bloco = document.getElementById('blocoLegendaAero');
+    var alvo = document.getElementById('legendaAero');
+    if (!bloco || !alvo) return;
+
+    alvo.innerHTML = '';
+    if (!aeroFiltroAtivo || !tiposVisiveis) {
+      bloco.style.display = 'none';
+      return;
+    }
+
+    [
+      ['aerodromo', 'Aeródromo'],
+      ['aeroporto', 'Aeroporto']
+    ].forEach(function(item) {
+      if (!tiposVisiveis[item[0]]) return;
+      var div = document.createElement('div');
+      div.className = 'legenda-item';
+      div.innerHTML =
+        '<span class="legenda-aero-simbolo"><img class="aero-simbolo" src="data/' +
+        (item[0] === 'aeroporto' ? 'aeroporto.svg' : 'aerodromo.svg') +
+        '" alt="" aria-hidden="true" /></span><div class="legenda-texto">' + item[1] + '</div>';
+      alvo.appendChild(div);
+    });
+
+    bloco.style.display = alvo.children.length ? '' : 'none';
   }
 
   function valorDensidadeRotulos() {
@@ -3986,16 +4186,73 @@ map.addControl(new LogoMapaControl());
     return dados.length ? dados[0] : null;
   }
 
+  function origemObraPonto(dados) {
+    var origem = String((dados && dados.ORIGEM) || 'FUNDEINFRA').trim().toUpperCase();
+    return origem || 'FUNDEINFRA';
+  }
+
+  function tipoObraPonto(dados) {
+    return String((dados && dados.TIPO) || '').trim().toUpperCase();
+  }
+
+  function valorFiltroObraPonto(dados) {
+    return String((dados && (dados.TIPO || dados.SERVICO)) || '').trim();
+  }
+
+  function algumaOrigemObraPontoAtiva() {
+    return !!(servicosAtivos.FUNDEINFRA || servicosAtivos.DOC || servicosAtivos.DOR || servicosAtivos.DMA || servicosAtivos.DPL || servicosAtivos.DPJ);
+  }
+
+  function algumaOrigemObraAeroAtiva() {
+    return !!(servicosAtivos.DOR || servicosAtivos.DMA || servicosAtivos.DPJ);
+  }
+
   function dadosObrasPontosFiltrados(feature, proposta) {
     var todos = dadosObrasPontosDaFeatureTodos(feature);
     var filtrados = [];
 
     for (var i = 0; i < todos.length; i++) {
       var item = todos[i];
-      if (!servicosAtivos.FUNDEINFRA) continue;
+      var origem = origemObraPonto(item);
+      if (!servicosAtivos[origem]) continue;
+      if (proposta && (origem !== 'FUNDEINFRA' || String(item.PROPOSTA) !== String(proposta))) continue;
+      if (servicoFiltroAtivo && valorFiltroObraPonto(item) !== servicoFiltroAtivo) continue;
       filtrados.push(item);
     }
 
+    return filtrados;
+  }
+
+  function dadosObrasAeroFiltrados(feature) {
+    var filtrados = [];
+    if (servicosAtivos.DOR) {
+      var dadosDor = dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
+      for (var i = 0; i < dadosDor.length; i++) {
+        filtrados.push(Object.assign({}, dadosDor[i], {
+          ORIGEM: 'DOR',
+          __TIPO_PONTO_AERO: 'AERO_OBRA'
+        }));
+      }
+    }
+    if (servicosAtivos.DMA) {
+      var dadosDma = dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
+      for (var d = 0; d < dadosDma.length; d++) {
+        filtrados.push(Object.assign({}, dadosDma[d], {
+          ORIGEM: 'DMA',
+          ETAPA: dadosDma[d].ETAPA || 'Manutenção',
+          __TIPO_PONTO_AERO: 'AERO_OBRA'
+        }));
+      }
+    }
+    if (servicosAtivos.DPJ) {
+      var dadosDpj = dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
+      for (var j = 0; j < dadosDpj.length; j++) {
+        filtrados.push(Object.assign({}, dadosDpj[j], {
+          ORIGEM: 'DPJ',
+          __TIPO_PONTO_AERO: 'AERO_OBRA'
+        }));
+      }
+    }
     return filtrados;
   }
 
@@ -4087,7 +4344,7 @@ map.addControl(new LogoMapaControl());
       }
     }
 
-    if (obrasPontosData && obrasPontosData.features && servicosAtivos.FUNDEINFRA && !servicoFiltroAtivo) {
+    if (obrasPontosData && obrasPontosData.features && algumaOrigemObraPontoAtiva()) {
       for (var p = 0; p < obrasPontosData.features.length; p++) {
         var ponto = obrasPontosData.features[p];
         if (!featureAtendeFiltrosEspaciais(ponto)) continue;
@@ -4095,16 +4352,27 @@ map.addControl(new LogoMapaControl());
         if (!coords || coords.length < 2) continue;
         if (!pontoDentroSelecaoMunicipios(coords[0], coords[1], featuresMunicipios)) continue;
         var dadosPontos = dadosObrasPontosFiltrados(ponto, propostaSelecionada);
-        if (propostaSelecionada) {
-          dadosPontos = dadosPontos.filter(function(item) {
-            return String(item.PROPOSTA) === String(propostaSelecionada);
-          });
+        for (var ip = 0; ip < dadosPontos.length; ip++) {
+          var itemPonto = dadosPontos[ip];
+          linhas.push(registroExportacao(ponto, origemObraPonto(itemPonto), 'Obra pontual', Object.assign({}, itemPonto, {
+            SERVICO: itemPonto.SERVICO || 'Obra pontual'
+          })));
         }
-        adicionarRegistrosObraLinear(linhas, ponto, 'FUNDEINFRA', dadosPontos.map(function(item) {
-          return Object.assign({}, item, { SERVICO: item.SERVICO || 'Obra pontual' });
-        }));
-        for (var ip = linhas.length - dadosPontos.length; ip < linhas.length; ip++) {
-          if (linhas[ip]) linhas[ip].TIPO = 'Obra pontual';
+      }
+    }
+
+    if (aeroObrasData && aeroObrasData.features && algumaOrigemObraAeroAtiva() && !rodoviaSelecionada && !sreSelecionado) {
+      for (var a = 0; a < aeroObrasData.features.length; a++) {
+        var aero = aeroObrasData.features[a];
+        var coordsAero = aero.geometry && aero.geometry.coordinates;
+        if (!coordsAero || coordsAero.length < 2) continue;
+        if (!pontoDentroSelecaoMunicipios(coordsAero[0], coordsAero[1], featuresMunicipios)) continue;
+        var dadosAero = dadosObrasAeroFiltrados(aero);
+        for (var ia = 0; ia < dadosAero.length; ia++) {
+          var itemAero = dadosAero[ia];
+          linhas.push(registroExportacao(aero, origemObraPonto(itemAero), 'Obra em aeródromo/aeroporto', Object.assign({}, itemAero, {
+            SERVICO: itemAero.SERVICO || 'Aeródromos'
+          })));
         }
       }
     }
@@ -4171,7 +4439,17 @@ map.addControl(new LogoMapaControl());
   }
 
   function estiloObraPonto(dados) {
+    if (dados && dados.__TIPO_PONTO_AERO === 'AERO_OBRA') {
+      if (origemObraPonto(dados) === 'DMA') return OBRAS_PONTOS_INFO.Manutencao;
+      if (origemObraPonto(dados) === 'DPJ') return OBRAS_PONTOS_INFO.Projeto;
+    }
     var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
+    if (tipoObraPonto(dados) === 'OAE') {
+      if (etapa.indexOf('planejamento') >= 0) return OBRAS_PONTOS_INFO.OaePlanejamento;
+      if (etapa.indexOf('projeto') >= 0) return OBRAS_PONTOS_INFO.OaeProjeto;
+      if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.OaeObra;
+    }
+    if (etapa.indexOf('planejamento') >= 0) return OBRAS_PONTOS_INFO.Planejamento;
     if (etapa.indexOf('projeto') >= 0) return OBRAS_PONTOS_INFO.Projeto;
     if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.Obra;
     return OBRAS_PONTOS_INFO.Padrao;
@@ -4900,7 +5178,7 @@ map.addControl(new LogoMapaControl());
       total++;
     }
 
-    var ordemPontos = ['Projeto', 'Obra', 'Padrao'];
+    var ordemPontos = ['OaePlanejamento', 'OaeProjeto', 'OaeObra', 'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'];
     for (var p = 0; p < ordemPontos.length; p++) {
       var chavePonto = ordemPontos[p];
       if (!pontos[chavePonto]) continue;
@@ -4908,13 +5186,58 @@ map.addControl(new LogoMapaControl());
       var itemPonto = document.createElement('div');
       itemPonto.className = 'legenda-item';
       itemPonto.innerHTML =
-        criarHtmlSimboloObraPonto(info.classe, 'legenda-ponto-simbolo') +
+        criarHtmlSimboloObraPonto(info.classe, 'legenda-ponto-simbolo', info.icone) +
         '<div class="legenda-texto">' + escapeHtml(info.label) + '</div>';
       alvo.appendChild(itemPonto);
       total++;
     }
 
     bloco.style.display = total > 0 ? '' : 'none';
+  }
+
+  function renderizarLegendaPontos(alvoId, pontos) {
+    var alvo = document.getElementById(alvoId); if(!alvo) return;
+    var bloco = alvo.closest('.bloco');
+    alvo.innerHTML = '';
+
+    var total = 0;
+    var ordemPontos = ['OaePlanejamento', 'OaeProjeto', 'OaeObra', 'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'];
+    for (var p = 0; p < ordemPontos.length; p++) {
+      var chavePonto = ordemPontos[p];
+      if (!pontos || !pontos[chavePonto]) continue;
+      var info = OBRAS_PONTOS_INFO[chavePonto];
+      var itemPonto = document.createElement('div');
+      itemPonto.className = 'legenda-item';
+      itemPonto.innerHTML =
+        criarHtmlSimboloObraPonto(info.classe, 'legenda-ponto-simbolo', info.icone) +
+        '<div class="legenda-texto">' + escapeHtml(info.label) + '</div>';
+      alvo.appendChild(itemPonto);
+      total++;
+    }
+
+    bloco.style.display = total > 0 ? '' : 'none';
+  }
+
+  function renderizarLegendaDoc(legendasVisiveis) {
+    renderizarLegendaPontos('legendaDoc', legendasVisiveis || {});
+  }
+
+  function adicionarItensLegendaPontos(alvo, pontos) {
+    var total = 0;
+    var ordemPontos = ['OaePlanejamento', 'OaeProjeto', 'OaeObra', 'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'];
+    for (var p = 0; p < ordemPontos.length; p++) {
+      var chavePonto = ordemPontos[p];
+      if (!pontos || !pontos[chavePonto]) continue;
+      var info = OBRAS_PONTOS_INFO[chavePonto];
+      var itemPonto = document.createElement('div');
+      itemPonto.className = 'legenda-item';
+      itemPonto.innerHTML =
+        criarHtmlSimboloObraPonto(info.classe, 'legenda-ponto-simbolo', info.icone) +
+        '<div class="legenda-texto">' + escapeHtml(info.label) + '</div>';
+      alvo.appendChild(itemPonto);
+      total++;
+    }
+    return total;
   }
 
   function corLegendaServico(info) {
@@ -4946,7 +5269,7 @@ map.addControl(new LogoMapaControl());
     '</span>';
   }
 
-    function renderizarLegendaDor(legendasVisiveis) {
+  function renderizarLegendaDor(legendasVisiveis, pontosVisiveis) {
     var alvo = document.getElementById('legendaDor'); if(!alvo) return;
     var bloco = document.getElementById('legendaDor').closest('.bloco');
     alvo.innerHTML = '';
@@ -4968,10 +5291,12 @@ map.addControl(new LogoMapaControl());
       total++;
     }
 
+    total += adicionarItensLegendaPontos(alvo, pontosVisiveis);
+
     bloco.style.display = total > 0 ? '' : 'none';
   }
 
-  function renderizarLegendaDma(legendasVisiveis) {
+  function renderizarLegendaDma(legendasVisiveis, pontosVisiveis) {
     var alvo = document.getElementById('legendaDma'); if(!alvo) return;
     var bloco = document.getElementById('legendaDma').closest('.bloco');
     alvo.innerHTML = '';
@@ -4993,10 +5318,12 @@ map.addControl(new LogoMapaControl());
       total++;
     }
 
+    total += adicionarItensLegendaPontos(alvo, pontosVisiveis);
+
     bloco.style.display = total > 0 ? '' : 'none';
   }
 
-  function renderizarLegendaDpl(legendasVisiveis) {
+  function renderizarLegendaDpl(legendasVisiveis, pontosVisiveis) {
     var alvo = document.getElementById('legendaDpl'); if(!alvo) return;
     var bloco = document.getElementById('legendaDpl').closest('.bloco');
     alvo.innerHTML = '';
@@ -5018,10 +5345,12 @@ map.addControl(new LogoMapaControl());
       total++;
     }
 
+    total += adicionarItensLegendaPontos(alvo, pontosVisiveis);
+
     bloco.style.display = total > 0 ? '' : 'none';
   }
 
-  function renderizarLegendaDpj(legendasVisiveis) {
+  function renderizarLegendaDpj(legendasVisiveis, pontosVisiveis) {
     var alvo = document.getElementById('legendaDpj'); if(!alvo) return;
     var bloco = document.getElementById('legendaDpj').closest('.bloco');
     alvo.innerHTML = '';
@@ -5042,6 +5371,8 @@ map.addControl(new LogoMapaControl());
       alvo.appendChild(item);
       total++;
     }
+
+    total += adicionarItensLegendaPontos(alvo, pontosVisiveis);
 
     bloco.style.display = total > 0 ? '' : 'none';
   }
@@ -5192,6 +5523,8 @@ map.addControl(new LogoMapaControl());
     var p = feature.properties || {};
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
     var dadosTodos = dadosObrasPontosFiltrados(feature, propostaSelecionada);
+    var totalDados = dadosTodos.length;
+    var dadosPopup = totalDados ? dadosTodos[0] : null;
     var html = '';
 
     html += '<b>SRE:</b> ' + escapeHtml(p.SRE || '') + '<br>';
@@ -5199,16 +5532,24 @@ map.addControl(new LogoMapaControl());
     html += '<b>Trecho:</b> ' + escapeHtml(p.Trecho || p.TRECHO || '') + '<br>';
     html += '<b>Extensão:</b> ' + escapeHtml(p.EXT_M || '') + ' m';
 
-    for (var i = 0; i < dadosTodos.length; i++) {
-      var dados = dadosTodos[i];
-      html += '<br><br><b>— FUNDEINFRA';
-      if (dadosTodos.length > 1) html += ' ' + (i + 1);
-      html += ' —</b><br>';
-      html += '<b>Proposta:</b> ' + escapeHtml(dados.PROPOSTA || '') + '<br>';
+    if (dadosPopup) {
+      var dados = dadosPopup;
+      var origem = origemObraPonto(dados);
+      html += '<br><br><b>— ' + escapeHtml(origem) + ' —</b><br>';
+      html += '<b>Item:</b> ' + escapeHtml(dados.ITEM || '') + '<br>';
       html += '<b>Etapa:</b> ' + escapeHtml(dados.ETAPA || '') + '<br>';
       html += '<b>Status:</b> ' + escapeHtml(dados.STATUS || '') + '<br>';
       html += '<b>SEI:</b> ' + escapeHtml(dados.SEI || '') + '<br>';
-      html += '<b>Conclusão:</b> ' + escapeHtml(dados.CONCLUSAO || '');
+      html += '<b>Conclusão:</b> ' + escapeHtml(dados.CONCLUSAO || '') + '<br>';
+      html += '<b>Tipo:</b> ' + escapeHtml(dados.TIPO || '') + '<br>';
+      html += '<b>Serviço:</b> ' + escapeHtml(dados.SERVICO || '');
+    }
+
+    if (totalDados > 1) {
+      var restantes = totalDados - 1;
+      html += '<br><br><span class="popup-obras-pontos-aviso">Existem mais ' +
+        restantes + ' ' + (restantes === 1 ? 'obra' : 'obras') +
+        ' neste ponto. Veja a lista completa no painel inferior.</span>';
     }
 
     return html;
@@ -5233,21 +5574,31 @@ map.addControl(new LogoMapaControl());
           </table>
         </div>`;
 
+    if (dadosTodos.length) {
+      html += `
+        <div class="bloco-servico">
+          <div class="titulo-servico">Dados das obras pontuais</div>
+          <table class="tabela-servico">
+            <tr><th>Origem</th><th>Item</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Tipo</th><th>Serviço</th></tr>`;
+    }
+
     for (var i = 0; i < dadosTodos.length; i++) {
       var dados = dadosTodos[i];
       html += `
-        <div class="bloco-servico">
-          <div class="titulo-servico">Dados FUNDEINFRA</div>
-          <table class="tabela-servico">
-            <tr><th>Proposta</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Origem</th></tr>
             <tr>
-              <td>${escapeHtml(dados.PROPOSTA || '')}</td>
+              <td>${escapeHtml(origemObraPonto(dados))}</td>
+              <td>${escapeHtml(dados.ITEM || '')}</td>
               <td>${escapeHtml(dados.ETAPA || '')}</td>
               <td>${escapeHtml(dados.STATUS || '')}</td>
               <td>${escapeHtml(dados.SEI || '')}</td>
               <td>${escapeHtml(dados.CONCLUSAO || '')}</td>
-              <td>${escapeHtml(dados.ORIGEM || '')}</td>
-            </tr>
+              <td>${escapeHtml(dados.TIPO || '')}</td>
+              <td>${escapeHtml(dados.SERVICO || '')}</td>
+            </tr>`;
+    }
+
+    if (dadosTodos.length) {
+      html += `
           </table>
         </div>`;
     }
@@ -5255,22 +5606,165 @@ map.addControl(new LogoMapaControl());
     document.getElementById('painelTabelaConteudo').innerHTML = html || '<b>Nenhum dado encontrado</b>';
   }
 
-  function criarIconeObraPonto(dados) {
+  function construirPopupObraAero(feature, dadosSelecionado) {
+    var p = feature.properties || {};
+    var dadosTodos = dadosObrasAeroFiltrados(feature);
+    var totalDados = dadosTodos.length;
+    var dadosPopup = dadosSelecionado || (totalDados ? dadosTodos[0] : null);
+    var html = '';
+
+    html += '<b>Aeródromo/Aeroporto:</b> ' + escapeHtml(p.NOME || '') + '<br>';
+    html += '<b>Tipo:</b> ' + escapeHtml(p.TIPO || '') + '<br>';
+    html += '<b>Município:</b> ' + escapeHtml(p.MUNICIPIO || '') + '<br>';
+    html += '<b>Código:</b> ' + escapeHtml(p.COD || '');
+
+    if (dadosPopup) {
+      var dados = dadosPopup;
+      var origem = origemObraPonto(dados);
+      html += '<br><br><b>— ' + escapeHtml(origem) + ' —</b><br>';
+      html += '<b>Item:</b> ' + escapeHtml(dados.ITEM || '') + '<br>';
+      html += '<b>Etapa:</b> ' + escapeHtml(dados.ETAPA || '') + '<br>';
+      html += '<b>Status:</b> ' + escapeHtml(dados.STATUS || '') + '<br>';
+      html += '<b>SEI:</b> ' + escapeHtml(dados.SEI || '') + '<br>';
+      html += '<b>Conclusão:</b> ' + escapeHtml(dados.CONCLUSAO || '') + '<br>';
+      html += '<b>Serviço:</b> ' + escapeHtml(dados.SERVICO || '');
+    }
+
+    if (totalDados > 1) {
+      var restantes = totalDados - 1;
+      html += '<br><br><span class="popup-obras-pontos-aviso">Existem mais ' +
+        restantes + ' ' + (restantes === 1 ? 'obra' : 'obras') +
+        ' neste aeródromo/aeroporto. Veja a lista completa no painel inferior.</span>';
+    }
+
+    return html;
+  }
+
+  function atualizarPainelInferiorObraAero(feature, dadosSelecionado) {
+    var p = feature.properties || {};
+    var dadosTodos = dadosObrasAeroFiltrados(feature);
+    if (dadosSelecionado) {
+      dadosTodos = [dadosSelecionado].concat(dadosTodos.filter(function(item) {
+        return origemObraPonto(item) !== origemObraPonto(dadosSelecionado) ||
+          String(item.ITEM || '') !== String(dadosSelecionado.ITEM || '');
+      }));
+    }
+    var html = `
+        <div class="bloco-servico">
+          <div class="titulo-servico titulo-cinza">Dados do aeródromo/aeroporto</div>
+          <table class="tabela-servico">
+            <tr><th>Código</th><th>Tipo</th><th>Nome</th><th>Município</th><th>Comprimento</th><th>Largura</th><th>Revestimento</th></tr>
+            <tr>
+              <td>${escapeHtml(p.COD || '')}</td>
+              <td>${escapeHtml(p.TIPO || '')}</td>
+              <td>${escapeHtml(p.NOME || '')}</td>
+              <td>${escapeHtml(p.MUNICIPIO || '')}</td>
+              <td>${escapeHtml(p.COMP_M || '')}</td>
+              <td>${escapeHtml(p.LARG_M || '')}</td>
+              <td>${escapeHtml(p.REVESTIMENTO || '')}</td>
+            </tr>
+          </table>
+        </div>`;
+
+    if (dadosTodos.length) {
+      html += `
+        <div class="bloco-servico">
+          <div class="titulo-servico">Dados das obras em aeródromos/aeroportos</div>
+          <table class="tabela-servico">
+            <tr><th>Origem</th><th>Item</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Serviço</th></tr>`;
+    }
+
+    for (var i = 0; i < dadosTodos.length; i++) {
+      var dados = dadosTodos[i];
+      html += `
+            <tr>
+              <td>${escapeHtml(origemObraPonto(dados))}</td>
+              <td>${escapeHtml(dados.ITEM || '')}</td>
+              <td>${escapeHtml(dados.ETAPA || '')}</td>
+              <td>${escapeHtml(dados.STATUS || '')}</td>
+              <td>${escapeHtml(dados.SEI || '')}</td>
+              <td>${escapeHtml(dados.CONCLUSAO || '')}</td>
+              <td>${escapeHtml(dados.SERVICO || '')}</td>
+            </tr>`;
+    }
+
+    if (dadosTodos.length) {
+      html += `
+          </table>
+        </div>`;
+    }
+
+    document.getElementById('painelTabelaConteudo').innerHTML = html || '<b>Nenhum dado encontrado</b>';
+  }
+
+  function criarIconeObraPonto(dados, quantidadeItens, opcoes) {
+    opcoes = opcoes || {};
     var estilo = estiloObraPonto(dados);
+    var usarIconeImagem = !!estilo.icone;
+    if (usarIconeImagem) {
+      var tamanhoIconeDoc = 28;
+      var offsetDireita = opcoes.offset === 'direita';
+      var indiceOffset = Math.max(0, Number(opcoes.indiceOffset || 0));
+      var deslocamentoDireita = offsetDireita ? tamanhoIconeDoc * 0.4 : 0;
+      return L.divIcon({
+        className: 'obra-ponto-icon ' + (offsetDireita ? 'obra-ponto-icon-aero' : 'obra-ponto-icon-doc'),
+        html: criarHtmlSimboloObraPonto(estilo.classe, null, estilo.icone, quantidadeItens),
+        iconSize: [tamanhoIconeDoc, tamanhoIconeDoc],
+        iconAnchor: offsetDireita ? [-(tamanhoIconeDoc * indiceOffset + deslocamentoDireita), tamanhoIconeDoc] : [tamanhoIconeDoc, tamanhoIconeDoc],
+        popupAnchor: offsetDireita ? [tamanhoIconeDoc * (indiceOffset + 0.5) + deslocamentoDireita, -tamanhoIconeDoc * 1.5] : [-tamanhoIconeDoc, -tamanhoIconeDoc * 1.5]
+      });
+    }
+
     return L.divIcon({
       className: 'obra-ponto-icon',
-      html: criarHtmlSimboloObraPonto(estilo.classe),
-      iconSize: [22, 22],
-      iconAnchor: [11, 11],
+      html: criarHtmlSimboloObraPonto(estilo.classe, null, null, quantidadeItens),
+      iconSize: [28, 28],
+      iconAnchor: [14, 14],
       popupAnchor: [0, -10]
     });
   }
 
-  function criarHtmlSimboloObraPonto(classe, classeExtra) {
+  function chaveLegendaObraPonto(dados) {
+    var estilo = estiloObraPonto(dados);
+    return estilo === OBRAS_PONTOS_INFO.OaePlanejamento ? 'OaePlanejamento' :
+      estilo === OBRAS_PONTOS_INFO.OaeProjeto ? 'OaeProjeto' :
+      estilo === OBRAS_PONTOS_INFO.OaeObra ? 'OaeObra' :
+      estilo === OBRAS_PONTOS_INFO.Planejamento ? 'Planejamento' :
+      estilo === OBRAS_PONTOS_INFO.Projeto ? 'Projeto' :
+      estilo === OBRAS_PONTOS_INFO.Manutencao ? 'Manutencao' :
+      estilo === OBRAS_PONTOS_INFO.Obra ? 'Obra' : 'Padrao';
+  }
+
+  function dadosPrincipalObraPonto(dadosLista) {
+    if (!dadosLista || !dadosLista.length) return null;
+    for (var i = 0; i < dadosLista.length; i++) {
+      var chave = chaveLegendaObraPonto(dadosLista[i]);
+      if (chave === 'OaeObra' || chave === 'Obra') return dadosLista[i];
+    }
+    for (var j = 0; j < dadosLista.length; j++) {
+      var chavePlanejamento = chaveLegendaObraPonto(dadosLista[j]);
+      if (chavePlanejamento === 'OaePlanejamento' || chavePlanejamento === 'OaeProjeto' || chavePlanejamento === 'Planejamento') return dadosLista[j];
+    }
+    return dadosLista[0];
+  }
+
+  function criarHtmlSimboloObraPonto(classe, classeExtra, iconeSrc, quantidadeItens) {
     var classes = ['obra-ponto-simbolo'];
     if (classeExtra) classes.push(classeExtra);
     if (classe) classes.push(classe);
+    var badge = quantidadeItens > 1 ?
+      '<span class="obra-ponto-badge">' + escapeHtml(quantidadeItens) + '</span>' :
+      '';
+
+    if (iconeSrc) {
+      return '<span class="' + classes.join(' ') + '">' +
+        badge +
+        '<img src="' + escapeHtml(iconeSrc) + '" alt="" aria-hidden="true" />' +
+      '</span>';
+    }
+
     return '<span class="' + classes.join(' ') + '">' +
+      badge +
       '<svg viewBox="0 0 268.18307 268.18396" aria-hidden="true" focusable="false">' +
         '<g transform="translate(-511.05083,580.11813)">' +
           '<path fill="var(--obra-ponto-fill)" fill-opacity="1" d="m 640.89944,-312.84081 c -2.34343,-1.27137 -124.35457,-123.00021 -127.42572,-127.13088 -2.80683,-3.77514 -3.18674,-7.56496 -1.07818,-10.75574 2.27986,-3.45002 125.74826,-126.89418 128.24864,-128.22348 2.91343,-1.54889 6.08942,-1.55642 9.02824,-0.0214 2.6714,1.39535 126.92093,125.61018 128.51354,128.47769 1.49348,2.68893 1.3778,6.69768 -0.26493,9.18355 -2.27987,3.45003 -125.74824,126.89419 -128.24861,128.22349 -2.70759,1.43944 -6.38403,1.54285 -8.77298,0.24677 z"/>' +
@@ -5327,6 +5821,74 @@ map.addControl(new LogoMapaControl());
     return false;
   }
 
+  function criarCamadaObrasPontos() {
+    if (L.markerClusterGroup) {
+      var grupoCluster = L.markerClusterGroup({
+        pane: 'oaePane',
+        clusterPane: 'oaePane',
+        showCoverageOnHover: false,
+        spiderfyOnMaxZoom: true,
+        zoomToBoundsOnClick: true,
+        disableClusteringAtZoom: 13,
+        maxClusterRadius: function(zoom) {
+          if (zoom <= 7) return 40;
+          if (zoom <= 9) return 25;
+          if (zoom <= 11) return 10;
+          return 2;
+        },
+        iconCreateFunction: function(cluster) {
+          var markers = cluster.getAllChildMarkers();
+          var total = 0;
+          for (var i = 0; i < markers.length; i++) {
+            total += Number(markers[i]._quantidadeObrasPontos || 1);
+          }
+          var tamanho = total >= 100 ? 'grande' : total >= 10 ? 'medio' : 'pequeno';
+          return L.divIcon({
+            html: '<span>' + total + '</span>',
+            className: 'obras-pontos-cluster obras-pontos-cluster-' + tamanho,
+            iconSize: L.point(34, 34)
+          });
+        }
+      });
+      grupoCluster.on('animationend spiderfied unspiderfied clusterclick', agendarAtualizacaoIconesAeroObras);
+      return grupoCluster;
+    }
+
+    return L.layerGroup();
+  }
+
+  function criarIconeClusterProxy() {
+    return L.divIcon({
+      className: 'obra-ponto-cluster-proxy',
+      html: '',
+      iconSize: [1, 1],
+      iconAnchor: [0, 0]
+    });
+  }
+
+  function atualizarVisibilidadeIconesAeroObras() {
+    if (!aeroObrasIconLayer || !obrasPontosLayer || !obrasPontosLayer.getVisibleParent) return;
+
+    for (var i = 0; i < aeroObrasClusterRefs.length; i++) {
+      var ref = aeroObrasClusterRefs[i];
+      var visivel = obrasPontosLayer.getVisibleParent(ref.proxy) === ref.proxy;
+      for (var m = 0; m < ref.markers.length; m++) {
+        var marker = ref.markers[m];
+        if (visivel && !aeroObrasIconLayer.hasLayer(marker)) {
+          aeroObrasIconLayer.addLayer(marker);
+        } else if (!visivel && aeroObrasIconLayer.hasLayer(marker)) {
+          aeroObrasIconLayer.removeLayer(marker);
+        }
+      }
+    }
+  }
+
+  function agendarAtualizacaoIconesAeroObras() {
+    setTimeout(atualizarVisibilidadeIconesAeroObras, 0);
+    setTimeout(atualizarVisibilidadeIconesAeroObras, 160);
+    setTimeout(atualizarVisibilidadeIconesAeroObras, 320);
+  }
+
   function desenharObrasPontos(rodoviaSelecionada, sreSelecionado, propostaSelecionada, featuresMunicipios) {
     if (obrasPontosLayer) {
       map.removeLayer(obrasPontosLayer);
@@ -5334,13 +5896,26 @@ map.addControl(new LogoMapaControl());
     }
 
     var tiposVisiveis = {};
+    var tiposVisiveisDor = {};
+    var tiposVisiveisDma = {};
+    var tiposVisiveisDpl = {};
+    var tiposVisiveisDpj = {};
+    var tiposVisiveisDoc = {};
     var total = 0;
 
-    if (!obrasPontosData || !obrasPontosData.features || !servicosAtivos.FUNDEINFRA) {
-      return { total: total, legenda: tiposVisiveis };
-    }
+    obrasPontosLayer = criarCamadaObrasPontos();
 
-    obrasPontosLayer = L.layerGroup();
+    if (!obrasPontosData || !obrasPontosData.features || !algumaOrigemObraPontoAtiva()) {
+      return {
+        total: total,
+        legenda: tiposVisiveis,
+        legendaDor: tiposVisiveisDor,
+        legendaDma: tiposVisiveisDma,
+        legendaDpl: tiposVisiveisDpl,
+        legendaDpj: tiposVisiveisDpj,
+        legendaDoc: tiposVisiveisDoc
+      };
+    }
 
     for (var i = 0; i < obrasPontosData.features.length; i++) {
       var feature = obrasPontosData.features[i];
@@ -5349,25 +5924,33 @@ map.addControl(new LogoMapaControl());
       if (!dadosFiltrados.length) continue;
       if (rodoviaSelecionada && nomeRodoviaFeature(feature) !== rodoviaSelecionada) continue;
       if (sreSelecionado && nomeSREFeature(feature) !== sreSelecionado) continue;
-      if (servicoFiltroAtivo) continue;
 
       var coords = feature.geometry && feature.geometry.coordinates;
       if (!coords || coords.length < 2) continue;
       if (!pontoDentroSelecaoMunicipios(coords[0], coords[1], featuresMunicipios)) continue;
 
-      var dados = dadosFiltrados[0];
-      var estilo = estiloObraPonto(dados);
-      var tipoLegenda = estilo === OBRAS_PONTOS_INFO.Projeto ? 'Projeto' :
-        estilo === OBRAS_PONTOS_INFO.Obra ? 'Obra' : 'Padrao';
-      tiposVisiveis[tipoLegenda] = true;
+      for (var d = 0; d < dadosFiltrados.length; d++) {
+        var itemFiltrado = dadosFiltrados[d];
+        var tipoLegenda = chaveLegendaObraPonto(itemFiltrado);
+        var origemLegenda = origemObraPonto(itemFiltrado);
+        if (origemLegenda === 'DOC') tiposVisiveisDoc[tipoLegenda] = true;
+        else if (origemLegenda === 'DOR') tiposVisiveisDor[tipoLegenda] = true;
+        else if (origemLegenda === 'DMA') tiposVisiveisDma[tipoLegenda] = true;
+        else if (origemLegenda === 'DPL') tiposVisiveisDpl[tipoLegenda] = true;
+        else if (origemLegenda === 'DPJ') tiposVisiveisDpj[tipoLegenda] = true;
+        else tiposVisiveis[tipoLegenda] = true;
+      }
+
+      var dados = dadosPrincipalObraPonto(dadosFiltrados);
 
       var marker = L.marker([coords[1], coords[0]], {
         pane: 'oaePane',
-        icon: criarIconeObraPonto(dados),
+        icon: criarIconeObraPonto(dados, dadosFiltrados.length),
         title: (p.Trecho || p.TRECHO || '') + ' - ' + ((dados && dados.ETAPA) || '')
       });
 
       marker.bindPopup(construirPopupObraPonto(feature));
+      marker._quantidadeObrasPontos = dadosFiltrados.length;
       marker.on('click', function(f) {
         return function() {
           atualizarPainelInferiorObraPonto(f);
@@ -5378,8 +5961,101 @@ map.addControl(new LogoMapaControl());
       total++;
     }
 
-    if (total) obrasPontosLayer.addTo(map);
-    return { total: total, legenda: tiposVisiveis };
+    return {
+      total: total,
+      legenda: tiposVisiveis,
+      legendaDor: tiposVisiveisDor,
+      legendaDma: tiposVisiveisDma,
+      legendaDpl: tiposVisiveisDpl,
+      legendaDpj: tiposVisiveisDpj,
+      legendaDoc: tiposVisiveisDoc
+    };
+  }
+
+  function desenharObrasAero(featuresMunicipios) {
+    var legendasDor = {};
+    var legendasDma = {};
+    var legendasDpj = {};
+    var total = 0;
+    var totalCluster = 0;
+    var countDor = 0;
+    var countDma = 0;
+    var countDpj = 0;
+
+    if (!aeroObrasData || !aeroObrasData.features || !algumaOrigemObraAeroAtiva()) {
+      return { total: total, totalCluster: totalCluster, countDor: countDor, countDma: countDma, countDpj: countDpj, legendaDor: legendasDor, legendaDma: legendasDma, legendaDpj: legendasDpj };
+    }
+
+    if (!obrasPontosLayer) obrasPontosLayer = criarCamadaObrasPontos();
+    aeroObrasIconLayer = L.layerGroup();
+    aeroObrasClusterRefs = [];
+
+    for (var i = 0; i < aeroObrasData.features.length; i++) {
+      var feature = aeroObrasData.features[i];
+      var p = feature.properties || {};
+      var dadosFiltrados = dadosObrasAeroFiltrados(feature);
+      if (!dadosFiltrados.length) continue;
+
+      var coords = feature.geometry && feature.geometry.coordinates;
+      if (!coords || coords.length < 2) continue;
+      if (!pontoDentroSelecaoMunicipios(coords[0], coords[1], featuresMunicipios)) continue;
+
+      var markersAero = [];
+
+      for (var d = 0; d < dadosFiltrados.length; d++) {
+        var dados = dadosFiltrados[d];
+        var origem = origemObraPonto(dados);
+        var tipoLegenda = chaveLegendaObraPonto(dados);
+        if (origem === 'DOR') {
+          legendasDor[tipoLegenda] = true;
+          countDor++;
+        } else if (origem === 'DMA') {
+          legendasDma[tipoLegenda] = true;
+          countDma++;
+        } else if (origem === 'DPJ') {
+          legendasDpj[tipoLegenda] = true;
+          countDpj++;
+        }
+
+        var marker = L.marker([coords[1], coords[0]], {
+          pane: 'oaePane',
+          icon: criarIconeObraPonto(dados, 1, {
+            usarIconeImagem: true,
+            offset: 'direita',
+            indiceOffset: d
+          }),
+          title: (p.NOME || p.MUNICIPIO || '') + ' - ' + origem
+        });
+
+        marker.bindPopup(construirPopupObraAero(feature, dados));
+        marker._quantidadeObrasPontos = 1;
+        marker.on('click', function(f, item) {
+          return function() {
+            atualizarPainelInferiorObraAero(f, item);
+          };
+        }(feature, dados));
+
+        aeroObrasIconLayer.addLayer(marker);
+        markersAero.push(marker);
+        total++;
+      }
+
+      var proxy = L.marker([coords[1], coords[0]], {
+        pane: 'oaePane',
+        interactive: false,
+        icon: criarIconeClusterProxy()
+      });
+      proxy._quantidadeObrasPontos = 1;
+      obrasPontosLayer.addLayer(proxy);
+      aeroObrasClusterRefs.push({
+        proxy: proxy,
+        markers: markersAero
+      });
+      totalCluster++;
+    }
+
+    agendarAtualizacaoIconesAeroObras();
+    return { total: total, totalCluster: totalCluster, countDor: countDor, countDma: countDma, countDpj: countDpj, legendaDor: legendasDor, legendaDma: legendasDma, legendaDpj: legendasDpj };
   }
 
     function desenharLinhasEPontos(featuresMunicipios) {
@@ -5397,7 +6073,14 @@ map.addControl(new LogoMapaControl());
     var sreSelecionado = document.getElementById('sreSelect').value;
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
     var resultadoObrasPontos = desenharObrasPontos(rodoviaSelecionada, sreSelecionado, propostaSelecionada, featuresMunicipios);
+    var resultadoObrasAero = desenharObrasAero(featuresMunicipios);
     var totalObrasPontos = resultadoObrasPontos.total;
+
+    if (obrasPontosLayer && totalObrasPontos + resultadoObrasAero.totalCluster > 0) {
+      obrasPontosLayer.addTo(map);
+      if (aeroObrasIconLayer) aeroObrasIconLayer.addTo(map);
+      atualizarVisibilidadeIconesAeroObras();
+    }
 
     var linhasBase = [];
     var linksFundIncluidos = {};
@@ -5667,23 +6350,24 @@ map.addControl(new LogoMapaControl());
     }
     document.getElementById('countOAE').textContent = countFund;
     var contadorObrasPontos = document.getElementById('countObrasPontos');
-    if (contadorObrasPontos) contadorObrasPontos.textContent = totalObrasPontos;
-    document.getElementById('countDor').textContent = countDor;
+    if (contadorObrasPontos) contadorObrasPontos.textContent = totalObrasPontos + resultadoObrasAero.totalCluster;
+    document.getElementById('countDor').textContent = countDor + resultadoObrasAero.countDor;
     var contadorDma = document.getElementById('countDma');
-    if (contadorDma) contadorDma.textContent = countDma;
+    if (contadorDma) contadorDma.textContent = countDma + resultadoObrasAero.countDma;
     var contadorDpl = document.getElementById('countDpl');
     if (contadorDpl) contadorDpl.textContent = countDpl;
     var contadorDpj = document.getElementById('countDpj');
-    if (contadorDpj) contadorDpj.textContent = countDpj;
+    if (contadorDpj) contadorDpj.textContent = countDpj + resultadoObrasAero.countDpj;
 
         renderizarLegendaServicos({
       linhas: servicosVisiveis,
       pontos: resultadoObrasPontos.legenda
     });
-    renderizarLegendaDor(servicosVisiveisDor);
-    renderizarLegendaDma(servicosVisiveisDma);
-    renderizarLegendaDpl(servicosVisiveisDpl);
-    renderizarLegendaDpj(servicosVisiveisDpj);
+    renderizarLegendaDor(servicosVisiveisDor, Object.assign({}, resultadoObrasPontos.legendaDor, resultadoObrasAero.legendaDor));
+    renderizarLegendaDma(servicosVisiveisDma, Object.assign({}, resultadoObrasPontos.legendaDma, resultadoObrasAero.legendaDma));
+    renderizarLegendaDpl(servicosVisiveisDpl, resultadoObrasPontos.legendaDpl);
+    renderizarLegendaDpj(servicosVisiveisDpj, Object.assign({}, resultadoObrasPontos.legendaDpj, resultadoObrasAero.legendaDpj));
+    renderizarLegendaDoc(resultadoObrasPontos.legendaDoc);
     renderizarLegendaOAE({});
     renderizarLegendaRodEst(situacoesEstVisiveis);
     renderizarLegendaRodFed(situacoesFedVisiveis);
@@ -5841,9 +6525,10 @@ map.addControl(new LogoMapaControl());
       var dmaAtivo = servicosAtivos.DMA;
       var dplAtivo = servicosAtivos.DPL;
       var dpjAtivo = servicosAtivos.DPJ;
+      var docAtivo = servicosAtivos.DOC;
 
       strong.textContent = 'PLANO GOINFRA';
-      if (fundAtivo && dorAtivo && dmaAtivo && dplAtivo && dpjAtivo) {
+      if (fundAtivo && dorAtivo && dmaAtivo && dplAtivo && dpjAtivo && docAtivo) {
         span.textContent = '';
       } else {
         var origensAtivas = [];
@@ -5852,6 +6537,7 @@ map.addControl(new LogoMapaControl());
         if (dmaAtivo) origensAtivas.push('DMA');
         if (dplAtivo) origensAtivas.push('DPL');
         if (dpjAtivo) origensAtivas.push('DPJ');
+        if (docAtivo) origensAtivas.push('DOC');
         span.textContent = origensAtivas.length ? '- ' + origensAtivas.join(' / ') : '';
       }
     }
@@ -5866,6 +6552,7 @@ map.addControl(new LogoMapaControl());
     desenharMunicipiosBase(feats);
     desenharAreasUrbanas();
     desenharLocalidades();
+    desenharAero();
     desenharLinhasEPontos(feats);
     atualizarIndicadoresProgramaMunicipio(municipioSelecionado);
     atualizarIndicadoresServicoEOAE(municipioSelecionado);
@@ -5921,6 +6608,9 @@ map.addControl(new LogoMapaControl());
     document.getElementById('toggleSNV').classList.remove('ativo-filtro');
     document.getElementById('toggleLocalidades').classList.remove('ativo-filtro');
     localidadeFiltroAtivo = false;
+    aeroFiltroAtivo = false;
+    var btnAeroOff = document.getElementById('toggleAero');
+    if (btnAeroOff) btnAeroOff.classList.remove('ativo-filtro');
     municipioBaseFiltroAtivo = false;
     var btnMunicipiosOff = document.getElementById('toggleMunicipiosBase');
     if (btnMunicipiosOff) btnMunicipiosOff.classList.remove('ativo-filtro');
@@ -5936,6 +6626,7 @@ map.addControl(new LogoMapaControl());
     if (sreBaseLayer) { map.removeLayer(sreBaseLayer); sreBaseLayer = null; }
     if (sreBaseLabelLayer) { map.removeLayer(sreBaseLabelLayer); sreBaseLabelLayer = null; }
     if (areasUrbanasLayer) { map.removeLayer(areasUrbanasLayer); areasUrbanasLayer = null; }
+    if (aeroLayer) { map.removeLayer(aeroLayer); aeroLayer = null; }
     if (oaeLayer) { map.removeLayer(oaeLayer); oaeLayer = null; }
     limparCamadasRegras();
 
@@ -5947,6 +6638,8 @@ map.addControl(new LogoMapaControl());
     var bDma = document.getElementById('legendaDma') ? document.getElementById('legendaDma').closest('.bloco') : null;
     var bDpl = document.getElementById('legendaDpl') ? document.getElementById('legendaDpl').closest('.bloco') : null;
     var bDpj = document.getElementById('legendaDpj') ? document.getElementById('legendaDpj').closest('.bloco') : null;
+    var bDoc = document.getElementById('legendaDoc') ? document.getElementById('legendaDoc').closest('.bloco') : null;
+    var bAero = document.getElementById('blocoLegendaAero');
     if (b1) b1.style.display = 'none';
     if (b2) b2.style.display = 'none';
     if (b3) b3.style.display = 'none';
@@ -5955,6 +6648,8 @@ map.addControl(new LogoMapaControl());
     if (bDma) bDma.style.display = 'none';
     if (bDpl) bDpl.style.display = 'none';
     if (bDpj) bDpj.style.display = 'none';
+    if (bDoc) bDoc.style.display = 'none';
+    if (bAero) bAero.style.display = 'none';
 
     desenharEstados();
     desenharMunicipiosBase(municipiosFiltrados());
@@ -6001,6 +6696,9 @@ map.addControl(new LogoMapaControl());
     document.getElementById('toggleSNV').classList.add('ativo-filtro');
     localidadeFiltroAtivo = true;
     document.getElementById('toggleLocalidades').classList.add('ativo-filtro');
+    aeroFiltroAtivo = true;
+    var btnAeroOn = document.getElementById('toggleAero');
+    if (btnAeroOn) btnAeroOn.classList.add('ativo-filtro');
     // Municípios começam desligados
     municipioBaseFiltroAtivo = false;
     var btnMunicipiosOn = document.getElementById('toggleMunicipiosBase');
@@ -6016,6 +6714,119 @@ map.addControl(new LogoMapaControl());
     preencherSREs();
     preencherPropostas();
     aplicarFiltros();
+  }
+
+  function parametrosEntradaMapa() {
+    try {
+      return new URLSearchParams(window.location.search || '');
+    } catch (e) {
+      return new URLSearchParams('');
+    }
+  }
+
+  function limparCamposFiltroEntrada() {
+    var campos = [
+      'rgPlanSelect',
+      'municipioSelect',
+      'rodoviaSelect',
+      'sreSelect',
+      'propostaSelect',
+      'servicoSelect',
+      'localidadeSelect',
+      'localidadeBusca',
+      'municipioBusca'
+    ];
+
+    campos.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+
+    programaAtivo = '';
+    servicoFiltroAtivo = '';
+    resetarBotoesPrograma();
+  }
+
+  function definirOrigensAtivas(origemAtiva) {
+    for (var chave in servicosAtivos) {
+      servicosAtivos[chave] = !origemAtiva || chave === origemAtiva;
+    }
+
+    preencherServicos();
+    resetarBotoesServico();
+    preencherPropostas();
+    preencherRodovias();
+    preencherSREs();
+  }
+
+  function definirSidebarRecolhida(sidebarId, appClass, btn, recolhida) {
+    var sidebar = document.getElementById(sidebarId);
+    var app = document.getElementById('app');
+    if (!sidebar || !app || !btn) return;
+
+    sidebar.classList.toggle('sidebar-colapsed', recolhida);
+    app.classList.toggle(appClass, recolhida);
+    btn.textContent = recolhida
+      ? (sidebarId === 'sidebar-left' ? '»' : '«')
+      : (sidebarId === 'sidebar-left' ? '«' : '»');
+
+    setTimeout(function() {
+      map.invalidateSize();
+    }, 300);
+  }
+
+  function definirMapaBase(nomeBase) {
+    if (!nomeBase || !mapasBase || !mapasBase[nomeBase]) return;
+
+    Object.keys(mapasBase).forEach(function(nome) {
+      if (map.hasLayer(mapasBase[nome])) map.removeLayer(mapasBase[nome]);
+    });
+
+    mapasBase[nomeBase].addTo(map);
+  }
+
+  function aplicarEntradaMapa() {
+    var params = parametrosEntradaMapa();
+    var origem = String(params.get('origem') || '').toUpperCase();
+    var perfil = String(params.get('perfil') || '').toLowerCase();
+    var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'DOC'];
+
+    if (origem && origensValidas.indexOf(origem) !== -1) {
+      limparCamposFiltroEntrada();
+      definirOrigensAtivas(origem);
+      aplicarFiltros();
+    } else if (perfil === 'rodoviario') {
+      limparCamposFiltroEntrada();
+      definirOrigensAtivas(null);
+      for (var chave in servicosAtivos) {
+        servicosAtivos[chave] = false;
+      }
+      preencherServicos();
+      resetarBotoesServico();
+
+      oaeFiltroAtivo = true;
+      sreBaseFiltroAtivo = true;
+      snvFiltroAtivo = true;
+      localidadeFiltroAtivo = true;
+      aeroFiltroAtivo = true;
+      municipioBaseFiltroAtivo = true;
+      areasUrbanasFiltroAtivo = true;
+      densidadeRotulos = 1;
+
+      var controleDensidade = document.getElementById('rotulosDensidade');
+      if (controleDensidade) controleDensidade.value = '1';
+
+      definirMapaBase('Padr\u00e3o');
+      atualizarTextoDensidadeRotulos();
+      atualizarBotoesBase();
+      aplicarFiltros();
+    } else {
+      atualizarTextoDensidadeRotulos();
+    }
+
+    if (params.get('sidebar') === 'fechada') {
+      definirSidebarRecolhida('sidebar-left', 'sidebar-left-collapsed', botaoSidebarLeft, true);
+    }
   }
 
   document.getElementById('rgPlanSelect').addEventListener('change', function() {
@@ -6415,6 +7226,15 @@ map.addControl(new LogoMapaControl());
     aplicarFiltros();
   });
 
+  var btnToggleAero = document.getElementById('toggleAero');
+  if (btnToggleAero) {
+    btnToggleAero.addEventListener('click', function() {
+      aeroFiltroAtivo = !aeroFiltroAtivo;
+      atualizarBotoesBase();
+      desenharAero();
+    });
+  }
+
   var btnToggleMunicipios = document.getElementById('toggleMunicipiosBase');
   if (btnToggleMunicipios) {
     btnToggleMunicipios.addEventListener('click', function() {
@@ -6497,25 +7317,33 @@ map.addControl(new LogoMapaControl());
 
   inicializarRedimensionamentoPainelTabela();
 
-    var botaoPainelTabela = document.getElementById('togglePainelTabela');
-  if (botaoPainelTabela) {
-    botaoPainelTabela.addEventListener('click', function() {
-      var painel = document.getElementById('painelTabela');
-      if (!painel) return;
+  function alternarPainelTabela() {
+    var painel = document.getElementById('painelTabela');
+    var cabecalho = document.getElementById('painelTabelaHeader');
+    if (!painel) return;
 
-      painel.classList.toggle('painel-fechado');
-      if (!painel.classList.contains('painel-fechado')) {
-        var alturaSalva = alturaPainelTabelaSalva();
-        if (alturaSalva) painel.style.setProperty('--painel-tabela-altura', alturaSalva + 'px');
-      }
+    painel.classList.toggle('painel-fechado');
+    if (!painel.classList.contains('painel-fechado')) {
+      var alturaSalva = alturaPainelTabelaSalva();
+      if (alturaSalva) painel.style.setProperty('--painel-tabela-altura', alturaSalva + 'px');
+    }
 
-      this.textContent = painel.classList.contains('painel-fechado')
-        ? 'Mostrar tabela'
-        : 'Ocultar tabela';
+    if (cabecalho) {
+      cabecalho.setAttribute('aria-expanded', painel.classList.contains('painel-fechado') ? 'false' : 'true');
+    }
 
-      setTimeout(function() {
-        map.invalidateSize();
-      }, 200);
+    setTimeout(function() {
+      map.invalidateSize();
+    }, 200);
+  }
+
+  var cabecalhoPainelTabela = document.getElementById('painelTabelaHeader');
+  if (cabecalhoPainelTabela) {
+    cabecalhoPainelTabela.addEventListener('click', alternarPainelTabela);
+    cabecalhoPainelTabela.addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      alternarPainelTabela();
     });
   }
 
@@ -6583,7 +7411,9 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/obras_pontos.geojson', false),
     fetchGeoJSON('data/snv_goias.geojson', false),
     fetchGeoJSON('data/estados.geojson', false),
-    fetchGeoJSON('data/mascara_brasil.geojson', false)
+    fetchGeoJSON('data/mascara_brasil.geojson', false),
+    fetchGeoJSON('data/AERO.geojson', false),
+    fetchGeoJSON('data/aerodromos_obras.geojson', false)
   ]).then(function(resultado) {
     municipiosData = resultado[0];
     localidadesData = resultado[1];
@@ -6595,6 +7425,8 @@ map.addControl(new LogoMapaControl());
     snvData = resultado[6];
     estadosData = resultado[7];
     mascaraBrasilData = resultado[8];
+    aeroData = resultado[9];
+    aeroObrasData = resultado[10];
 
     desenharMascaraBrasil();
 
@@ -6604,6 +7436,7 @@ map.addControl(new LogoMapaControl());
     preencherRodovias();
     preencherSREs();
     limparTudo();
+    aplicarEntradaMapa();
   }).catch(function(e) {
     console.error('Falha detalhada no carregamento:', e);
     alert(

@@ -14,13 +14,13 @@
   --altura-area-principal: calc(100vh - 88px);
 
   /* Cores principais */
-  --cor-topbar: #006600;
+  --cor-topbar: #1e9538ff;
   --cor-topbar-texto: #ffffff;
   --cor-topbar-subtitulo: #b1b1b1;
   --cor-texto: #111827;
   --cor-texto-suave: #374151;
-  --cor-botao-ativo: #111827;
-  --cor-acao-principal: #006600;
+  --cor-botao-ativo: #1e9538ff;
+  --cor-acao-principal: #1e9538ff;
 
   /* Painel e formulario */
   --raio-painel: 15px;
@@ -31,13 +31,17 @@
 
   /* Mapa e impressao */
   --borda-mapa: rgba(255,255,255,0.75);
-  --cor-titulo-impressao: #005f22;
+  --cor-titulo-impressao: #1e9538ff;
   --cor-borda-impressao: #8a8f98;
 }
 
 /* ===== BASE ===== */
 
  * { box-sizing: border-box; }
+
+.leaflet-popup-pane {
+  z-index: 2000 !important;
+}
 
     html, body {
       margin: 0;
@@ -456,16 +460,29 @@
   border: none !important;
 }
 
+.leaflet-marker-icon.obra-ponto-icon:hover,
+.obra-ponto-icon:hover {
+  z-index: 2147483647 !important;
+}
+
 .obra-ponto-simbolo {
   --obra-ponto-fill: #6b7280;
   --obra-ponto-stroke: #111111;
   --obra-ponto-detail: #111111;
   display: inline-block;
-  width: 22px;
-  height: 22px;
+  position: relative;
+  width: 100%;
+  height: 100%;
   color: var(--obra-ponto-detail);
   filter: drop-shadow(0 1px 4px rgba(0,0,0,0.35));
+  transform-origin: center center;
+  transition: transform 0.14s ease, filter 0.14s ease;
   vertical-align: middle;
+}
+
+.obra-ponto-icon:hover .obra-ponto-simbolo {
+  filter: drop-shadow(0 4px 9px rgba(0,0,0,0.42));
+  transform: scale(2);
 }
 
 .obra-ponto-simbolo svg {
@@ -474,8 +491,110 @@
   height: 100%;
 }
 
+.obra-ponto-simbolo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.obra-ponto-icon-doc .obra-ponto-simbolo {
+  width: 100%;
+  height: 100%;
+}
+
+.obra-ponto-icon-aero .obra-ponto-simbolo {
+  width: 100%;
+  height: 100%;
+}
+
+.aero-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.aero-simbolo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.legenda-aero-simbolo {
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  flex: 0 0 28px;
+}
+
+.legenda-aero-simbolo .aero-simbolo {
+  display: block;
+}
+
+.obra-ponto-badge {
+  position: absolute;
+  z-index: 2;
+  top: -12px;
+  left: 50%;
+  color: #000000;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  text-shadow:
+    -1px -1px 0 #ffffff,
+    1px -1px 0 #ffffff,
+    -1px 1px 0 #ffffff,
+    1px 1px 0 #ffffff,
+    0 2px 4px rgba(0, 0, 0, 0.35);
+  transform: translateX(-50%);
+}
+
+.popup-obras-pontos-aviso {
+  display: block;
+  max-width: 240px;
+  padding: 6px 8px;
+  border-left: 3px solid #6b7280;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.obra-ponto-planejamento {
+  --obra-ponto-fill: #8b5cf6;
+  --obra-ponto-stroke: #111111;
+  --obra-ponto-detail: #111111;
+}
+
+.obra-ponto-oae-planejamento {
+  --obra-ponto-fill: #8b5cf6;
+  --obra-ponto-stroke: #111111;
+  --obra-ponto-detail: #111111;
+}
+
+.obra-ponto-oae-projeto {
+  --obra-ponto-fill: #00ffff;
+  --obra-ponto-stroke: #111111;
+  --obra-ponto-detail: #111111;
+}
+
+.obra-ponto-oae-obra {
+  --obra-ponto-fill: #fffb00;
+  --obra-ponto-stroke: #111111;
+  --obra-ponto-detail: #111111;
+}
+
 .obra-ponto-projeto {
   --obra-ponto-fill: #00ffff;
+  --obra-ponto-stroke: #111111;
+  --obra-ponto-detail: #111111;
+}
+
+.obra-ponto-manutencao {
+  --obra-ponto-fill: #ffcc00;
   --obra-ponto-stroke: #111111;
   --obra-ponto-detail: #111111;
 }
@@ -492,6 +611,49 @@
   --obra-ponto-detail: #ffffff;
 }
 
+.obras-pontos-cluster {
+  background: rgba(75, 85, 99, 0.2);
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 800;
+  text-align: center;
+}
+
+.leaflet-marker-icon.obras-pontos-cluster:hover,
+.obras-pontos-cluster:hover {
+  z-index: 2147483647 !important;
+}
+
+.obras-pontos-cluster span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  margin: 3.5px;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  background: #6b7280;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  font-size: 12px;
+  line-height: 1;
+  transform-origin: center center;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.obras-pontos-cluster:hover span {
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.42);
+  transform: scale(2);
+}
+
+.obras-pontos-cluster-medio span {
+  background: #6b7280;
+}
+
+.obras-pontos-cluster-grande span {
+  background: #6b7280;
+}
+
 .legenda-ponto-simbolo {
   width: 42px;
   height: 22px;
@@ -503,6 +665,11 @@
 }
 
 .legenda-ponto-simbolo svg {
+  width: 22px;
+  height: 22px;
+}
+
+.legenda-ponto-simbolo img {
   width: 22px;
   height: 22px;
 }
@@ -666,10 +833,38 @@
   color: #b1b1b1; /* cor do subtítulo */
 }
 
+#topbar .topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 #topbar .topbar-right span {
   font-size: 26px;
   font-weight: 700;
   color: #ffffff; /* Troque por qualquer cor desejada, ex: #ff0000 para vermelho */
+}
+
+.topbar-home-btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 6px;
+  color: var(--cor-topbar-texto);
+  background: rgba(255, 255, 255, 0.12);
+  text-decoration: none;
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.topbar-home-btn:hover,
+.topbar-home-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.22);
+  outline: none;
 }
 
 /* Cores do texto da barra superior. Edite as variaveis em :root. */
@@ -781,6 +976,26 @@ select {
   white-space: nowrap;
 }
 
+.sidebar-collapsed-label {
+  display: none;
+  position: absolute;
+  top: 54px;
+  left: 0;
+  right: 0;
+  z-index: 14;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  pointer-events: none;
+}
+
 .sidebar-toggle-btn {
   width: 24px;
   height: 24px;
@@ -872,6 +1087,10 @@ select {
   right: 9px;
 }
 
+#sidebar-left.sidebar-colapsed .sidebar-collapsed-label {
+  display: flex;
+}
+
 #sidebar-left.sidebar-colapsed .sidebar-toggle-btn {
   transform: rotate(180deg);
 }
@@ -891,6 +1110,10 @@ select {
 #sidebar-right.sidebar-colapsed .sidebar-header {
   top: 15px;
   right: 9px;
+}
+
+#sidebar-right.sidebar-colapsed .sidebar-collapsed-label {
+  display: flex;
 }
 
 #sidebar-right.sidebar-colapsed .sidebar-toggle-btn {
@@ -1081,7 +1304,7 @@ input[type="range"] {
 }
 
 .filtro-btn.ativo-filtro {
-  background: #111827;
+  background: var(--cor-botao-ativo);
   color: white;
   opacity: 1;
 }
@@ -1324,7 +1547,7 @@ input[type="range"] {
 .medicao-btn:hover,
 .medicao-btn.ativo {
   background: #f3f4f6;
-  color: #005f22;
+  color: #1e9538ff;
 }
 
 .medicao-tooltip-icon {
@@ -1500,14 +1723,39 @@ body.redimensionando-painel-tabela {
   height: 42px;
   padding: 8px 12px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
 }
 
-#togglePainelTabela {
-  width: auto;
-  margin: 0;
-  padding: 7px 12px;
+#painelTabelaHeader:focus-visible {
+  outline: 2px solid rgba(0, 102, 0, 0.35);
+  outline-offset: -4px;
+}
+
+.painel-tabela-titulo {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+#painelTabelaHeader::before {
+  content: "";
+  width: 10px;
+  height: 12px;
+  background: #4b5563;
+  clip-path: polygon(12% 78%, 50% 24%, 88% 78%);
+  transition: transform 0.15s ease;
+  flex: 0 0 auto;
+}
+
+#painelTabela.painel-fechado #painelTabelaHeader::before {
+  transform: rotate(180deg);
 }
 
 #printLegendBox,
@@ -1592,7 +1840,7 @@ body.modo-impressao.preparando-impressao #printTitleBox {
   padding: 0;
   background: transparent;
   border: 0;
-  color: #005f22;
+  color: #1e9538ff;
   font-size: var(--print-title-font-size, 13pt);
   font-weight: 900;
   line-height: 1.2;
@@ -1763,7 +2011,7 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
   top: 67%;
   padding: 4mm 2mm 3mm;
   background: transparent;
-  color: #005f22;
+  color: #1e9538ff;
   text-align: center;
   text-transform: uppercase;
   font-family: Arial, sans-serif;
@@ -1874,7 +2122,7 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
     padding: 0;
     background: transparent;
     border: 0;
-    color: #005f22;
+    color: #1e9538ff;
     font-size: var(--print-title-font-size, 13pt);
     font-weight: 900;
     line-height: 1.2;
@@ -2047,7 +2295,7 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
     top: 67%;
     padding: 4mm 2mm 3mm;
     background: transparent;
-    color: #005f22;
+    color: #1e9538ff;
     text-align: center;
     text-transform: uppercase;
     font-family: Arial, sans-serif;
@@ -2107,12 +2355,6 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
   text-align: center;
   line-height: 1;
   font-family: Arial, sans-serif;
-  transition: transform 0.1s ease;
-}
-
-.sre-escudo-circular:hover {
-  transform: scale(1.15);
-  z-index: 1000;
 }
 
 /* ===== RÓTULOS DAS LOCALIDADES ===== */
@@ -2124,7 +2366,6 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
   align-items: center;
   justify-content: center;
   filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
-  transition: transform 0.1s ease;
 }
 
 .snv-escudo-federal svg {
@@ -2148,11 +2389,6 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
   font-weight: 400;
   text-anchor: middle;
   dominant-baseline: middle;
-}
-
-.snv-escudo-federal:hover {
-  transform: scale(1.15);
-  z-index: 1000;
 }
 
 .localidade-label {

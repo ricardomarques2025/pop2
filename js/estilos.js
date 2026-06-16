@@ -10,6 +10,7 @@ const MAPA_PANES = {
   servicosPane: 500,
   localidadesPane: 550,
   oaePane: 600,
+  aeroPane: 620,
   rotulosBasePane: 650,
   anotacoesPane: 850,
   medicaoPane: 875,
@@ -258,17 +259,54 @@ const REGRAS_ESTILO = [
   };
 
   const OBRAS_PONTOS_INFO = {
+    OaePlanejamento: {
+      label: 'OAE em planejamento',
+      classe: 'obra-ponto-oae-planejamento',
+      cor: '#8b5cf6',
+      formato: 'quadrado',
+      icone: 'data/placaoaeplanejamento.svg'
+    },
+    OaeProjeto: {
+      label: 'OAE em projeto',
+      classe: 'obra-ponto-oae-projeto',
+      cor: '#00ffff',
+      formato: 'quadrado',
+      icone: 'data/placaoaeprojeto.svg'
+    },
+    OaeObra: {
+      label: 'OAE em obra',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#fffb00',
+      formato: 'losango',
+      icone: 'data/placaoaeobra.svg'
+    },
+    Planejamento: {
+      label: 'Em planejamento',
+      classe: 'obra-ponto-planejamento',
+      cor: '#8b5cf6',
+      formato: 'quadrado',
+      icone: 'data/placaplanejamento.svg'
+    },
     Projeto: {
       label: 'Projeto',
       classe: 'obra-ponto-projeto',
       cor: '#00ffff',
-      formato: 'quadrado'
+      formato: 'quadrado',
+      icone: 'data/placaprojeto.svg'
+    },
+    Manutencao: {
+      label: 'Manutenção',
+      classe: 'obra-ponto-manutencao',
+      cor: '#ffcc00',
+      formato: 'quadrado',
+      icone: 'data/placamanutencao.svg'
     },
     Obra: {
       label: 'Obra',
       classe: 'obra-ponto-obra',
       cor: '#ffcc00',
-      formato: 'losango'
+      formato: 'losango',
+      icone: 'data/placaobra.svg'
     },
     Padrao: {
       label: 'Outros',
