@@ -845,7 +845,8 @@
   color: #ffffff; /* Troque por qualquer cor desejada, ex: #ff0000 para vermelho */
 }
 
-.topbar-home-btn {
+.topbar-home-btn,
+.topbar-help-btn {
   width: 32px;
   height: 32px;
   display: grid;
@@ -862,7 +863,9 @@
 }
 
 .topbar-home-btn:hover,
-.topbar-home-btn:focus-visible {
+.topbar-home-btn:focus-visible,
+.topbar-help-btn:hover,
+.topbar-help-btn:focus-visible {
   background: rgba(255, 255, 255, 0.22);
   outline: none;
 }
