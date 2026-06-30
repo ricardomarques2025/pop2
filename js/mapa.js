@@ -1,4 +1,4 @@
-﻿var map = L.map('map', {
+var map = L.map('map', {
   zoomControl: false,
   zoomSnap: 0.1,
   zoomDelta: 0.1
@@ -4191,6 +4191,28 @@ map.addControl(new LogoMapaControl());
     return origem || 'FUNDEINFRA';
   }
 
+  function rotuloIdentificadorObraPonto(dados) {
+    return origemObraPonto(dados) === 'FUNDEINFRA' ? 'Proposta' : 'Item';
+  }
+
+  function valorIdentificadorObraPonto(dados) {
+    if (!dados) return '';
+    return origemObraPonto(dados) === 'FUNDEINFRA' ? dados.PROPOSTA : dados.ITEM;
+  }
+
+  function rotuloColunaIdentificadorObraPonto(dadosLista) {
+    var temFundeinfra = false;
+    var temOutrasOrigens = false;
+
+    for (var i = 0; i < dadosLista.length; i++) {
+      if (origemObraPonto(dadosLista[i]) === 'FUNDEINFRA') temFundeinfra = true;
+      else temOutrasOrigens = true;
+    }
+
+    if (temFundeinfra && temOutrasOrigens) return 'Proposta/Item';
+    return temFundeinfra ? 'Proposta' : 'Item';
+  }
+
   function tipoObraPonto(dados) {
     return String((dados && dados.TIPO) || '').trim().toUpperCase();
   }
@@ -5536,7 +5558,7 @@ map.addControl(new LogoMapaControl());
       var dados = dadosPopup;
       var origem = origemObraPonto(dados);
       html += '<br><br><b>— ' + escapeHtml(origem) + ' —</b><br>';
-      html += '<b>Item:</b> ' + escapeHtml(dados.ITEM || '') + '<br>';
+      html += '<b>' + escapeHtml(rotuloIdentificadorObraPonto(dados)) + ':</b> ' + escapeHtml(valorIdentificadorObraPonto(dados) || '') + '<br>';
       html += '<b>Etapa:</b> ' + escapeHtml(dados.ETAPA || '') + '<br>';
       html += '<b>Status:</b> ' + escapeHtml(dados.STATUS || '') + '<br>';
       html += '<b>SEI:</b> ' + escapeHtml(dados.SEI || '') + '<br>';
@@ -5579,7 +5601,7 @@ map.addControl(new LogoMapaControl());
         <div class="bloco-servico">
           <div class="titulo-servico">Dados das obras pontuais</div>
           <table class="tabela-servico">
-            <tr><th>Origem</th><th>Item</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Tipo</th><th>Serviço</th></tr>`;
+            <tr><th>Origem</th><th>${escapeHtml(rotuloColunaIdentificadorObraPonto(dadosTodos))}</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Tipo</th><th>Serviço</th></tr>`;
     }
 
     for (var i = 0; i < dadosTodos.length; i++) {
@@ -5587,7 +5609,7 @@ map.addControl(new LogoMapaControl());
       html += `
             <tr>
               <td>${escapeHtml(origemObraPonto(dados))}</td>
-              <td>${escapeHtml(dados.ITEM || '')}</td>
+              <td>${escapeHtml(valorIdentificadorObraPonto(dados) || '')}</td>
               <td>${escapeHtml(dados.ETAPA || '')}</td>
               <td>${escapeHtml(dados.STATUS || '')}</td>
               <td>${escapeHtml(dados.SEI || '')}</td>
@@ -5622,7 +5644,7 @@ map.addControl(new LogoMapaControl());
       var dados = dadosPopup;
       var origem = origemObraPonto(dados);
       html += '<br><br><b>— ' + escapeHtml(origem) + ' —</b><br>';
-      html += '<b>Item:</b> ' + escapeHtml(dados.ITEM || '') + '<br>';
+      html += '<b>' + escapeHtml(rotuloIdentificadorObraPonto(dados)) + ':</b> ' + escapeHtml(valorIdentificadorObraPonto(dados) || '') + '<br>';
       html += '<b>Etapa:</b> ' + escapeHtml(dados.ETAPA || '') + '<br>';
       html += '<b>Status:</b> ' + escapeHtml(dados.STATUS || '') + '<br>';
       html += '<b>SEI:</b> ' + escapeHtml(dados.SEI || '') + '<br>';
@@ -5671,7 +5693,7 @@ map.addControl(new LogoMapaControl());
         <div class="bloco-servico">
           <div class="titulo-servico">Dados das obras em aeródromos/aeroportos</div>
           <table class="tabela-servico">
-            <tr><th>Origem</th><th>Item</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Serviço</th></tr>`;
+            <tr><th>Origem</th><th>${escapeHtml(rotuloColunaIdentificadorObraPonto(dadosTodos))}</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Serviço</th></tr>`;
     }
 
     for (var i = 0; i < dadosTodos.length; i++) {
@@ -5679,7 +5701,7 @@ map.addControl(new LogoMapaControl());
       html += `
             <tr>
               <td>${escapeHtml(origemObraPonto(dados))}</td>
-              <td>${escapeHtml(dados.ITEM || '')}</td>
+              <td>${escapeHtml(valorIdentificadorObraPonto(dados) || '')}</td>
               <td>${escapeHtml(dados.ETAPA || '')}</td>
               <td>${escapeHtml(dados.STATUS || '')}</td>
               <td>${escapeHtml(dados.SEI || '')}</td>
