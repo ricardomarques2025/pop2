@@ -4285,6 +4285,26 @@ map.addControl(new LogoMapaControl());
     return '';
   }
 
+  function valorExportacaoCompleta(valor) {
+    if (valor === null || valor === undefined) return '';
+    if (typeof valor === 'object') {
+      try {
+        return JSON.stringify(valor);
+      } catch (e) {
+        return String(valor);
+      }
+    }
+    return valor;
+  }
+
+  function adicionarCamposExportacao(destino, prefixo, fonte) {
+    if (!fonte) return;
+    Object.keys(fonte).forEach(function(chave) {
+      if (!chave || chave.indexOf('__') === 0) return;
+      destino[prefixo + chave] = valorExportacaoCompleta(fonte[chave]);
+    });
+  }
+
   function registroExportacao(feature, origem, tipo, dados) {
     var p = feature.properties || {};
     var linkCampo = origem === 'FUNDEINFRA' ? 'LINK_FUND' :
@@ -4294,7 +4314,7 @@ map.addControl(new LogoMapaControl());
       origem === 'DPJ' ? 'LINK_DPJ' : 'LINK';
     var link = valorSeguro(feature, linkCampo) || valorSeguro(feature, 'LINK');
 
-    return {
+    var registro = {
       ORIGEM: origem,
       TIPO: tipo,
       SERVICO: (dados && dados.SERVICO) || '',
@@ -4308,6 +4328,11 @@ map.addControl(new LogoMapaControl());
       REGIAO_PLANEJAMENTO: p.RG_PLAN || '',
       LINK: link
     };
+
+    adicionarCamposExportacao(registro, 'GEO_', p);
+    adicionarCamposExportacao(registro, 'TAB_', dados);
+
+    return registro;
   }
 
   function adicionarRegistrosObraLinear(linhas, feature, origem, dadosLista) {
@@ -4320,16 +4345,21 @@ map.addControl(new LogoMapaControl());
     var linhas = [];
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
     var sreSelecionado = document.getElementById('sreSelect').value;
+    var rgSelecionada = document.getElementById('rgPlanSelect').value;
+    var municipioSelecionado = document.getElementById('municipioSelect').value;
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
     var featuresMunicipios = municipiosFiltrados();
 
     function featureAtendeFiltrosEspaciais(feature) {
+      var nmMun = valorSeguro(feature, 'NM_MUN') || valorSeguro(feature, 'MUNICIPIO');
+      var rgPlan = valorSeguro(feature, 'RG_PLAN');
+      if (municipioSelecionado && nmMun && nmMun !== municipioSelecionado) return false;
+      if (!municipioSelecionado && rgSelecionada && rgPlan && rgPlan !== rgSelecionada) return false;
       if (rodoviaSelecionada && nomeRodoviaFeature(feature) !== rodoviaSelecionada) return false;
       if (sreSelecionado && nomeSREFeature(feature) !== sreSelecionado) return false;
       return true;
     }
 
-    var linksFundIncluidos = {};
 
     if (sreData && sreData.features) {
       for (var i = 0; i < sreData.features.length; i++) {
@@ -4340,27 +4370,22 @@ map.addControl(new LogoMapaControl());
           var dadosFund = dadosFundeinfraDaFeatureFiltrado(feature, propostaSelecionada);
           if (dadosFund) {
             linhas.push(registroExportacao(feature, 'FUNDEINFRA', 'Obra linear', dadosFund));
-            if (valorSeguro(feature, 'LINK_FUND')) linksFundIncluidos[String(valorSeguro(feature, 'LINK_FUND'))] = true;
           }
         }
 
         if (servicosAtivos.DOR) {
-          if (servicosAtivos.FUNDEINFRA && valorSeguro(feature, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(feature, 'LINK_FUND'))]) continue;
           adicionarRegistrosObraLinear(linhas, feature, 'DOR', dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, ''));
         }
 
         if (servicosAtivos.DMA) {
-          if (servicosAtivos.FUNDEINFRA && valorSeguro(feature, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(feature, 'LINK_FUND'))]) continue;
           adicionarRegistrosObraLinear(linhas, feature, 'DMA', dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, ''));
         }
 
         if (servicosAtivos.DPL) {
-          if (servicosAtivos.FUNDEINFRA && valorSeguro(feature, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(feature, 'LINK_FUND'))]) continue;
           adicionarRegistrosObraLinear(linhas, feature, 'DPL', dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, ''));
         }
 
         if (servicosAtivos.DPJ) {
-          if (servicosAtivos.FUNDEINFRA && valorSeguro(feature, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(feature, 'LINK_FUND'))]) continue;
           adicionarRegistrosObraLinear(linhas, feature, 'DPJ', dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, ''));
         }
       }
@@ -4425,6 +4450,25 @@ map.addControl(new LogoMapaControl());
       String(a.TRECHO || '').localeCompare(String(b.TRECHO || ''), 'pt-BR', { numeric: true });
   }
 
+  function colunasExportacao(linhas) {
+    var principais = ['ORIGEM', 'TIPO', 'SERVICO', 'ETAPA', 'PROPOSTA_ITEM', 'RODOVIA', 'SRE', 'TRECHO', 'EXT_KM', 'MUNICIPIO', 'REGIAO_PLANEJAMENTO', 'LINK'];
+    var vistas = {};
+    var colunas = [];
+
+    function adicionar(coluna) {
+      if (vistas[coluna]) return;
+      vistas[coluna] = true;
+      colunas.push(coluna);
+    }
+
+    principais.forEach(adicionar);
+    linhas.forEach(function(linha) {
+      Object.keys(linha).forEach(adicionar);
+    });
+
+    return colunas;
+  }
+
   function exportarTabelaFiltradaCsv() {
     var linhas = coletarDadosTabularesFiltrados();
     if (!linhas.length) {
@@ -4434,7 +4478,7 @@ map.addControl(new LogoMapaControl());
 
     linhas.sort(compararExportacao);
 
-    var colunas = ['ORIGEM', 'TIPO', 'SERVICO', 'ETAPA', 'PROPOSTA_ITEM', 'RODOVIA', 'SRE', 'TRECHO', 'EXT_KM', 'MUNICIPIO', 'REGIAO_PLANEJAMENTO', 'LINK'];
+    var colunas = colunasExportacao(linhas);
     var conteudo = colunas.join(';') + '\r\n';
     for (var i = 0; i < linhas.length; i++) {
       conteudo += colunas.map(function(coluna) {
