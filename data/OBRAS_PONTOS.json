@@ -1,215 +1,500 @@
 [
   {
-    "PROPOSTA": 61,
+    "PROPOSTA": 17,
     "ITEM": 1,
-    "ETAPA": "Projeto",
-    "LINK": "FP_0061_OAE_01",
-    "STATUS": "Elaboração Anteprojeto",
-    "SEI": 202520920000573.0,
-    "CONCLUSAO": "Não Informado",
-    "CONTRATO": null,
+    "ETAPA": "Obra",
+    "LINK": "FU_0017_OAE_01",
+    "STATUS": "Contratação Integrada",
+    "SEI": 202500036004743.0,
+    "CONCLUSAO": "jun/32",
+    "CONTRATO": "Edital 156/2025-GOINFRA",
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": null,
+    "CONTRATO_1": "Edital 156/2025-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
-    "PROPOSTA": 46,
+    "PROPOSTA": 21,
     "ITEM": 2,
     "ETAPA": "Obra",
-    "LINK": "FO_0046_OAE_01",
-    "STATUS": "Obra em andamento",
-    "SEI": 202200036001873.0,
-    "CONCLUSAO": "dez/26",
-    "CONTRATO": null,
+    "LINK": "FU_0021_OAE_01",
+    "STATUS": "Em elaboração do projeto executivo (Integrada)",
+    "SEI": 202600036004337.0,
+    "CONCLUSAO": "fev/28",
+    "CONTRATO": "062/2026-GOINFRA",
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": "CONSÓRCIO CCL / BASITEC",
+    "CONTRATO_1": "062/2026-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202600036004337.0
   },
   {
-    "PROPOSTA": 43,
+    "PROPOSTA": 22,
     "ITEM": 3,
     "ETAPA": "Projeto",
-    "LINK": "FO_0043_OAE_01",
-    "STATUS": "Licitação de Projeto",
-    "SEI": 202500005023706.0,
-    "CONCLUSAO": "Não Informado",
-    "CONTRATO": null,
+    "LINK": "FU_0022_OAE_02",
+    "STATUS": "Contratação Integrada",
+    "SEI": null,
+    "CONCLUSAO": "jan/28",
+    "CONTRATO": "Edital 90/2026-GOINFRA",
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": null,
+    "CONTRATO_1": "Edital 90/2026-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
-    "PROPOSTA": 28,
+    "PROPOSTA": 22,
     "ITEM": 4,
-    "ETAPA": "Obra",
-    "LINK": "FO_0028_OAE_01",
-    "STATUS": "Obra em andamento",
-    "SEI": 202300036015414.0,
-    "CONCLUSAO": "out/25",
-    "CONTRATO": null,
+    "ETAPA": "Projeto",
+    "LINK": "FU_0022_OAE_01",
+    "STATUS": "Contratação Integrada",
+    "SEI": null,
+    "CONCLUSAO": "jan/28",
+    "CONTRATO": "Edital 90/2026-GOINFRA",
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": null,
+    "CONTRATO_1": "Edital 90/2026-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
-    "PROPOSTA": 37,
+    "PROPOSTA": 24,
     "ITEM": 5,
     "ETAPA": "Obra",
-    "LINK": "FO_0037_OAE_01",
-    "STATUS": "Obra em andamento",
-    "SEI": 202500036007137.0,
-    "CONCLUSAO": "mai/29",
-    "CONTRATO": null,
+    "LINK": "FU_0024_OAE_02",
+    "STATUS": "Anteprojeto aprovado.",
+    "SEI": 202500036004748.0,
+    "CONCLUSAO": "ago/28",
+    "CONTRATO": "132/2026-GOINFRA",
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": "CONSÓRCIO IBIZA / MOBICON / ENGENHO",
+    "CONTRATO_1": "132/2026-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202600036009224.0
   },
   {
-    "PROPOSTA": 28,
+    "PROPOSTA": 24,
     "ITEM": 6,
     "ETAPA": "Obra",
-    "LINK": "FO_0028_OAE_02",
-    "STATUS": "Obra em andamento",
-    "SEI": 202300036015414.0,
-    "CONCLUSAO": "out/25",
-    "CONTRATO": null,
+    "LINK": "FU_0024_OAE_01",
+    "STATUS": "Anteprojeto aprovado.",
+    "SEI": 202500036004749.0,
+    "CONCLUSAO": "ago/28",
+    "CONTRATO": "132/2026-GOINFRA",
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": "CONSÓRCIO IBIZA / MOBICON / ENGENHO",
+    "CONTRATO_1": "132/2026-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202600036009224.0
   },
   {
     "PROPOSTA": 25,
     "ITEM": 7,
     "ETAPA": "Obra",
-    "LINK": "FO_0025_OAE_01",
+    "LINK": "FU_0025_OAE_01",
     "STATUS": "Obra em andamento",
     "SEI": 202300036014695.0,
     "CONCLUSAO": "dez/25",
-    "CONTRATO": null,
+    "CONTRATO": "079/2024-GOINFRA",
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": "Obra",
+    "EMPRESA": "CNB",
+    "CONTRATO_1": "079/2024-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202300036014695.0
   },
   {
-    "PROPOSTA": 65,
+    "PROPOSTA": 26,
     "ITEM": 8,
-    "ETAPA": "Projeto",
-    "LINK": "FP_0065_OAE_01",
-    "STATUS": "Planejamento",
-    "SEI": 202500036008193.0,
-    "CONCLUSAO": "Não Informado",
+    "ETAPA": "Obra",
+    "LINK": "FU_0026_OAE_01",
+    "STATUS": "Contratação Integrada",
+    "SEI": 202600036008503.0,
+    "CONCLUSAO": "nov/26",
+    "CONTRATO": "131/2026-GOINFRA",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": "CONSÓRCIO PERFIL / TRAFECON",
+    "CONTRATO_1": "131/2026-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202600036008503.0
+  },
+  {
+    "PROPOSTA": 28,
+    "ITEM": 9,
+    "ETAPA": "Obra",
+    "LINK": "FU_0028_OAE_02",
+    "STATUS": "Obra em andamento",
+    "SEI": 202300036015414.0,
+    "CONCLUSAO": "out/25",
+    "CONTRATO": "042/2024-GOINFRA",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra",
+    "EMPRESA": "TECPAV",
+    "CONTRATO_1": "042/2024-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202300036015414.0
+  },
+  {
+    "PROPOSTA": 28,
+    "ITEM": 10,
+    "ETAPA": "Obra",
+    "LINK": "FU_0028_OAE_01",
+    "STATUS": "Obra em andamento",
+    "SEI": 202300036015414.0,
+    "CONCLUSAO": "out/25",
+    "CONTRATO": "042/2024-GOINFRA",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra",
+    "EMPRESA": "TECPAV",
+    "CONTRATO_1": "042/2024-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202300036015414.0
+  },
+  {
+    "PROPOSTA": 29,
+    "ITEM": 11,
+    "ETAPA": "Obra",
+    "LINK": "FU_0029_OAE_02",
+    "STATUS": "Obra em andamento",
+    "SEI": 202500036008143.0,
+    "CONCLUSAO": "dez/25",
+    "CONTRATO": "178/2010-GOINFRA (Obra)",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra / Remanescente de Obra",
+    "EMPRESA": "MILÃO (Obra)",
+    "CONTRATO_1": "178/2010-GOINFRA (Obra)",
+    "PROCESSO_SEI_CONTRATACAO": 200800036001228.0
+  },
+  {
+    "PROPOSTA": 29,
+    "ITEM": 12,
+    "ETAPA": "Obra",
+    "LINK": "FU_0029_OAE_01",
+    "STATUS": "Obra em andamento",
+    "SEI": 202500036008143.0,
+    "CONCLUSAO": "dez/25",
+    "CONTRATO": "178/2010-GOINFRA (Obra)",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra / Remanescente de Obra",
+    "EMPRESA": "MILÃO (Obra)",
+    "CONTRATO_1": "178/2010-GOINFRA (Obra)",
+    "PROCESSO_SEI_CONTRATACAO": 200800036001228.0
+  },
+  {
+    "PROPOSTA": 34,
+    "ITEM": 13,
+    "ETAPA": "Obra",
+    "LINK": "FU_0034_OAE_01",
+    "STATUS": null,
+    "SEI": 202300036004558.0,
+    "CONCLUSAO": "out/27",
+    "CONTRATO": "087/2025-GOINFRA",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra",
+    "EMPRESA": "ÉTICA",
+    "CONTRATO_1": "087/2025-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202500036009059.0
+  },
+  {
+    "PROPOSTA": 37,
+    "ITEM": 14,
+    "ETAPA": "Obra",
+    "LINK": "FU_0037",
+    "STATUS": "Obra em andamento",
+    "SEI": 202018037001810.0,
+    "CONCLUSAO": null,
     "CONTRATO": null,
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
+  },
+  {
+    "PROPOSTA": 38,
+    "ITEM": 15,
+    "ETAPA": "Obra",
+    "LINK": "FU_0038_OAE_01",
+    "STATUS": "Anteprojeto em elaboração",
+    "SEI": 202300036007682.0,
+    "CONCLUSAO": "Não Informado",
+    "CONTRATO": "128/2026-GOINFRA",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": "CONSÓRCIO PERFIL / ETEL",
+    "CONTRATO_1": "128/2026-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202600036008504.0
+  },
+  {
+    "PROPOSTA": 43,
+    "ITEM": 16,
+    "ETAPA": null,
+    "LINK": "FU_0043",
+    "STATUS": "Prefeitura executou uma ponte em 2024",
+    "SEI": 202100036004543.0,
+    "CONCLUSAO": null,
+    "CONTRATO": null,
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 44,
-    "ITEM": 9,
-    "ETAPA": "Projeto",
-    "LINK": "FO_0044_OAE_01",
-    "STATUS": "Licitação de Projeto",
-    "SEI": 202320920000828.0,
-    "CONCLUSAO": "mai/28",
-    "CONTRATO": null,
-    "ORIGEM": "FUNDEINFRA",
-    "TIPO": "OAE",
-    "SERVICO": null
-  },
-  {
-    "PROPOSTA": 53,
-    "ITEM": 10,
+    "ITEM": 17,
     "ETAPA": "Obra",
-    "LINK": "FP_0053_OAE_01",
-    "STATUS": "Em Contratação de Obra",
-    "SEI": 202520920000584.0,
-    "CONCLUSAO": "fev/27",
+    "LINK": "FU_0044",
+    "STATUS": "Anteprojeto aprovado. Enviado à DOR para licitação",
+    "SEI": 202600036008980.0,
+    "CONCLUSAO": null,
     "CONTRATO": null,
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
-  },
-  {
-    "PROPOSTA": 57,
-    "ITEM": 11,
-    "ETAPA": "Projeto",
-    "LINK": "FP_0057_OAE_01",
-    "STATUS": "Elaboração Anteprojeto",
-    "SEI": 202520920000581.0,
-    "CONCLUSAO": "fev/27",
-    "CONTRATO": null,
-    "ORIGEM": "FUNDEINFRA",
-    "TIPO": "OAE",
-    "SERVICO": null
-  },
-  {
-    "PROPOSTA": 58,
-    "ITEM": 12,
-    "ETAPA": "Projeto",
-    "LINK": "FP_0058_OAE_01",
-    "STATUS": "Elaboração Anteprojeto",
-    "SEI": 202520920000578.0,
-    "CONCLUSAO": "fev/27",
-    "CONTRATO": null,
-    "ORIGEM": "FUNDEINFRA",
-    "TIPO": "OAE",
-    "SERVICO": null
-  },
-  {
-    "PROPOSTA": 59,
-    "ITEM": 13,
-    "ETAPA": "Projeto",
-    "LINK": "FP_0059_OAE_01",
-    "STATUS": "Elaboração Anteprojeto",
-    "SEI": 202520920000574.0,
-    "CONCLUSAO": "fev/27",
-    "CONTRATO": null,
-    "ORIGEM": "FUNDEINFRA",
-    "TIPO": "OAE",
-    "SERVICO": null
-  },
-  {
-    "PROPOSTA": 60,
-    "ITEM": 14,
-    "ETAPA": "Projeto",
-    "LINK": "FP_0060_OAE_01",
-    "STATUS": "Elaboração Anteprojeto",
-    "SEI": 202520920000576.0,
-    "CONCLUSAO": "Não Informado",
-    "CONTRATO": null,
-    "ORIGEM": "FUNDEINFRA",
-    "TIPO": "OAE",
-    "SERVICO": null
-  },
-  {
-    "PROPOSTA": 62,
-    "ITEM": 15,
-    "ETAPA": "Projeto",
-    "LINK": "FP_0062_OAE_01",
-    "STATUS": "Elaboração Anteprojeto",
-    "SEI": 202520920000580.0,
-    "CONCLUSAO": "Não Informado",
-    "CONTRATO": null,
-    "ORIGEM": "FUNDEINFRA",
-    "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 46,
-    "ITEM": 16,
+    "ITEM": 18,
     "ETAPA": "Obra",
-    "LINK": "FO_0046_OAE_02",
+    "LINK": "FU_0046_OAE_01",
     "STATUS": "Obra em andamento",
     "SEI": 202200036001873.0,
     "CONCLUSAO": "dez/26",
+    "CONTRATO": "097/2024-GOINFRA",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra",
+    "EMPRESA": "CONSÓRCIO CAIAPÓ/MME",
+    "CONTRATO_1": "097/2024-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202300036014567.0
+  },
+  {
+    "PROPOSTA": 46,
+    "ITEM": 19,
+    "ETAPA": "Obra",
+    "LINK": "FU_0046_OAE_02",
+    "STATUS": "Obra em andamento",
+    "SEI": 202200036001873.0,
+    "CONCLUSAO": "dez/26",
+    "CONTRATO": "097/2024-GOINFRA",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra",
+    "EMPRESA": "CONSÓRCIO CAIAPÓ/MME",
+    "CONTRATO_1": "097/2024-GOINFRA",
+    "PROCESSO_SEI_CONTRATACAO": 202300036014567.0
+  },
+  {
+    "PROPOSTA": 49,
+    "ITEM": 20,
+    "ETAPA": "Obra",
+    "LINK": "FU_0049_OAE_01",
+    "STATUS": "Anteprojeto aprovado.",
+    "SEI": 202500036004189.0,
+    "CONCLUSAO": "out/28",
+    "CONTRATO": "006/2025-IFAG",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": "PARCERIA IFAG\n(CAIAPÓ)",
+    "CONTRATO_1": "006/2025-IFAG",
+    "PROCESSO_SEI_CONTRATACAO": 202500036013834.0
+  },
+  {
+    "PROPOSTA": 50,
+    "ITEM": 21,
+    "ETAPA": "Obra",
+    "LINK": "FU_0050_OAE_01",
+    "STATUS": "Anteprojeto aprovado.",
+    "SEI": 202500036004747.0,
+    "CONCLUSAO": "mai/27",
+    "CONTRATO": "008/2025-IFAG",
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": "Obra Integrada",
+    "EMPRESA": "PARCERIA IFAG\n(CONSÓRCIO CCB / INFLUENCIA)",
+    "CONTRATO_1": "008/2025-IFAG",
+    "PROCESSO_SEI_CONTRATACAO": 202500036014192.0
+  },
+  {
+    "PROPOSTA": 53,
+    "ITEM": 22,
+    "ETAPA": "Obra",
+    "LINK": "FU_0053",
+    "STATUS": "Obra em andamento",
+    "SEI": 202520920000562.0,
+    "CONCLUSAO": null,
     "CONTRATO": null,
     "ORIGEM": "FUNDEINFRA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
+  },
+  {
+    "PROPOSTA": 57,
+    "ITEM": 23,
+    "ETAPA": "Projeto",
+    "LINK": "FU_0057",
+    "STATUS": "Anteprojeto em elaboração",
+    "SEI": null,
+    "CONCLUSAO": null,
+    "CONTRATO": null,
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
+  },
+  {
+    "PROPOSTA": 58,
+    "ITEM": 24,
+    "ETAPA": "Projeto",
+    "LINK": "FU_0058",
+    "STATUS": "Anteprojeto em elaboração",
+    "SEI": null,
+    "CONCLUSAO": null,
+    "CONTRATO": null,
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
+  },
+  {
+    "PROPOSTA": 59,
+    "ITEM": 25,
+    "ETAPA": "Projeto",
+    "LINK": "FU_0059",
+    "STATUS": "Anteprojeto em elaboração",
+    "SEI": null,
+    "CONCLUSAO": null,
+    "CONTRATO": null,
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
+  },
+  {
+    "PROPOSTA": 60,
+    "ITEM": 26,
+    "ETAPA": "Projeto",
+    "LINK": "FU_0060",
+    "STATUS": "Anteprojeto em elaboração",
+    "SEI": null,
+    "CONCLUSAO": null,
+    "CONTRATO": null,
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
+  },
+  {
+    "PROPOSTA": 61,
+    "ITEM": 27,
+    "ETAPA": "Projeto",
+    "LINK": "FU_0061",
+    "STATUS": "Anteprojeto em elaboração",
+    "SEI": null,
+    "CONCLUSAO": null,
+    "CONTRATO": null,
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
+  },
+  {
+    "PROPOSTA": 62,
+    "ITEM": 28,
+    "ETAPA": "Projeto",
+    "LINK": "FU_0062",
+    "STATUS": "Anteprojeto em elaboração",
+    "SEI": null,
+    "CONCLUSAO": null,
+    "CONTRATO": null,
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
+  },
+  {
+    "PROPOSTA": 65,
+    "ITEM": 29,
+    "ETAPA": "Projeto",
+    "LINK": "FU_0065",
+    "STATUS": "Projeto em elaboração pela SEINFRA",
+    "SEI": null,
+    "CONCLUSAO": null,
+    "CONTRATO": null,
+    "ORIGEM": "FUNDEINFRA",
+    "TIPO": "OAE",
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 17,
+    "ITEM": 30,
     "ETAPA": "Projeto",
     "LINK": "DOC_0001",
     "STATUS": "Elaboração de Projeto",
@@ -218,11 +503,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Feira Coberta"
+    "SERVICO": "Feira Coberta",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 18,
+    "ITEM": 31,
     "ETAPA": "Projeto",
     "LINK": "DOC_0001",
     "STATUS": "Elaboração de Projeto",
@@ -231,11 +520,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Centro Polivalente de Atividades Comunitárias Prof. Neli Antônio dos Santos - CEPAC"
+    "SERVICO": "Centro Polivalente de Atividades Comunitárias Prof. Neli Antônio dos Santos - CEPAC",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 19,
+    "ITEM": 32,
     "ETAPA": "Obra",
     "LINK": "DOC_0002",
     "STATUS": "Obra Concluída",
@@ -244,11 +537,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Hospital Ronaldo Ramos Caiado Filho"
+    "SERVICO": "Hospital Ronaldo Ramos Caiado Filho",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 20,
+    "ITEM": 33,
     "ETAPA": "Projeto",
     "LINK": "DOC_0003",
     "STATUS": "Elaboração de Projeto",
@@ -257,11 +554,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção de mirante junto com estacionamento"
+    "SERVICO": "Construção de mirante junto com estacionamento",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 21,
+    "ITEM": 34,
     "ETAPA": "Obra",
     "LINK": "DOC_0004",
     "STATUS": "Em Contratação de Obra",
@@ -270,11 +571,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção de Galpão para Mini Polo Industrial"
+    "SERVICO": "Construção de Galpão para Mini Polo Industrial",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 22,
+    "ITEM": 35,
     "ETAPA": "Projeto",
     "LINK": "DOC_0005",
     "STATUS": "Projeto Concluído",
@@ -283,11 +588,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção do centro de convivência e da biblioteca no Câmpus"
+    "SERVICO": "Construção do centro de convivência e da biblioteca no Câmpus",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 23,
+    "ITEM": 36,
     "ETAPA": "Projeto",
     "LINK": "DOC_0007",
     "STATUS": "Planejamento",
@@ -296,11 +605,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Obras de drenagem do galpão Escola Agrícola"
+    "SERVICO": "Obras de drenagem do galpão Escola Agrícola",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 24,
+    "ITEM": 37,
     "ETAPA": "Projeto",
     "LINK": "DOC_0012",
     "STATUS": "Elaboração de Projeto",
@@ -309,11 +622,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Policlínica Estadual"
+    "SERVICO": "Policlínica Estadual",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 25,
+    "ITEM": 38,
     "ETAPA": "Obra",
     "LINK": "DOC_0020",
     "STATUS": "Obra em andamento",
@@ -322,11 +639,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Hospital Estadual Dr. César Saad Fayad"
+    "SERVICO": "Hospital Estadual Dr. César Saad Fayad",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 26,
+    "ITEM": 39,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -335,11 +656,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Complexo Oncológico de Referência do Estado de Goiás (Ala Infanto Juvenil)"
+    "SERVICO": "Complexo Oncológico de Referência do Estado de Goiás (Ala Infanto Juvenil)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 27,
+    "ITEM": 40,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -348,11 +673,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Obra de Retrofit do Sistema de climatização de ar da sede administrativa da Goinfra"
+    "SERVICO": "Obra de Retrofit do Sistema de climatização de ar da sede administrativa da Goinfra",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 28,
+    "ITEM": 41,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Em Contratação de Obra",
@@ -361,11 +690,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção do Centro Aquático na área do Autódromo Internacional Ayrton Senna"
+    "SERVICO": "Construção do Centro Aquático na área do Autódromo Internacional Ayrton Senna",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 29,
+    "ITEM": 42,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Elaboração de Projeto",
@@ -374,11 +707,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Hospital Estadual de Doenças Tropicais  HDT"
+    "SERVICO": "Hospital Estadual de Doenças Tropicais  HDT",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 30,
+    "ITEM": 43,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Em Contratação de Obra",
@@ -387,11 +724,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Laboratório Estadual de Saúde Pública Dr. Giovanni Cysneiros  LACEN"
+    "SERVICO": "Laboratório Estadual de Saúde Pública Dr. Giovanni Cysneiros  LACEN",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 31,
+    "ITEM": 44,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Elaboração de Projeto",
@@ -400,11 +741,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção de novo bloco de salas de aulas e laboratórios (Laranjeiras)"
+    "SERVICO": "Construção de novo bloco de salas de aulas e laboratórios (Laranjeiras)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 32,
+    "ITEM": 45,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra Concluída",
@@ -413,11 +758,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Centro de Convivência da GOINFRA"
+    "SERVICO": "Centro de Convivência da GOINFRA",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 33,
+    "ITEM": 46,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -426,11 +775,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Serviços remanescentes do sistema de combate a incêndio - GOINFRA"
+    "SERVICO": "Serviços remanescentes do sistema de combate a incêndio - GOINFRA",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 34,
+    "ITEM": 47,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Elaboração de Projeto",
@@ -439,11 +792,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção da Sede do COD"
+    "SERVICO": "Construção da Sede do COD",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 35,
+    "ITEM": 48,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Planejamento",
@@ -452,11 +809,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Serviços comuns de engenharia relativos à manutenção predial - GOINFRA"
+    "SERVICO": "Serviços comuns de engenharia relativos à manutenção predial - GOINFRA",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 36,
+    "ITEM": 49,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Elaboração Anteprojeto",
@@ -465,11 +826,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Complexo Oncológico de Referência do  Estado de Goiás (Ala ADULTO)"
+    "SERVICO": "Complexo Oncológico de Referência do  Estado de Goiás (Ala ADULTO)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 37,
+    "ITEM": 50,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -478,11 +843,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção de Alojamento Feminino do Palácio das Esmeraldas"
+    "SERVICO": "Construção de Alojamento Feminino do Palácio das Esmeraldas",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 38,
+    "ITEM": 51,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -491,11 +860,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Execução para melhoria e ampliação dos estacionamentos para atender o evento Natal do Bem"
+    "SERVICO": "Execução para melhoria e ampliação dos estacionamentos para atender o evento Natal do Bem",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 39,
+    "ITEM": 52,
     "ETAPA": "Projeto",
     "LINK": "DOC_0026",
     "STATUS": "Projeto Concluído",
@@ -504,11 +877,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção de Auditório"
+    "SERVICO": "Construção de Auditório",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 40,
+    "ITEM": 53,
     "ETAPA": "Obra",
     "LINK": "DOC_0028",
     "STATUS": "Obra Concluída",
@@ -517,11 +894,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Conclusão"
+    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Conclusão",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 41,
+    "ITEM": 54,
     "ETAPA": "Projeto",
     "LINK": "DOC_0028",
     "STATUS": "Planejamento",
@@ -530,11 +911,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção do Centro de Saúde na Unidade Universitária"
+    "SERVICO": "Construção do Centro de Saúde na Unidade Universitária",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 42,
+    "ITEM": 55,
     "ETAPA": "Projeto",
     "LINK": "DOC_0032",
     "STATUS": "Planejamento",
@@ -543,11 +928,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção de Feira de Piscicultores"
+    "SERVICO": "Construção de Feira de Piscicultores",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 43,
+    "ITEM": 56,
     "ETAPA": "Projeto",
     "LINK": "DOC_0033",
     "STATUS": "Elaboração de Projeto",
@@ -556,11 +945,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Policlínica Estadual"
+    "SERVICO": "Policlínica Estadual",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 44,
+    "ITEM": 57,
     "ETAPA": "Obra",
     "LINK": "DOC_0035",
     "STATUS": "Obra em andamento",
@@ -569,11 +962,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Policlínica Estadual"
+    "SERVICO": "Policlínica Estadual",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 45,
+    "ITEM": 58,
     "ETAPA": "Obra",
     "LINK": "DOC_0035",
     "STATUS": "Obra em andamento",
@@ -582,11 +979,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Extensão de rede e energização do canteiro de obras para construção da policlínica de mozarlândia."
+    "SERVICO": "Extensão de rede e energização do canteiro de obras para construção da policlínica de mozarlândia.",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 46,
+    "ITEM": 59,
     "ETAPA": "Projeto",
     "LINK": "DOC_0038",
     "STATUS": "Elaboração de Projeto",
@@ -595,11 +996,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Feira Coberta"
+    "SERVICO": "Feira Coberta",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 47,
+    "ITEM": 60,
     "ETAPA": "Obra",
     "LINK": "DOC_0039",
     "STATUS": "Obra em andamento",
@@ -608,11 +1013,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Presidio Novo Gama - Conclusão dos Serviços Remanescentes"
+    "SERVICO": "Presidio Novo Gama - Conclusão dos Serviços Remanescentes",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 48,
+    "ITEM": 61,
     "ETAPA": "Obra",
     "LINK": "DOC_0039",
     "STATUS": "Obra Concluída",
@@ -621,11 +1030,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Feira Coberta"
+    "SERVICO": "Feira Coberta",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 49,
+    "ITEM": 62,
     "ETAPA": "Obra",
     "LINK": "DOC_0042",
     "STATUS": "Obra Concluída",
@@ -634,11 +1047,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Continuação"
+    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Continuação",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 50,
+    "ITEM": 63,
     "ETAPA": "Obra",
     "LINK": "DOC_0044",
     "STATUS": "Obra Concluída",
@@ -647,11 +1064,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Conclusão"
+    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Conclusão",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 51,
+    "ITEM": 64,
     "ETAPA": "Obra",
     "LINK": "DOC_0045",
     "STATUS": "Obra Concluída",
@@ -660,11 +1081,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Construção de Passarela na GO060"
+    "SERVICO": "Construção de Passarela na GO060",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 52,
+    "ITEM": 65,
     "ETAPA": "Obra",
     "LINK": "DOC_0050",
     "STATUS": "Obra em andamento",
@@ -673,11 +1098,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Construção"
+    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Construção",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 53,
+    "ITEM": 66,
     "ETAPA": "Obra",
     "LINK": "DOC_0057",
     "STATUS": "Obra Contratada",
@@ -686,11 +1115,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "CONSTRUÇÃO",
-    "SERVICO": "CREVI"
+    "SERVICO": "CREVI",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 54,
+    "ITEM": 67,
     "ETAPA": "Projeto",
     "LINK": "DOC_0003",
     "STATUS": "Planejamento",
@@ -699,11 +1132,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 55,
+    "ITEM": 68,
     "ETAPA": "Projeto",
     "LINK": "DOC_0004",
     "STATUS": "Elaboração de Projeto",
@@ -712,11 +1149,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 56,
+    "ITEM": 69,
     "ETAPA": "Projeto",
     "LINK": "DOC_0005",
     "STATUS": "Projeto Concluído",
@@ -725,11 +1166,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma Geral da UEG Unidade Universitária - CSEH  Nelson de Abreu Júnior"
+    "SERVICO": "Reforma Geral da UEG Unidade Universitária - CSEH  Nelson de Abreu Júnior",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 57,
+    "ITEM": 70,
     "ETAPA": "Obra",
     "LINK": "DOC_0006",
     "STATUS": "Obra Concluída",
@@ -738,11 +1183,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e Adequação Ginásio de Esportes no Setor Independência  Ap. Goiânia"
+    "SERVICO": "Reforma e Adequação Ginásio de Esportes no Setor Independência  Ap. Goiânia",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 58,
+    "ITEM": 71,
     "ETAPA": "Obra",
     "LINK": "DOC_0006",
     "STATUS": "Obra Concluída",
@@ -751,11 +1200,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e Adequação Ginásio de Esportes no Setor Jardim Tiradentes"
+    "SERVICO": "Reforma e Adequação Ginásio de Esportes no Setor Jardim Tiradentes",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 59,
+    "ITEM": 72,
     "ETAPA": "Obra",
     "LINK": "DOC_0006",
     "STATUS": "Em Contratação de Obra",
@@ -764,11 +1217,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e Adequação Ginásio de Esportes (Vila Cruzeiro do Sul)"
+    "SERVICO": "Reforma e Adequação Ginásio de Esportes (Vila Cruzeiro do Sul)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 60,
+    "ITEM": 73,
     "ETAPA": "Projeto",
     "LINK": "DOC_0006",
     "STATUS": "Planejamento",
@@ -777,11 +1234,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio (Garavelo)"
+    "SERVICO": "Reforma do Ginásio (Garavelo)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 61,
+    "ITEM": 74,
     "ETAPA": "Projeto",
     "LINK": "DOC_0008",
     "STATUS": "Elaboração de Projeto",
@@ -790,11 +1251,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de barreiras rodoviárias"
+    "SERVICO": "Reforma de barreiras rodoviárias",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 62,
+    "ITEM": 75,
     "ETAPA": "Projeto",
     "LINK": "DOC_0009",
     "STATUS": "Elaboração de Projeto",
@@ -803,11 +1268,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 63,
+    "ITEM": 76,
     "ETAPA": "Obra",
     "LINK": "DOC_0010",
     "STATUS": "Obra Concluída",
@@ -816,11 +1285,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e Adequação Ginásio de Esportes"
+    "SERVICO": "Reforma e Adequação Ginásio de Esportes",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 64,
+    "ITEM": 77,
     "ETAPA": "Projeto",
     "LINK": "DOC_0011",
     "STATUS": "Elaboração de Projeto",
@@ -829,11 +1302,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 65,
+    "ITEM": 78,
     "ETAPA": "Projeto",
     "LINK": "DOC_0011",
     "STATUS": "Planejamento",
@@ -842,11 +1319,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma Terminal Rodoviário"
+    "SERVICO": "Reforma Terminal Rodoviário",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 66,
+    "ITEM": 79,
     "ETAPA": "Obra",
     "LINK": "DOC_0013",
     "STATUS": "Obra Concluída",
@@ -855,11 +1336,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio em Campos Verdes"
+    "SERVICO": "Reforma do Ginásio em Campos Verdes",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 67,
+    "ITEM": 80,
     "ETAPA": "Obra",
     "LINK": "DOC_0014",
     "STATUS": "Obra em andamento",
@@ -868,11 +1353,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 68,
+    "ITEM": 81,
     "ETAPA": "Projeto",
     "LINK": "DOC_0015",
     "STATUS": "Elaboração de Projeto",
@@ -881,11 +1370,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 69,
+    "ITEM": 82,
     "ETAPA": "Obra",
     "LINK": "DOC_0016",
     "STATUS": "Em Contratação de Obra",
@@ -894,11 +1387,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 70,
+    "ITEM": 83,
     "ETAPA": "Projeto",
     "LINK": "DOC_0017",
     "STATUS": "Elaboração de Projeto",
@@ -907,11 +1404,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 71,
+    "ITEM": 84,
     "ETAPA": "Projeto",
     "LINK": "DOC_0018",
     "STATUS": "Elaboração de Projeto",
@@ -920,11 +1421,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 72,
+    "ITEM": 85,
     "ETAPA": "Projeto",
     "LINK": "DOC_0019",
     "STATUS": "Planejamento",
@@ -933,11 +1438,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 73,
+    "ITEM": 86,
     "ETAPA": "Obra",
     "LINK": "DOC_0021",
     "STATUS": "Obra Concluída",
@@ -946,11 +1455,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e Adequação Ginásio de Esportes"
+    "SERVICO": "Reforma e Adequação Ginásio de Esportes",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 74,
+    "ITEM": 87,
     "ETAPA": "Obra",
     "LINK": "DOC_0022",
     "STATUS": "Em Contratação de Obra",
@@ -959,11 +1472,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de barreiras rodoviárias"
+    "SERVICO": "Reforma de barreiras rodoviárias",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 75,
+    "ITEM": 88,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em Retomada",
@@ -972,11 +1489,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e ampliação da Escola  do Futuro Basileu França"
+    "SERVICO": "Reforma e ampliação da Escola  do Futuro Basileu França",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 76,
+    "ITEM": 89,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra Concluída",
@@ -985,11 +1506,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Execução das Obras de adequação do Sistema de Iluminação do Estádio Serra Dourada"
+    "SERVICO": "Execução das Obras de adequação do Sistema de Iluminação do Estádio Serra Dourada",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 77,
+    "ITEM": 90,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -998,11 +1523,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e adequação das Instituições  de Longa Permanência  Casa da Pessoa Idosa"
+    "SERVICO": "Reforma e adequação das Instituições  de Longa Permanência  Casa da Pessoa Idosa",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 78,
+    "ITEM": 91,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra Concluída",
@@ -1011,11 +1540,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Vera Cruz"
+    "SERVICO": "Centro de Atendimento Sócio Educativo (CASE) - Vera Cruz",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 79,
+    "ITEM": 92,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra Concluída",
@@ -1024,11 +1557,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do patio de comando de policiamento rodoviário  CRP"
+    "SERVICO": "Reforma do patio de comando de policiamento rodoviário  CRP",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 80,
+    "ITEM": 93,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Elaboração Anteprojeto",
@@ -1037,11 +1574,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Hangar Jose Ludovico de Almeida"
+    "SERVICO": "Reforma do Hangar Jose Ludovico de Almeida",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 81,
+    "ITEM": 94,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -1050,11 +1591,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma, adequação e ampliação do Laboratório Central  LCTC  da GOINFRA"
+    "SERVICO": "Reforma, adequação e ampliação do Laboratório Central  LCTC  da GOINFRA",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 82,
+    "ITEM": 95,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Planejamento",
@@ -1063,11 +1608,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma Bloco Principal, Bl de medição da manutenção e Bl Defesa Prévia"
+    "SERVICO": "Reforma Bloco Principal, Bl de medição da manutenção e Bl Defesa Prévia",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 83,
+    "ITEM": 96,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Elaboração de Projeto",
@@ -1076,11 +1625,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma Prédio Público (Palácio das Esmeraldas/Palacio Pedro Ludovico Teixeira) - (Banheiros/Academia)"
+    "SERVICO": "Reforma Prédio Público (Palácio das Esmeraldas/Palacio Pedro Ludovico Teixeira) - (Banheiros/Academia)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 84,
+    "ITEM": 97,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Elaboração de Projeto",
@@ -1089,11 +1642,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Construção de reservatório enterrado (Palácio Pedro Ludovico Teixeira)"
+    "SERVICO": "Construção de reservatório enterrado (Palácio Pedro Ludovico Teixeira)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 85,
+    "ITEM": 98,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Elaboração de Projeto",
@@ -1102,11 +1659,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Construção do CEASA"
+    "SERVICO": "Construção do CEASA",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 86,
+    "ITEM": 99,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Planejamento",
@@ -1115,11 +1676,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Restauração do Prédio da Antiga PGE, pertencente ao Acervo Art Decó"
+    "SERVICO": "Restauração do Prédio da Antiga PGE, pertencente ao Acervo Art Decó",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 87,
+    "ITEM": 100,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Planejamento",
@@ -1128,11 +1693,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Restauração do Museu Goiano Professor Zoroastro Artiaga"
+    "SERVICO": "Restauração do Museu Goiano Professor Zoroastro Artiaga",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 88,
+    "ITEM": 101,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Planejamento",
@@ -1141,11 +1710,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Requalificação do Conde dos Arcos"
+    "SERVICO": "Requalificação do Conde dos Arcos",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 89,
+    "ITEM": 102,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Planejamento",
@@ -1154,11 +1727,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Centro Cultural Marieta Telles Machado"
+    "SERVICO": "Centro Cultural Marieta Telles Machado",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 90,
+    "ITEM": 103,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Planejamento",
@@ -1167,11 +1744,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de Teatro"
+    "SERVICO": "Reforma de Teatro",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 91,
+    "ITEM": 104,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -1180,11 +1761,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "MotoGP25 - Reforma do Autódromo"
+    "SERVICO": "MotoGP25 - Reforma do Autódromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 92,
+    "ITEM": 105,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Em Contratação de Obra",
@@ -1193,11 +1778,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio (Capuava)"
+    "SERVICO": "Reforma do Ginásio (Capuava)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 93,
+    "ITEM": 106,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Elaboração de Projeto",
@@ -1206,11 +1795,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e ampliação Eseffego"
+    "SERVICO": "Reforma e ampliação Eseffego",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 94,
+    "ITEM": 107,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -1219,11 +1812,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma Prédio Público (Oficina) - GOINFRA"
+    "SERVICO": "Reforma Prédio Público (Oficina) - GOINFRA",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 95,
+    "ITEM": 108,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Em Contratação de Obra",
@@ -1232,11 +1829,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e adequação do Ginásio (Capuava)"
+    "SERVICO": "Reforma e adequação do Ginásio (Capuava)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 96,
+    "ITEM": 109,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra Concluída",
@@ -1245,11 +1846,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Estrutura do Heliponto e cobertura (Palácio Pedro Ludovico Teixeira)"
+    "SERVICO": "Estrutura do Heliponto e cobertura (Palácio Pedro Ludovico Teixeira)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 97,
+    "ITEM": 110,
     "ETAPA": "Projeto",
     "LINK": "DOC_0023",
     "STATUS": "Projeto Concluído",
@@ -1258,11 +1863,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma Prédio Público (Bloco GEMER/CPR) - GOINFRA"
+    "SERVICO": "Reforma Prédio Público (Bloco GEMER/CPR) - GOINFRA",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 98,
+    "ITEM": 111,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Em Contratação de Obra",
@@ -1271,11 +1880,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Comando de Policiamento Rodoviário – CPR"
+    "SERVICO": "Comando de Policiamento Rodoviário – CPR",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 99,
+    "ITEM": 112,
     "ETAPA": "Obra",
     "LINK": "DOC_0023",
     "STATUS": "Obra em andamento",
@@ -1284,11 +1897,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Casa de acolhida ao idoso (setor Jaó)"
+    "SERVICO": "Casa de acolhida ao idoso (setor Jaó)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 100,
+    "ITEM": 113,
     "ETAPA": "Projeto",
     "LINK": "DOC_0024",
     "STATUS": "Elaboração de Projeto",
@@ -1297,11 +1914,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de barreiras rodoviárias"
+    "SERVICO": "Reforma de barreiras rodoviárias",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 101,
+    "ITEM": 114,
     "ETAPA": "Obra",
     "LINK": "DOC_0024",
     "STATUS": "Obra em andamento",
@@ -1310,11 +1931,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 102,
+    "ITEM": 115,
     "ETAPA": "Obra",
     "LINK": "DOC_0025",
     "STATUS": "Obra em andamento",
@@ -1323,11 +1948,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 103,
+    "ITEM": 116,
     "ETAPA": "Projeto",
     "LINK": "DOC_0027",
     "STATUS": "Planejamento",
@@ -1336,11 +1965,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 104,
+    "ITEM": 117,
     "ETAPA": "Obra",
     "LINK": "DOC_0029",
     "STATUS": "Obra em andamento",
@@ -1349,11 +1982,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Requalificação de Igreja Nossa Senhora do Rosário dos Pretos"
+    "SERVICO": "Requalificação de Igreja Nossa Senhora do Rosário dos Pretos",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 105,
+    "ITEM": 118,
     "ETAPA": "Projeto",
     "LINK": "DOC_0030",
     "STATUS": "Elaboração de Projeto",
@@ -1362,11 +1999,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de barreiras rodoviárias"
+    "SERVICO": "Reforma de barreiras rodoviárias",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 106,
+    "ITEM": 119,
     "ETAPA": "Projeto",
     "LINK": "DOC_0031",
     "STATUS": "Planejamento",
@@ -1375,11 +2016,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 107,
+    "ITEM": 120,
     "ETAPA": "Obra",
     "LINK": "DOC_0033",
     "STATUS": "Obra em Retomada",
@@ -1388,11 +2033,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 108,
+    "ITEM": 121,
     "ETAPA": "Obra",
     "LINK": "DOC_0034",
     "STATUS": "Obra em andamento",
@@ -1401,11 +2050,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 109,
+    "ITEM": 122,
     "ETAPA": "Projeto",
     "LINK": "DOC_0036",
     "STATUS": "Elaboração de Projeto",
@@ -1414,11 +2067,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de barreiras rodoviárias"
+    "SERVICO": "Reforma de barreiras rodoviárias",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 110,
+    "ITEM": 123,
     "ETAPA": "Obra",
     "LINK": "DOC_0037",
     "STATUS": "Obra em andamento",
@@ -1427,11 +2084,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 111,
+    "ITEM": 124,
     "ETAPA": "Projeto",
     "LINK": "DOC_0040",
     "STATUS": "Planejamento",
@@ -1440,11 +2101,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 112,
+    "ITEM": 125,
     "ETAPA": "Projeto",
     "LINK": "DOC_0041",
     "STATUS": "Planejamento",
@@ -1453,11 +2118,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reestruturação do Cavalhódromo (contratação da demolição da antiga Arena, para viabilizar nova construção)"
+    "SERVICO": "Reestruturação do Cavalhódromo (contratação da demolição da antiga Arena, para viabilizar nova construção)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 113,
+    "ITEM": 126,
     "ETAPA": "Projeto",
     "LINK": "DOC_0041",
     "STATUS": "Planejamento",
@@ -1466,11 +2135,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Restauração Largo da Matriz"
+    "SERVICO": "Restauração Largo da Matriz",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 114,
+    "ITEM": 127,
     "ETAPA": "Obra",
     "LINK": "DOC_0041",
     "STATUS": "Em Contratação de Obra",
@@ -1479,11 +2152,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de barreiras rodoviárias"
+    "SERVICO": "Reforma de barreiras rodoviárias",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 115,
+    "ITEM": 128,
     "ETAPA": "Obra",
     "LINK": "DOC_0042",
     "STATUS": "Obra em andamento",
@@ -1492,11 +2169,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 116,
+    "ITEM": 129,
     "ETAPA": "Projeto",
     "LINK": "DOC_0043",
     "STATUS": "Planejamento",
@@ -1505,11 +2186,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma Capela Nossa Senhora d'Abadia (Igreja mãe)"
+    "SERVICO": "Reforma Capela Nossa Senhora d'Abadia (Igreja mãe)",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 117,
+    "ITEM": 130,
     "ETAPA": "Projeto",
     "LINK": "DOC_0043",
     "STATUS": "Planejamento",
@@ -1518,11 +2203,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma Capela"
+    "SERVICO": "Reforma Capela",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 118,
+    "ITEM": 131,
     "ETAPA": "Obra",
     "LINK": "DOC_0044",
     "STATUS": "Obra Concluída",
@@ -1531,11 +2220,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e Adequação Ginásio de Esportes Heráclito Fernandes"
+    "SERVICO": "Reforma e Adequação Ginásio de Esportes Heráclito Fernandes",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 119,
+    "ITEM": 132,
     "ETAPA": "Obra",
     "LINK": "DOC_0046",
     "STATUS": "Em Contratação de Obra",
@@ -1544,11 +2237,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de barreiras rodoviárias"
+    "SERVICO": "Reforma de barreiras rodoviárias",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 120,
+    "ITEM": 133,
     "ETAPA": "Projeto",
     "LINK": "DOC_0047",
     "STATUS": "Planejamento",
@@ -1557,11 +2254,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 121,
+    "ITEM": 134,
     "ETAPA": "Obra",
     "LINK": "DOC_0048",
     "STATUS": "Em Contratação de Obra",
@@ -1570,11 +2271,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 122,
+    "ITEM": 135,
     "ETAPA": "Obra",
     "LINK": "DOC_0049",
     "STATUS": "Em Contratação de Obra",
@@ -1583,11 +2288,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de barreiras rodoviárias"
+    "SERVICO": "Reforma de barreiras rodoviárias",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 123,
+    "ITEM": 136,
     "ETAPA": "Obra",
     "LINK": "DOC_0051",
     "STATUS": "Obra Concluída",
@@ -1596,11 +2305,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma e Adequação Ginásio de Esportes"
+    "SERVICO": "Reforma e Adequação Ginásio de Esportes",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 124,
+    "ITEM": 137,
     "ETAPA": "Obra",
     "LINK": "DOC_0052",
     "STATUS": "Obra em andamento",
@@ -1609,11 +2322,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 125,
+    "ITEM": 138,
     "ETAPA": "Projeto",
     "LINK": "DOC_0053",
     "STATUS": "Planejamento",
@@ -1622,11 +2339,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 126,
+    "ITEM": 139,
     "ETAPA": "Projeto",
     "LINK": "DOC_0054",
     "STATUS": "Planejamento",
@@ -1635,11 +2356,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma do Ginásio"
+    "SERVICO": "Reforma do Ginásio",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 127,
+    "ITEM": 140,
     "ETAPA": "Obra",
     "LINK": "DOC_0055",
     "STATUS": "Obra em andamento",
@@ -1648,11 +2373,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Hospital Estadual Walda Ferreira dos Santos"
+    "SERVICO": "Hospital Estadual Walda Ferreira dos Santos",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 128,
+    "ITEM": 141,
     "ETAPA": "Obra",
     "LINK": "DOC_0056",
     "STATUS": "Obra em andamento",
@@ -1661,11 +2390,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Conclusão da reforma do Aeródromo"
+    "SERVICO": "Conclusão da reforma do Aeródromo",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 129,
+    "ITEM": 142,
     "ETAPA": "Obra",
     "LINK": "DOC_0056",
     "STATUS": "Em Contratação de Obra",
@@ -1674,11 +2407,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma de barreiras rodoviárias"
+    "SERVICO": "Reforma de barreiras rodoviárias",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 130,
+    "ITEM": 143,
     "ETAPA": "Obra",
     "LINK": "DOC_0057",
     "STATUS": "Em Contratação de Obra",
@@ -1687,11 +2424,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOC",
     "TIPO": "REFORMA",
-    "SERVICO": "Reforma Terminal Rodoviário"
+    "SERVICO": "Reforma Terminal Rodoviário",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 131,
+    "ITEM": 144,
     "ETAPA": "Projeto",
     "LINK": "DMA_DRE_0001",
     "STATUS": "Licitação de Projeto",
@@ -1700,11 +2441,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 132,
+    "ITEM": 145,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0002",
     "STATUS": "Planejamento",
@@ -1713,11 +2458,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 133,
+    "ITEM": 146,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0003",
     "STATUS": "Planejamento",
@@ -1726,11 +2475,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 134,
+    "ITEM": 147,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0004",
     "STATUS": "Planejamento",
@@ -1739,11 +2492,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 135,
+    "ITEM": 148,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0005",
     "STATUS": "Planejamento",
@@ -1752,11 +2509,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 136,
+    "ITEM": 149,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0006",
     "STATUS": "Planejamento",
@@ -1765,11 +2526,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 137,
+    "ITEM": 150,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0007",
     "STATUS": "Planejamento",
@@ -1778,11 +2543,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 138,
+    "ITEM": 151,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0008",
     "STATUS": "Planejamento",
@@ -1791,11 +2560,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 139,
+    "ITEM": 152,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0009",
     "STATUS": "Planejamento",
@@ -1804,11 +2577,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 140,
+    "ITEM": 153,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0010",
     "STATUS": "Planejamento",
@@ -1817,11 +2594,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 141,
+    "ITEM": 154,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0011",
     "STATUS": "Planejamento",
@@ -1830,11 +2611,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 142,
+    "ITEM": 155,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0012",
     "STATUS": "Planejamento",
@@ -1843,11 +2628,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 143,
+    "ITEM": 156,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0013",
     "STATUS": "Planejamento",
@@ -1856,11 +2645,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 144,
+    "ITEM": 157,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0014",
     "STATUS": "Planejamento",
@@ -1869,11 +2662,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 145,
+    "ITEM": 158,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0015",
     "STATUS": "Planejamento",
@@ -1882,11 +2679,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 146,
+    "ITEM": 159,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0016",
     "STATUS": "Planejamento",
@@ -1895,11 +2696,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 147,
+    "ITEM": 160,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0017",
     "STATUS": "Planejamento",
@@ -1908,11 +2713,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 148,
+    "ITEM": 161,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0018",
     "STATUS": "Planejamento",
@@ -1921,11 +2730,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 149,
+    "ITEM": 162,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0019",
     "STATUS": "Planejamento",
@@ -1934,11 +2747,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 150,
+    "ITEM": 163,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0020",
     "STATUS": "Planejamento",
@@ -1947,11 +2764,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 151,
+    "ITEM": 164,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0021",
     "STATUS": "Planejamento",
@@ -1960,11 +2781,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 152,
+    "ITEM": 165,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0022",
     "STATUS": "Planejamento",
@@ -1973,11 +2798,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 153,
+    "ITEM": 166,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0023",
     "STATUS": "Planejamento",
@@ -1986,11 +2815,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 154,
+    "ITEM": 167,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0024",
     "STATUS": "Planejamento",
@@ -1999,11 +2832,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 155,
+    "ITEM": 168,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0025",
     "STATUS": "Planejamento",
@@ -2012,11 +2849,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 156,
+    "ITEM": 169,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0026",
     "STATUS": "Planejamento",
@@ -2025,11 +2866,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 157,
+    "ITEM": 170,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0027",
     "STATUS": "Planejamento",
@@ -2038,11 +2883,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 158,
+    "ITEM": 171,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0028",
     "STATUS": "Planejamento",
@@ -2051,11 +2900,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 159,
+    "ITEM": 172,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0029",
     "STATUS": "Planejamento",
@@ -2064,11 +2917,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 160,
+    "ITEM": 173,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0030",
     "STATUS": "Planejamento",
@@ -2077,11 +2934,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 161,
+    "ITEM": 174,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0031",
     "STATUS": "Planejamento",
@@ -2090,11 +2951,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 162,
+    "ITEM": 175,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0032",
     "STATUS": "Planejamento",
@@ -2103,11 +2968,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 163,
+    "ITEM": 176,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0033",
     "STATUS": "Planejamento",
@@ -2116,11 +2985,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 164,
+    "ITEM": 177,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0034",
     "STATUS": "Planejamento",
@@ -2129,11 +3002,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 165,
+    "ITEM": 178,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0035",
     "STATUS": "Planejamento",
@@ -2142,11 +3019,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 166,
+    "ITEM": 179,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0036",
     "STATUS": "Planejamento",
@@ -2155,11 +3036,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 167,
+    "ITEM": 180,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0037",
     "STATUS": "Planejamento",
@@ -2168,11 +3053,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 168,
+    "ITEM": 181,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0038",
     "STATUS": "Planejamento",
@@ -2181,11 +3070,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 169,
+    "ITEM": 182,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0039",
     "STATUS": "Planejamento",
@@ -2194,11 +3087,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 170,
+    "ITEM": 183,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0040",
     "STATUS": "Planejamento",
@@ -2207,11 +3104,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 171,
+    "ITEM": 184,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0041",
     "STATUS": "Planejamento",
@@ -2220,11 +3121,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 172,
+    "ITEM": 185,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0042",
     "STATUS": "Planejamento",
@@ -2233,11 +3138,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 173,
+    "ITEM": 186,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0043",
     "STATUS": "Planejamento",
@@ -2246,11 +3155,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 174,
+    "ITEM": 187,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0044",
     "STATUS": "Planejamento",
@@ -2259,11 +3172,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 175,
+    "ITEM": 188,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0045",
     "STATUS": "Planejamento",
@@ -2272,11 +3189,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 176,
+    "ITEM": 189,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0046",
     "STATUS": "Planejamento",
@@ -2285,11 +3206,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 177,
+    "ITEM": 190,
     "ETAPA": "Obra",
     "LINK": "DMA_DRE_0047",
     "STATUS": "Obra em andamento",
@@ -2298,11 +3223,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 178,
+    "ITEM": 191,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0048",
     "STATUS": "Planejamento",
@@ -2311,11 +3240,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 179,
+    "ITEM": 192,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0049",
     "STATUS": "Planejamento",
@@ -2324,11 +3257,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 180,
+    "ITEM": 193,
     "ETAPA": "Planejamento",
     "LINK": "DMA_DRE_0050",
     "STATUS": "Planejamento",
@@ -2337,11 +3274,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 181,
+    "ITEM": 194,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0001",
     "STATUS": "Obra Concluída",
@@ -2350,11 +3291,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção / Acesso",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 182,
+    "ITEM": 195,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0002",
     "STATUS": "Obra Concluída",
@@ -2363,11 +3308,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção / Acesso",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 183,
+    "ITEM": 196,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0003",
     "STATUS": "Em Contratação de Obra",
@@ -2376,11 +3325,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção / Acesso",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 184,
+    "ITEM": 197,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0004",
     "STATUS": "Em Contratação de Obra",
@@ -2389,11 +3342,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção / Acesso",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 185,
+    "ITEM": 198,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0005",
     "STATUS": "Em Contratação de Obra",
@@ -2402,11 +3359,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 186,
+    "ITEM": 199,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0006",
     "STATUS": "Em Contratação de Obra",
@@ -2415,11 +3376,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 187,
+    "ITEM": 200,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0007",
     "STATUS": "Em Contratação de Obra",
@@ -2428,11 +3393,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 188,
+    "ITEM": 201,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0008",
     "STATUS": "Em Contratação de Obra",
@@ -2441,11 +3410,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 189,
+    "ITEM": 202,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0009",
     "STATUS": "Em Contratação de Obra",
@@ -2454,11 +3427,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 190,
+    "ITEM": 203,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0010",
     "STATUS": "Em Contratação de Obra",
@@ -2467,11 +3444,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 191,
+    "ITEM": 204,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0011",
     "STATUS": "Em Contratação de Obra",
@@ -2480,11 +3461,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 192,
+    "ITEM": 205,
     "ETAPA": "Obra",
     "LINK": "DMA_INTER_ACES_0012",
     "STATUS": "Em Contratação de Obra",
@@ -2493,11 +3478,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 193,
+    "ITEM": 206,
     "ETAPA": "Planejamento",
     "LINK": "DMA_INTER_ACES_0013",
     "STATUS": "Planejamento",
@@ -2506,11 +3495,15 @@
     "CONTRATO": null,
     "ORIGEM": "DMA",
     "TIPO": "Interseção / Acesso",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 194,
+    "ITEM": 207,
     "ETAPA": "Obra",
     "LINK": "DMA_OAE_0001",
     "STATUS": "Obra em andamento",
@@ -2519,11 +3512,15 @@
     "CONTRATO": "042/2025",
     "ORIGEM": "DMA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 195,
+    "ITEM": 208,
     "ETAPA": "Obra",
     "LINK": "DMA_OAE_0002",
     "STATUS": "Obra em andamento",
@@ -2532,11 +3529,15 @@
     "CONTRATO": "043/2025",
     "ORIGEM": "DMA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 196,
+    "ITEM": 209,
     "ETAPA": "Obra",
     "LINK": "DMA_OAE_0003",
     "STATUS": "Obra em andamento",
@@ -2545,11 +3546,15 @@
     "CONTRATO": "043/2025",
     "ORIGEM": "DMA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 197,
+    "ITEM": 210,
     "ETAPA": "Obra",
     "LINK": "DMA_OAE_0004",
     "STATUS": "Obra em andamento",
@@ -2558,11 +3563,15 @@
     "CONTRATO": "043/2025",
     "ORIGEM": "DMA",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 198,
+    "ITEM": 211,
     "ETAPA": "Planejamento",
     "LINK": "DPL_DRE_0001",
     "STATUS": "Planejamento",
@@ -2571,11 +3580,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 199,
+    "ITEM": 212,
     "ETAPA": "Planejamento",
     "LINK": "DPL_DRE_0002",
     "STATUS": "Planejamento",
@@ -2584,11 +3597,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "Drenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 200,
+    "ITEM": 213,
     "ETAPA": "Planejamento",
     "LINK": "DPL_INTER_ACES_0001",
     "STATUS": "Planejamento",
@@ -2597,11 +3614,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "Interseção / Acesso",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 201,
+    "ITEM": 214,
     "ETAPA": "Planejamento",
     "LINK": "DPL_INTER_ACES_0002",
     "STATUS": "Planejamento",
@@ -2610,11 +3631,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "Interseção / Acesso",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 202,
+    "ITEM": 215,
     "ETAPA": "Planejamento",
     "LINK": "DPL_OAE_0001",
     "STATUS": "Planejamento",
@@ -2623,11 +3648,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 203,
+    "ITEM": 216,
     "ETAPA": "Planejamento",
     "LINK": "DPL_OAE_0002",
     "STATUS": "Planejamento",
@@ -2636,11 +3665,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 204,
+    "ITEM": 217,
     "ETAPA": "Planejamento",
     "LINK": "DPL_OAE_0003",
     "STATUS": "Planejamento",
@@ -2649,11 +3682,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 205,
+    "ITEM": 218,
     "ETAPA": "Planejamento",
     "LINK": "DPL_OAE_0004",
     "STATUS": "Planejamento",
@@ -2662,11 +3699,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 206,
+    "ITEM": 219,
     "ETAPA": "Planejamento",
     "LINK": "DPL_OAE_0005",
     "STATUS": "Concepção preliminar",
@@ -2675,11 +3716,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 207,
+    "ITEM": 220,
     "ETAPA": "Planejamento",
     "LINK": "DPL_OAE_0006",
     "STATUS": "Planejamento",
@@ -2688,11 +3733,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 208,
+    "ITEM": 221,
     "ETAPA": "Planejamento",
     "LINK": "DPL_OAE_0007",
     "STATUS": "Planejamento",
@@ -2701,11 +3750,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 209,
+    "ITEM": 222,
     "ETAPA": "Planejamento",
     "LINK": "DPL_OAE_0008",
     "STATUS": "Planejamento",
@@ -2714,11 +3767,15 @@
     "CONTRATO": "CV - 044/2025",
     "ORIGEM": "DPL",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 210,
+    "ITEM": 223,
     "ETAPA": "Planejamento",
     "LINK": "DPL_OAE_0009",
     "STATUS": "Planejamento",
@@ -2727,11 +3784,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPL",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 211,
+    "ITEM": 224,
     "ETAPA": "Projeto",
     "LINK": "DPJ_AMP_0001",
     "STATUS": "Elaboração Anteprojeto",
@@ -2740,11 +3801,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "Ampliação de Capacidade",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 212,
+    "ITEM": 225,
     "ETAPA": "Projeto",
     "LINK": "DPJ_AMP_0002",
     "STATUS": "Elaboração Anteprojeto",
@@ -2753,11 +3818,15 @@
     "CONTRATO": "TD-12/2025",
     "ORIGEM": "DPJ",
     "TIPO": "Ampliação de Capacidade",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 213,
+    "ITEM": 226,
     "ETAPA": "Projeto",
     "LINK": "DPJ_AMP_0003",
     "STATUS": "Elaboração de Projeto",
@@ -2766,11 +3835,15 @@
     "CONTRATO": "TD-60/2025",
     "ORIGEM": "DPJ",
     "TIPO": "Ampliação de Capacidade",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 214,
+    "ITEM": 227,
     "ETAPA": "Projeto",
     "LINK": "DPJ_AMP_0003",
     "STATUS": "Elaboração de Projeto",
@@ -2779,11 +3852,15 @@
     "CONTRATO": "CV-16/2025",
     "ORIGEM": "DPJ",
     "TIPO": "Ampliação de Capacidade",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 215,
+    "ITEM": 228,
     "ETAPA": "Projeto",
     "LINK": "DPJ_TERR_0001",
     "STATUS": "Elaboração de Projeto",
@@ -2792,11 +3869,15 @@
     "CONTRATO": "115/2025",
     "ORIGEM": "DPJ",
     "TIPO": "Serviços de Terraplenagem",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 216,
+    "ITEM": 229,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0001",
     "STATUS": "Elaboração de Projeto",
@@ -2805,11 +3886,15 @@
     "CONTRATO": "097/2023",
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 217,
+    "ITEM": 230,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0002",
     "STATUS": "Elaboração de Projeto",
@@ -2818,11 +3903,15 @@
     "CONTRATO": "151/2021 - Rescindido",
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 218,
+    "ITEM": 231,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0003",
     "STATUS": "Elaboração de Projeto",
@@ -2831,11 +3920,15 @@
     "CONTRATO": "151/2021 - Rescindido",
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 219,
+    "ITEM": 232,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0004",
     "STATUS": "Elaboração de Projeto",
@@ -2844,11 +3937,15 @@
     "CONTRATO": "151/2021 - Rescindido",
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 220,
+    "ITEM": 233,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0005",
     "STATUS": "Licitação de Projeto",
@@ -2857,11 +3954,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 221,
+    "ITEM": 234,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0006",
     "STATUS": "Licitação de Projeto",
@@ -2870,11 +3971,15 @@
     "CONTRATO": "155/2021",
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 222,
+    "ITEM": 235,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0007",
     "STATUS": "Elaboração Anteprojeto",
@@ -2883,11 +3988,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 223,
+    "ITEM": 236,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0008",
     "STATUS": "Elaboração Anteprojeto",
@@ -2896,11 +4005,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 224,
+    "ITEM": 237,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0009",
     "STATUS": "Elaboração Anteprojeto",
@@ -2909,11 +4022,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 225,
+    "ITEM": 238,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0010",
     "STATUS": "Elaboração Anteprojeto",
@@ -2922,11 +4039,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 226,
+    "ITEM": 239,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0011",
     "STATUS": "Elaboração Anteprojeto",
@@ -2935,11 +4056,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 227,
+    "ITEM": 240,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0012",
     "STATUS": "Elaboração Anteprojeto",
@@ -2948,11 +4073,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 228,
+    "ITEM": 241,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0013",
     "STATUS": "Elaboração Anteprojeto",
@@ -2961,11 +4090,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 229,
+    "ITEM": 242,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0014",
     "STATUS": "Licitação de Projeto",
@@ -2974,11 +4107,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 230,
+    "ITEM": 243,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0015",
     "STATUS": "Licitação de Projeto",
@@ -2987,11 +4124,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 231,
+    "ITEM": 244,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0016",
     "STATUS": "Licitação de Projeto",
@@ -3000,11 +4141,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 232,
+    "ITEM": 245,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0017",
     "STATUS": "Elaboração de Projeto",
@@ -3013,11 +4158,15 @@
     "CONTRATO": "51/2023 - Em Rescisão",
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 233,
+    "ITEM": 246,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0018",
     "STATUS": "Elaboração de Projeto",
@@ -3026,11 +4175,15 @@
     "CONTRATO": "51/2023 - Em Rescisão",
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 234,
+    "ITEM": 247,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0019",
     "STATUS": "Elaboração de Projeto",
@@ -3039,11 +4192,15 @@
     "CONTRATO": "51/2023 - Em Rescisão",
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 235,
+    "ITEM": 248,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0020",
     "STATUS": "Licitação de Projeto",
@@ -3052,11 +4209,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 236,
+    "ITEM": 249,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0021",
     "STATUS": "Licitação de Projeto",
@@ -3065,11 +4226,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 237,
+    "ITEM": 250,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0022",
     "STATUS": "Licitação de Projeto",
@@ -3078,11 +4243,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 238,
+    "ITEM": 251,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0023",
     "STATUS": "Licitação de Projeto",
@@ -3091,11 +4260,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 239,
+    "ITEM": 252,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0024",
     "STATUS": "Licitação de Projeto",
@@ -3104,11 +4277,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 240,
+    "ITEM": 253,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0025",
     "STATUS": "Licitação de Projeto",
@@ -3117,11 +4294,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 241,
+    "ITEM": 254,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0026",
     "STATUS": "Licitação de Projeto",
@@ -3130,11 +4311,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 242,
+    "ITEM": 255,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0027",
     "STATUS": "Licitação de Projeto",
@@ -3143,11 +4328,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 243,
+    "ITEM": 256,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0028",
     "STATUS": "Licitação de Projeto",
@@ -3156,11 +4345,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 244,
+    "ITEM": 257,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0029",
     "STATUS": "Licitação de Projeto",
@@ -3169,11 +4362,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 245,
+    "ITEM": 258,
     "ETAPA": "Projeto",
     "LINK": "DPJ_OAE_0030",
     "STATUS": "Elaboração de Projeto",
@@ -3182,11 +4379,15 @@
     "CONTRATO": null,
     "ORIGEM": "DPJ",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 246,
+    "ITEM": 259,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0002",
     "STATUS": "Obra em andamento",
@@ -3195,11 +4396,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "Ampliação de Capacidade",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 247,
+    "ITEM": 260,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0003",
     "STATUS": null,
@@ -3208,11 +4413,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "Duplicação",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 248,
+    "ITEM": 261,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0004",
     "STATUS": "Obra Concluída",
@@ -3221,11 +4430,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 249,
+    "ITEM": 262,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0005",
     "STATUS": "Obra em andamento",
@@ -3234,11 +4447,15 @@
     "CONTRATO": "062/2023",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 250,
+    "ITEM": 263,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0006",
     "STATUS": "Em Contratação de Obra",
@@ -3247,11 +4464,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 251,
+    "ITEM": 264,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0007",
     "STATUS": "Em Contratação de Obra",
@@ -3260,11 +4481,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 252,
+    "ITEM": 265,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0008",
     "STATUS": "Obra Concluída",
@@ -3273,11 +4498,15 @@
     "CONTRATO": "062/2023",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 253,
+    "ITEM": 266,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0009",
     "STATUS": "Em Contratação de Obra",
@@ -3286,11 +4515,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 254,
+    "ITEM": 267,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0010",
     "STATUS": "Em Contratação de Obra",
@@ -3299,11 +4532,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 255,
+    "ITEM": 268,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0011",
     "STATUS": "Em Contratação de Obra",
@@ -3312,11 +4549,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 256,
+    "ITEM": 269,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0012",
     "STATUS": "Em Contratação de Obra",
@@ -3325,11 +4566,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 257,
+    "ITEM": 270,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0013",
     "STATUS": "Em Contratação de Obra",
@@ -3338,11 +4583,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 258,
+    "ITEM": 271,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0014",
     "STATUS": "Em Contratação de Obra",
@@ -3351,11 +4600,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 259,
+    "ITEM": 272,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0015",
     "STATUS": "Em Contratação de Obra",
@@ -3364,11 +4617,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 260,
+    "ITEM": 273,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0016",
     "STATUS": "Em Contratação de Obra",
@@ -3377,11 +4634,15 @@
     "CONTRATO": "006/2022",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 261,
+    "ITEM": 274,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0017",
     "STATUS": "Obra em andamento",
@@ -3390,11 +4651,15 @@
     "CONTRATO": "006/2022",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 262,
+    "ITEM": 275,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0018",
     "STATUS": "Obra em andamento",
@@ -3403,11 +4668,15 @@
     "CONTRATO": "006/2022",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 263,
+    "ITEM": 276,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0019",
     "STATUS": "Obra em andamento",
@@ -3416,11 +4685,15 @@
     "CONTRATO": "006/2022",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 264,
+    "ITEM": 277,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0020",
     "STATUS": "Obra em andamento",
@@ -3429,11 +4702,15 @@
     "CONTRATO": "006/2022",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 265,
+    "ITEM": 278,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0021",
     "STATUS": "Em Contratação de Obra",
@@ -3442,11 +4719,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 266,
+    "ITEM": 279,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0023",
     "STATUS": "Obra em andamento",
@@ -3455,11 +4736,15 @@
     "CONTRATO": "097/2024",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 267,
+    "ITEM": 280,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0022",
     "STATUS": "Obra em andamento",
@@ -3468,11 +4753,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 268,
+    "ITEM": 281,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0024",
     "STATUS": "Obra em andamento",
@@ -3481,11 +4770,15 @@
     "CONTRATO": "082/2024",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 269,
+    "ITEM": 282,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0026",
     "STATUS": "Obra em andamento",
@@ -3494,11 +4787,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 270,
+    "ITEM": 283,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0025",
     "STATUS": "Obra em andamento",
@@ -3507,11 +4804,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 271,
+    "ITEM": 284,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0027",
     "STATUS": "Obra em andamento",
@@ -3520,11 +4821,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 272,
+    "ITEM": 285,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0028",
     "STATUS": "Obra em andamento",
@@ -3533,11 +4838,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 273,
+    "ITEM": 286,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0029",
     "STATUS": "Em Contratação de Obra",
@@ -3546,11 +4855,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 274,
+    "ITEM": 287,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0030",
     "STATUS": "Em Contratação de Obra",
@@ -3559,11 +4872,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 275,
+    "ITEM": 288,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0031",
     "STATUS": "Obra Concluída",
@@ -3572,11 +4889,15 @@
     "CONTRATO": "006/2022",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 276,
+    "ITEM": 289,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0032",
     "STATUS": "Obra Concluída",
@@ -3585,11 +4906,15 @@
     "CONTRATO": "097/2024",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 277,
+    "ITEM": 290,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0033",
     "STATUS": "Obra em andamento",
@@ -3598,11 +4923,15 @@
     "CONTRATO": "008/2025",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 278,
+    "ITEM": 291,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0034",
     "STATUS": "Obra em andamento",
@@ -3611,11 +4940,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 279,
+    "ITEM": 292,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0035",
     "STATUS": "Obra em andamento",
@@ -3624,11 +4957,15 @@
     "CONTRATO": "006/2022",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 280,
+    "ITEM": 293,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0036",
     "STATUS": "Obra Contratada",
@@ -3637,11 +4974,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 281,
+    "ITEM": 294,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0037",
     "STATUS": "Obra em andamento",
@@ -3650,11 +4991,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 282,
+    "ITEM": 295,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0038",
     "STATUS": "Obra em andamento",
@@ -3663,11 +5008,15 @@
     "CONTRATO": "008/2025",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 283,
+    "ITEM": 296,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0039",
     "STATUS": "Obra Concluída",
@@ -3676,11 +5025,15 @@
     "CONTRATO": "008/2025",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 284,
+    "ITEM": 297,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0040",
     "STATUS": "Obra em andamento",
@@ -3689,11 +5042,15 @@
     "CONTRATO": "079/2024",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 285,
+    "ITEM": 298,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0041",
     "STATUS": "Obra em andamento",
@@ -3702,11 +5059,15 @@
     "CONTRATO": "062/2023",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 286,
+    "ITEM": 299,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0042",
     "STATUS": "Obra Concluída",
@@ -3715,11 +5076,15 @@
     "CONTRATO": "097/2024",
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 287,
+    "ITEM": 300,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0043",
     "STATUS": "Em Contratação de Obra",
@@ -3728,11 +5093,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 288,
+    "ITEM": 301,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0044",
     "STATUS": "Em Contratação de Obra",
@@ -3741,11 +5110,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 289,
+    "ITEM": 302,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0045",
     "STATUS": "Em Contratação de Obra",
@@ -3754,11 +5127,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 290,
+    "ITEM": 303,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0046",
     "STATUS": "Em Contratação de Obra",
@@ -3767,11 +5144,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "OAE",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 291,
+    "ITEM": 304,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0047",
     "STATUS": "Obra em andamento",
@@ -3780,11 +5161,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "Pavimentação",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 292,
+    "ITEM": 305,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0048",
     "STATUS": "Obra em andamento",
@@ -3793,11 +5178,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "Pavimentação",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 293,
+    "ITEM": 306,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0049",
     "STATUS": "Em Contratação de Obra",
@@ -3806,11 +5195,15 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "Pavimentação",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   },
   {
     "PROPOSTA": 0,
-    "ITEM": 294,
+    "ITEM": 307,
     "ETAPA": "Obra",
     "LINK": "DOR_PT_0050",
     "STATUS": null,
@@ -3819,6 +5212,10 @@
     "CONTRATO": null,
     "ORIGEM": "DOR",
     "TIPO": "Restauração",
-    "SERVICO": null
+    "SERVICO": null,
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONTRATO_1": null,
+    "PROCESSO_SEI_CONTRATACAO": null
   }
 ]

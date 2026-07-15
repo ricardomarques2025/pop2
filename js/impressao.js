@@ -1,4 +1,4 @@
-﻿// Funcoes e eventos do modo de impressao/PDF.
+// Funcoes e eventos do modo de impressao/PDF.
 // Depende das variaveis e funcoes globais carregadas por js/mapa.js.
 
 // ===== IMPRESSAO / PDF =====
@@ -272,32 +272,41 @@
       return escapeHtml(valor === null || valor === undefined ? '' : valor);
     }
 
-    function linhaTabela(dados, feature, campoIdentificador) {
+    function linhaTabela(dados, feature, campoIdentificador, camposExtras) {
       var p = feature.properties || {};
-      return '<tr>' +
+      var html = '<tr>' +
         '<td>' + valorTabela(dados[campoIdentificador || 'PROPOSTA']) + '</td>' +
         '<td>' + valorTabela(p.RODOVIA || p.rodovia) + '</td>' +
-        '<td>' + valorTabela(p.TRECHO || p.trecho_go) + '</td>' +
-        '<td>' + valorTabela(p.EXT_KM || p.ext) + '</td>' +
+        '<td>' + valorTabela(valorTrechoFeature(feature)) + '</td>' +
+        '<td>' + valorTabela(valorExtensaoKmFeature(feature)) + '</td>' +
         '<td>' + valorTabela(dados.SERVICO) + '</td>' +
         '<td>' + valorTabela(dados.ETAPA) + '</td>' +
         '<td>' + valorTabela(dados.STATUS) + '</td>' +
         '<td>' + valorTabela(dados.SEI) + '</td>' +
-        '<td>' + valorTabela(dados.CONCLUSAO) + '</td>' +
-      '</tr>';
-    }
+        '<td>' + valorTabela(dados.CONCLUSAO) + '</td>';
 
-    function blocoTabela(titulo, linhas, rotuloIdentificador) {
+      camposExtras = camposExtras || [];
+      for (var i = 0; i < camposExtras.length; i++) {
+        html += '<td>' + valorTabela(dados[camposExtras[i]]) + '</td>';
+      }
+
+      return html + '</tr>';
+    }
+    function blocoTabela(titulo, linhas, rotuloIdentificador, rotulosExtras) {
       if (!linhas.length) return '';
+      var extras = '';
+      rotulosExtras = rotulosExtras || [];
+      for (var i = 0; i < rotulosExtras.length; i++) {
+        extras += '<th>' + escapeHtml(rotulosExtras[i]) + '</th>';
+      }
       return '<div class="bloco-servico">' +
         '<div class="titulo-servico">' + escapeHtml(titulo) + '</div>' +
         '<table class="tabela-servico">' +
-          '<tr><th>' + escapeHtml(rotuloIdentificador || 'Proposta') + '</th><th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th></tr>' +
+          '<tr><th>' + escapeHtml(rotuloIdentificador || 'Proposta') + '</th><th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th>' + extras + '</tr>' +
           linhas.join('') +
         '</table>' +
       '</div>';
     }
-
     function compararCampo(campo) {
       return function(a, b) {
         var valorA = a && a[campo];
@@ -401,7 +410,7 @@
     linhasDpj.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
 
     destino.innerHTML =
-      blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature, 'PROPOSTA'); }), 'Proposta') +
+      blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature, 'PROPOSTA', ['MODALIDADE', 'EMPRESA', 'CONTRATO', 'PROCESSO_SEI_CONTRATACAO']); }), 'Proposta', ['Modalidade', 'Empresa', 'Contrato', 'Processo SEI Contratação']) +
       blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
       blocoTabela('Dados DMA', linhasDma.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
       blocoTabela('Dados DPL', linhasDpl.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +

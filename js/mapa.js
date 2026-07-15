@@ -410,6 +410,7 @@ map.addControl(new LogoMapaControl());
   var localidadesData = null;
   var areasUrbanasData = null;
   var sreBaseData = null;
+  var sreBaseCoincidenciasIndex = null;
   var sreData = null;
   var obrasPontosData = null;
   var aeroData = null;
@@ -2291,9 +2292,20 @@ map.addControl(new LogoMapaControl());
 
 
   function valorSeguro(obj, campo) {
-    if (!obj || !obj.properties) return '';
-    if (obj.properties[campo] === null || obj.properties[campo] === undefined) return '';
-    return typeof obj.properties[campo] === 'string' ? obj.properties[campo].trim() : obj.properties[campo];
+    if (obj == null || obj.properties == null) return '';
+    var valor = obj.properties[campo];
+    if (valor === null || valor === undefined) {
+      var campoNormalizado = String(campo).toLowerCase();
+      var chaves = Object.keys(obj.properties);
+      for (var i = 0; i < chaves.length; i++) {
+        if (String(chaves[i]).toLowerCase() === campoNormalizado) {
+          valor = obj.properties[chaves[i]];
+          break;
+        }
+      }
+    }
+    if (valor === null || valor === undefined) return '';
+    return typeof valor === 'string' ? valor.trim() : valor;
   }
 
   function featureComOrigemServico(feature, origem) {
@@ -2421,6 +2433,127 @@ map.addControl(new LogoMapaControl());
       ''
     );
   }
+  function valorTrechoFeature(feature) {
+    return (
+      valorSeguro(feature, 'trecho') ||
+      valorSeguro(feature, 'trecho_go') ||
+      valorSeguro(feature, 'TRECHO_GO') ||
+      ''
+    );
+  }
+
+  function valorExtensaoKmFeature(feature) {
+    return (
+      valorSeguro(feature, 'EXT_KM') ||
+      valorSeguro(feature, 'ext_km') ||
+      valorSeguro(feature, 'ext') ||
+      valorSeguro(feature, 'EXTENSAO') ||
+      valorSeguro(feature, 'Extensao') ||
+      ''
+    );
+  }
+  function numeroRodoviaParaOrdenacao(rodovia) {
+    var match = String(rodovia || '').match(/\d+/);
+    if (!match) return Infinity;
+    var numero = Number(match[0]);
+    return isFinite(numero) ? numero : Infinity;
+  }
+
+  function compararRodoviasPorMenorValor(a, b) {
+    var numA = numeroRodoviaParaOrdenacao(a);
+    var numB = numeroRodoviaParaOrdenacao(b);
+    if (numA !== numB) return numA - numB;
+    return String(a || '').localeCompare(String(b || ''), 'pt-BR');
+  }
+
+  function tokenCoordenadaSRE(coord) {
+    if (!coord || coord.length < 2) return '';
+    return Number(coord[0]).toFixed(7) + ',' + Number(coord[1]).toFixed(7);
+  }
+
+  function atualizarHashSRE(hash, texto) {
+    for (var i = 0; i < texto.length; i++) {
+      hash = ((hash << 5) - hash + texto.charCodeAt(i)) | 0;
+    }
+    return hash;
+  }
+
+  function chaveLinhaSRE(coords) {
+    if (!coords || coords.length < 2) return '';
+    var primeiro = tokenCoordenadaSRE(coords[0]);
+    var ultimo = tokenCoordenadaSRE(coords[coords.length - 1]);
+    var reverso = ultimo < primeiro;
+    var hash = 0;
+    for (var i = 0; i < coords.length; i++) {
+      var indice = reverso ? coords.length - 1 - i : i;
+      hash = atualizarHashSRE(hash, tokenCoordenadaSRE(coords[indice]) + '|');
+    }
+    return coords.length + ':' + (hash >>> 0).toString(36);
+  }
+
+  function chaveGeometriaSRE(feature) {
+    if (!feature) return '';
+    if (feature.__chaveGeometriaSRE !== undefined) return feature.__chaveGeometriaSRE;
+    var geometry = feature.geometry;
+    var chaveFinal = '';
+    if (geometry && geometry.coordinates) {
+      if (geometry.type === 'LineString') {
+        chaveFinal = chaveLinhaSRE(geometry.coordinates);
+      } else if (geometry.type === 'MultiLineString') {
+        var partes = [];
+        for (var i = 0; i < geometry.coordinates.length; i++) {
+          var chave = chaveLinhaSRE(geometry.coordinates[i]);
+          if (chave) partes.push(chave);
+        }
+        chaveFinal = partes.sort().join('||');
+      }
+    }
+    feature.__chaveGeometriaSRE = chaveFinal;
+    return chaveFinal;
+  }
+
+  function construirIndiceSREBaseCoincidencias() {
+    sreBaseCoincidenciasIndex = {};
+    if (!sreBaseData || !sreBaseData.features) return;
+
+    for (var i = 0; i < sreBaseData.features.length; i++) {
+      var feature = sreBaseData.features[i];
+      var chave = chaveGeometriaSRE(feature);
+      if (!chave) continue;
+      if (!sreBaseCoincidenciasIndex[chave]) sreBaseCoincidenciasIndex[chave] = [];
+      var rodovia = nomeRodoviaFeature(feature);
+      var sre = nomeSREFeature(feature);
+      if (!rodovia && !sre) continue;
+      sreBaseCoincidenciasIndex[chave].push({ feature: feature, rodovia: rodovia, sre: sre });
+    }
+
+    Object.keys(sreBaseCoincidenciasIndex).forEach(function(chave) {
+      sreBaseCoincidenciasIndex[chave].sort(function(a, b) {
+        return compararRodoviasPorMenorValor(a.rodovia, b.rodovia) ||
+          String(a.sre || '').localeCompare(String(b.sre || ''), 'pt-BR');
+      });
+    });
+  }
+
+  function featuresSRESobrepostas(feature) {
+    var chave = chaveGeometriaSRE(feature);
+    if (!chave) return [];
+    if (!sreBaseCoincidenciasIndex) construirIndiceSREBaseCoincidencias();
+    return sreBaseCoincidenciasIndex[chave] || [];
+  }
+
+  function featureRotuloMenorRodovia(features) {
+    var escolhida = null;
+    for (var i = 0; i < features.length; i++) {
+      var feature = features[i];
+      var rodovia = nomeRodoviaFeature(feature);
+      if (!rodovia) continue;
+      if (!escolhida || compararRodoviasPorMenorValor(rodovia, nomeRodoviaFeature(escolhida)) < 0) {
+        escolhida = feature;
+      }
+    }
+    return escolhida;
+  }
 
   function escapeHtml(str) {
     return String(str)
@@ -2432,8 +2565,21 @@ map.addControl(new LogoMapaControl());
   }
 
   function construirPopupRodoviaBase(feature) {
-    var p = feature.properties || {};
+    var coincidentes = featuresSRESobrepostas(feature);
+    var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
+    var sreSelecionado = document.getElementById('sreSelect').value;
+    var usarMenorRodoviaComoPrincipal = !rodoviaSelecionada && !sreSelecionado && coincidentes.length > 1;
+    var principal = usarMenorRodoviaComoPrincipal && coincidentes[0] && coincidentes[0].feature ? coincidentes[0].feature : feature;
+    var p = principal.properties || {};
     var html = '';
+    var srePrincipal = nomeSREFeature(principal);
+    var sresCoincidentes = coincidentes
+      .filter(function(item) {
+        return item.sre && item.sre !== srePrincipal;
+      })
+      .map(function(item) {
+        return item.sre;
+      });
 
     // Ordem específica dos campos
     var campos = [
@@ -2448,7 +2594,11 @@ map.addControl(new LogoMapaControl());
       var campo = campos[i];
       var valor = p[campo.chave];
       if (valor === null || valor === undefined || String(valor).trim() === '') continue;
-      html += '<b>' + escapeHtml(campo.rotulo) + ':</b> ' + escapeHtml(valor) + '<br>';
+      html += '<b>' + escapeHtml(campo.rotulo) + ':</b> ' + escapeHtml(valor);
+      if (campo.chave === 'sre' && sresCoincidentes.length) {
+        html += '<br><b>SREs coincidentes:</b> ' + escapeHtml(sresCoincidentes.join(', '));
+      }
+      html += '<br>';
     }
 
     if (!html) {
@@ -3597,7 +3747,7 @@ map.addControl(new LogoMapaControl());
         pane: 'sreBasePane',
         style: function() { return style; },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup(construirPopupRodoviaBase(feature));
+          layer.bindPopup(function() { return construirPopupRodoviaBase(feature); });
         }
       }));
     }
@@ -3621,7 +3771,7 @@ map.addControl(new LogoMapaControl());
           return { color:'#ffffff', weight:1, opacity:1 };
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup(construirPopupRodoviaBase(feature));
+          layer.bindPopup(function() { return construirPopupRodoviaBase(feature); });
         }
       }));
     }
@@ -3664,7 +3814,16 @@ map.addControl(new LogoMapaControl());
 
     var todosFeatures = [].concat(dup, eod, eop, pav, imp, len, pla);
 
+    var gruposRotulo = {};
     todosFeatures.forEach(function(feature) {
+      var chave = chaveGeometriaSRE(feature) || ('sem-chave-' + Object.keys(gruposRotulo).length);
+      if (!gruposRotulo[chave]) gruposRotulo[chave] = [];
+      gruposRotulo[chave].push(feature);
+    });
+
+    Object.keys(gruposRotulo).forEach(function(chave) {
+      var feature = featureRotuloMenorRodovia(gruposRotulo[chave]);
+      if (!feature) return;
       var rodovia = nomeRodoviaFeature(feature);
       if (!rodovia) return;
 
@@ -3674,7 +3833,7 @@ map.addControl(new LogoMapaControl());
       var ultimos3Digitos = numeroRodovia.slice(-3);
 
       // Obter o ponto médio da LineString para posicionar o label
-      var coords = feature.geometry.coordinates;
+      var coords = coordenadasLinhaPrincipal(feature.geometry);
       if (!coords || coords.length < 2) return;
 
       var midIndex = Math.floor(coords.length / 2);
@@ -4099,8 +4258,8 @@ map.addControl(new LogoMapaControl());
       var chave = [
         nomeSREFeature(feature),
         nomeRodoviaFeature(feature),
-        valorSeguro(feature, 'TRECHO') || valorSeguro(feature, 'trecho_go'),
-        valorSeguro(feature, 'EXT_KM')
+        valorTrechoFeature(feature),
+        valorExtensaoKmFeature(feature)
       ].join('|');
       if (vistos[chave]) continue;
       vistos[chave] = true;
@@ -4150,14 +4309,14 @@ map.addControl(new LogoMapaControl());
     var totalExtensao = 0;
     for (var f = 0; f < features.length; f++) {
       var p = features[f].properties || {};
-      var extensao = p.EXT_KM || '';
+      var extensao = valorExtensaoKmFeature(features[f]);
       var numeroExtensao = Number(String(extensao).replace(',', '.'));
       if (isFinite(numeroExtensao)) totalExtensao += numeroExtensao;
       html += `
             <tr>
               <td>${escapeHtml(p.sre || p.SRE || '')}</td>
               <td>${escapeHtml(p.RODOVIA || p.rodovia || '')}</td>
-              <td>${escapeHtml(p.TRECHO || p.trecho_go || '')}</td>
+              <td>${escapeHtml(valorTrechoFeature(features[f]))}</td>
               <td>${escapeHtml(extensao)} km</td>
             </tr>`;
     }
@@ -4322,8 +4481,8 @@ map.addControl(new LogoMapaControl());
       PROPOSTA_ITEM: valorItemExportacao(dados),
       RODOVIA: nomeRodoviaFeature(feature),
       SRE: nomeSREFeature(feature),
-      TRECHO: p.TRECHO || p.trecho || p.Trecho || p.trecho_go || '',
-      EXT_KM: p.EXT_KM || p.ext || p.Extensao || p.EXTENSAO || '',
+      TRECHO: valorTrechoFeature(feature),
+      EXT_KM: valorExtensaoKmFeature(feature),
       MUNICIPIO: p.NM_MUN || p.MUNICIPIO || '',
       REGIAO_PLANEJAMENTO: p.RG_PLAN || '',
       LINK: link
@@ -4910,8 +5069,8 @@ map.addControl(new LogoMapaControl());
       var html = '';
       html += '<b>SRE:</b> ' + escapeHtml(p.sre || p.SRE || '') + '<br>';
       html += '<b>Rodovia:</b> ' + escapeHtml(p.RODOVIA || p.rodovia || '') + '<br>';
-      html += '<b>Trecho:</b> ' + escapeHtml(p.TRECHO || p.trecho_go || '') + '<br>';
-      html += '<b>Extensão:</b> ' + escapeHtml(p.EXT_KM || '') + ' km<br>';
+      html += '<b>Trecho:</b> ' + escapeHtml(valorTrechoFeature(feature)) + '<br>';
+      html += '<b>Extensão:</b> ' + escapeHtml(valorExtensaoKmFeature(feature)) + ' km<br>';
 
       if (dadosFund) {
         html += '<br><b>— FUNDEINFRA —</b><br>';
@@ -4920,7 +5079,11 @@ map.addControl(new LogoMapaControl());
         html += '<b>Etapa:</b> ' + escapeHtml(dadosFund.ETAPA || '') + '<br>';
         html += '<b>Status:</b> ' + escapeHtml(dadosFund.STATUS || '') + '<br>';
         html += '<b>SEI:</b> ' + escapeHtml(dadosFund.SEI || '') + '<br>';
-        html += '<b>Conclusão:</b> ' + escapeHtml(dadosFund.CONCLUSAO || '');
+        html += '<b>Conclusão:</b> ' + escapeHtml(dadosFund.CONCLUSAO || '') + '<br>';
+        html += '<b>Modalidade:</b> ' + escapeHtml(dadosFund.MODALIDADE || '') + '<br>';
+        html += '<b>Empresa:</b> ' + escapeHtml(dadosFund.EMPRESA || '') + '<br>';
+        html += '<b>Contrato:</b> ' + escapeHtml(dadosFund.CONTRATO || '') + '<br>';
+        html += '<b>Processo SEI Contratação:</b> ' + escapeHtml(dadosFund.PROCESSO_SEI_CONTRATACAO || '');
       }
 
       if (dadosDorTodos.length) {
@@ -4932,7 +5095,7 @@ map.addControl(new LogoMapaControl());
             html += '<b>Registro ' + (i + 1) + '</b><br>';
           }
           html += '<b>Item:</b> ' + escapeHtml(dadosDor.ITEM || '') + '<br>';
-          html += '<b>Servico:</b> ' + escapeHtml(dadosDor.SERVICO || '') + '<br>';
+          html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dadosDor.SERVICO || '') + '<br>';
           html += '<b>Etapa:</b> ' + escapeHtml(dadosDor.ETAPA || '') + '<br>';
           html += '<b>Status:</b> ' + escapeHtml(dadosDor.STATUS || '') + '<br>';
           html += '<b>SEI:</b> ' + escapeHtml(dadosDor.SEI || '') + '<br>';
@@ -4950,7 +5113,7 @@ map.addControl(new LogoMapaControl());
             html += '<b>Registro ' + (d + 1) + '</b><br>';
           }
           html += '<b>Item:</b> ' + escapeHtml(dadosDma.ITEM || '') + '<br>';
-          html += '<b>Servico:</b> ' + escapeHtml(dadosDma.SERVICO || '') + '<br>';
+          html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dadosDma.SERVICO || '') + '<br>';
           html += '<b>Etapa:</b> ' + escapeHtml(dadosDma.ETAPA || '') + '<br>';
           html += '<b>Status:</b> ' + escapeHtml(dadosDma.STATUS || '') + '<br>';
           html += '<b>SEI:</b> ' + escapeHtml(dadosDma.SEI || '') + '<br>';
@@ -4968,7 +5131,7 @@ map.addControl(new LogoMapaControl());
             html += '<b>Registro ' + (p + 1) + '</b><br>';
           }
           html += '<b>Item:</b> ' + escapeHtml(dadosDpl.ITEM || '') + '<br>';
-          html += '<b>Servico:</b> ' + escapeHtml(dadosDpl.SERVICO || '') + '<br>';
+          html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dadosDpl.SERVICO || '') + '<br>';
           html += '<b>Etapa:</b> ' + escapeHtml(dadosDpl.ETAPA || '') + '<br>';
           html += '<b>Status:</b> ' + escapeHtml(dadosDpl.STATUS || '') + '<br>';
           html += '<b>SEI:</b> ' + escapeHtml(dadosDpl.SEI || '') + '<br>';
@@ -4986,7 +5149,7 @@ map.addControl(new LogoMapaControl());
             html += '<b>Registro ' + (j + 1) + '</b><br>';
           }
           html += '<b>Item:</b> ' + escapeHtml(dadosDpj.ITEM || '') + '<br>';
-          html += '<b>Servico:</b> ' + escapeHtml(dadosDpj.SERVICO || '') + '<br>';
+          html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dadosDpj.SERVICO || '') + '<br>';
           html += '<b>Etapa:</b> ' + escapeHtml(dadosDpj.ETAPA || '') + '<br>';
           html += '<b>Status:</b> ' + escapeHtml(dadosDpj.STATUS || '') + '<br>';
           html += '<b>SEI:</b> ' + escapeHtml(dadosDpj.SEI || '') + '<br>';
@@ -5593,10 +5756,10 @@ map.addControl(new LogoMapaControl());
     var dadosPopup = totalDados ? dadosTodos[0] : null;
     var html = '';
 
-    html += '<b>SRE:</b> ' + escapeHtml(p.SRE || '') + '<br>';
-    html += '<b>Rodovia:</b> ' + escapeHtml(p.RODOVIA || '') + '<br>';
-    html += '<b>Trecho:</b> ' + escapeHtml(p.Trecho || p.TRECHO || '') + '<br>';
-    html += '<b>Extensão:</b> ' + escapeHtml(p.EXT_M || '') + ' m';
+    html += '<b>SRE:</b> ' + escapeHtml(nomeSREFeature(feature)) + '<br>';
+    html += '<b>Rodovia:</b> ' + escapeHtml(nomeRodoviaFeature(feature)) + '<br>';
+    html += '<b>Trecho:</b> ' + escapeHtml(valorSeguro(feature, 'trecho')) + '<br>';
+    html += '<b>Extensão:</b> ' + escapeHtml(valorSeguro(feature, 'EXT_M')) + ' m';
 
     if (dadosPopup) {
       var dados = dadosPopup;
@@ -5608,7 +5771,11 @@ map.addControl(new LogoMapaControl());
       html += '<b>SEI:</b> ' + escapeHtml(dados.SEI || '') + '<br>';
       html += '<b>Conclusão:</b> ' + escapeHtml(dados.CONCLUSAO || '') + '<br>';
       html += '<b>Tipo:</b> ' + escapeHtml(dados.TIPO || '') + '<br>';
-      html += '<b>Serviço:</b> ' + escapeHtml(dados.SERVICO || '');
+      html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dados.SERVICO || '') + '<br>';
+      html += '<b>Modalidade:</b> ' + escapeHtml(dados.MODALIDADE || '') + '<br>';
+      html += '<b>Empresa:</b> ' + escapeHtml(dados.EMPRESA || '') + '<br>';
+      html += '<b>Contrato:</b> ' + escapeHtml(dados.CONTRATO || '') + '<br>';
+      html += '<b>Processo SEI Contrata&ccedil;&atilde;o:</b> ' + escapeHtml(dados.PROCESSO_SEI_CONTRATACAO || '');
     }
 
     if (totalDados > 1) {
@@ -5625,17 +5792,22 @@ map.addControl(new LogoMapaControl());
     var p = feature.properties || {};
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
     var dadosTodos = dadosObrasPontosFiltrados(feature, propostaSelecionada);
+    var srePonto = nomeSREFeature(feature);
+    var rodoviaPonto = nomeRodoviaFeature(feature);
+    var trechoPonto = valorSeguro(feature, 'trecho');
+    var extensaoPonto = valorSeguro(feature, 'EXT_M');
+    var linkPonto = valorSeguro(feature, 'LINK');
     var html = `
         <div class="bloco-servico">
           <div class="titulo-servico titulo-cinza">Dados do ponto</div>
           <table class="tabela-servico">
             <tr><th>SRE</th><th>Rodovia</th><th>Trecho</th><th>Extensão</th><th>Link</th></tr>
             <tr>
-              <td>${escapeHtml(p.SRE || '')}</td>
-              <td>${escapeHtml(p.RODOVIA || '')}</td>
-              <td>${escapeHtml(p.Trecho || p.TRECHO || '')}</td>
-              <td>${escapeHtml(p.EXT_M || '')} m</td>
-              <td>${escapeHtml(p.LINK || '')}</td>
+              <td>${escapeHtml(srePonto)}</td>
+              <td>${escapeHtml(rodoviaPonto)}</td>
+              <td>${escapeHtml(trechoPonto)}</td>
+              <td>${escapeHtml(extensaoPonto)} m</td>
+              <td>${escapeHtml(linkPonto)}</td>
             </tr>
           </table>
         </div>`;
@@ -5645,7 +5817,7 @@ map.addControl(new LogoMapaControl());
         <div class="bloco-servico">
           <div class="titulo-servico">Dados das obras pontuais</div>
           <table class="tabela-servico">
-            <tr><th>Origem</th><th>${escapeHtml(rotuloColunaIdentificadorObraPonto(dadosTodos))}</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Tipo</th><th>Serviço</th></tr>`;
+            <tr><th>Origem</th><th>${escapeHtml(rotuloColunaIdentificadorObraPonto(dadosTodos))}</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th><th>Tipo</th><th>Servi&ccedil;o</th><th>Modalidade</th><th>Empresa</th><th>Contrato</th><th>Processo SEI Contrata&ccedil;&atilde;o</th></tr>`;
     }
 
     for (var i = 0; i < dadosTodos.length; i++) {
@@ -5660,6 +5832,10 @@ map.addControl(new LogoMapaControl());
               <td>${escapeHtml(dados.CONCLUSAO || '')}</td>
               <td>${escapeHtml(dados.TIPO || '')}</td>
               <td>${escapeHtml(dados.SERVICO || '')}</td>
+              <td>${escapeHtml(dados.MODALIDADE || '')}</td>
+              <td>${escapeHtml(dados.EMPRESA || '')}</td>
+              <td>${escapeHtml(dados.CONTRATO || '')}</td>
+              <td>${escapeHtml(dados.PROCESSO_SEI_CONTRATACAO || '')}</td>
             </tr>`;
     }
 
@@ -6012,7 +6188,7 @@ map.addControl(new LogoMapaControl());
       var marker = L.marker([coords[1], coords[0]], {
         pane: 'oaePane',
         icon: criarIconeObraPonto(dados, dadosFiltrados.length),
-        title: (p.Trecho || p.TRECHO || '') + ' - ' + ((dados && dados.ETAPA) || '')
+        title: valorSeguro(feature, 'trecho') + ' - ' + ((dados && dados.ETAPA) || '')
       });
 
       marker.bindPopup(construirPopupObraPonto(feature));
@@ -6456,7 +6632,7 @@ map.addControl(new LogoMapaControl());
         <div class="bloco-servico">
           <div class="titulo-servico">Dados FUNDEINFRA</div>
           <table class="tabela-servico">
-            <tr><th>Proposta</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th></tr>
+            <tr><th>Proposta</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Modalidade</th><th>Empresa</th><th>Contrato</th><th>Processo SEI Contratação</th></tr>
             <tr>
               <td>${escapeHtml(dadosFund.PROPOSTA || '')}</td>
               <td>${escapeHtml(dadosFund.SERVICO || '')}</td>
@@ -6464,6 +6640,10 @@ map.addControl(new LogoMapaControl());
               <td>${escapeHtml(dadosFund.STATUS || '')}</td>
               <td>${escapeHtml(dadosFund.SEI || '')}</td>
               <td>${escapeHtml(dadosFund.CONCLUSAO || '')}</td>
+              <td>${escapeHtml(dadosFund.MODALIDADE || '')}</td>
+              <td>${escapeHtml(dadosFund.EMPRESA || '')}</td>
+              <td>${escapeHtml(dadosFund.CONTRATO || '')}</td>
+              <td>${escapeHtml(dadosFund.PROCESSO_SEI_CONTRATACAO || '')}</td>
             </tr>
           </table>
         </div>`;
@@ -6474,7 +6654,7 @@ map.addControl(new LogoMapaControl());
         <div class="bloco-servico">
           <div class="titulo-servico">Dados DOR</div>
           <table class="tabela-servico">
-            <tr><th>Item</th><th>Servico</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusao</th></tr>`;
+            <tr><th>Item</th><th>Servi&ccedil;o</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th></tr>`;
         for (var i = 0; i < dadosDorTodos.length; i++) {
           var dadosDor = dadosDorTodos[i];
           html += `
@@ -6497,7 +6677,7 @@ map.addControl(new LogoMapaControl());
         <div class="bloco-servico">
           <div class="titulo-servico">Dados DMA</div>
           <table class="tabela-servico">
-            <tr><th>Item</th><th>Servico</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusao</th></tr>`;
+            <tr><th>Item</th><th>Servi&ccedil;o</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th></tr>`;
         for (var d = 0; d < dadosDmaTodos.length; d++) {
           var dadosDma = dadosDmaTodos[d];
           html += `
@@ -6520,7 +6700,7 @@ map.addControl(new LogoMapaControl());
         <div class="bloco-servico">
           <div class="titulo-servico">Dados DPL</div>
           <table class="tabela-servico">
-            <tr><th>Item</th><th>Servico</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusao</th></tr>`;
+            <tr><th>Item</th><th>Servi&ccedil;o</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th></tr>`;
         for (var p = 0; p < dadosDplTodos.length; p++) {
           var dadosDpl = dadosDplTodos[p];
           html += `
@@ -6543,7 +6723,7 @@ map.addControl(new LogoMapaControl());
         <div class="bloco-servico">
           <div class="titulo-servico">Dados DPJ</div>
           <table class="tabela-servico">
-            <tr><th>Item</th><th>Servico</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusao</th></tr>`;
+            <tr><th>Item</th><th>Servi&ccedil;o</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th></tr>`;
         for (var j = 0; j < dadosDpjTodos.length; j++) {
           var dadosDpj = dadosDpjTodos[j];
           html += `
@@ -7485,6 +7665,7 @@ map.addControl(new LogoMapaControl());
     localidadesData = resultado[1];
     areasUrbanasData = resultado[2];
     sreBaseData = resultado[3];
+    construirIndiceSREBaseCoincidencias();
     sreData = resultado[4];
     obrasPontosData = resultado[5];
     oaeData = null;
