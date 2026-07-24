@@ -3,6 +3,7 @@
 // A logica que desenha e filtra as camadas fica em js/mapa.js.
 
 const MAPA_PANES = {
+  areasAmbientaisPane: 230,
   areasUrbanasPane: 240,
   municipiosPane: 250,
   snvPane: 260,
@@ -327,3 +328,4 @@ const REGRAS_ESTILO = [
   window.ROD_EST_INFO = ROD_EST_INFO;
   window.ROD_FED_INFO = ROD_FED_INFO;
   window.OBRAS_PONTOS_INFO = OBRAS_PONTOS_INFO;
+

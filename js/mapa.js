@@ -408,6 +408,7 @@ map.addControl(new LogoMapaControl());
 
   var municipiosData = null;
   var localidadesData = null;
+  var areasAmbientaisData = null;
   var areasUrbanasData = null;
   var sreBaseData = null;
   var sreBaseCoincidenciasIndex = null;
@@ -422,6 +423,7 @@ map.addControl(new LogoMapaControl());
   var estadosLayer = null;
   var municipiosLayer = null;
   var localidadesLayer = null;
+  var areasAmbientaisLayer = null;
   var areasUrbanasLayer = null;
   var sreBaseLayer = null;
   var sreBaseLabelLayer = null;
@@ -2015,6 +2017,7 @@ map.addControl(new LogoMapaControl());
   var localidadeFiltroAtivo = true;
   var aeroFiltroAtivo = true;
   var municipioBaseFiltroAtivo = true;
+  var areasAmbientaisFiltroAtivo = false;
   var areasUrbanasFiltroAtivo = false;
   var densidadeRotulos = 0;
 
@@ -2263,6 +2266,10 @@ map.addControl(new LogoMapaControl());
     if (btnMunicipios) {
       btnMunicipios.classList.toggle('ativo-filtro', municipioBaseFiltroAtivo);
     }
+    var btnAreasAmbientais = document.getElementById('toggleAreasAmbientais');
+    if (btnAreasAmbientais) {
+      btnAreasAmbientais.classList.toggle('ativo-filtro', areasAmbientaisFiltroAtivo);
+    }
     var btnAreasUrbanas = document.getElementById('toggleAreasUrbanas');
     if (btnAreasUrbanas) {
       btnAreasUrbanas.classList.toggle('ativo-filtro', areasUrbanasFiltroAtivo);
@@ -2328,6 +2335,37 @@ map.addControl(new LogoMapaControl());
   function numeroSeguro(v) {
     if (v === null || v === undefined || String(v).trim() === '') return 0;
     return Number(v);
+  }
+
+  function formatarNumeroPopup(valor, casas) {
+    var numero = Number(valor);
+    if (!isFinite(numero)) return valor || '';
+    return numero.toLocaleString('pt-BR', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: casas
+    });
+  }
+
+  function valorCampoAreaBase(feature, campo) {
+    if (campo.nomes && campo.nomes.length) {
+      for (var i = 0; i < campo.nomes.length; i++) {
+        var valorAlternativo = valorSeguro(feature, campo.nomes[i]);
+        if (valorAlternativo !== '') return valorAlternativo;
+      }
+      return '';
+    }
+    return valorSeguro(feature, campo.nome);
+  }
+
+  function construirPopupAreaBase(feature, tituloFallback, campos) {
+    var html = '<b>' + escapeHtml(tituloFallback) + '</b>';
+    campos.forEach(function(campo) {
+      var valor = valorCampoAreaBase(feature, campo);
+      if (valor === '') return;
+      if (campo.tipo === 'numero') valor = formatarNumeroPopup(valor, campo.casas || 2);
+      html += '<br><b>' + escapeHtml(campo.rotulo) + ':</b> ' + escapeHtml(valor);
+    });
+    return html;
   }
 
   function numeroPrograma(feature, campo) {
@@ -3173,7 +3211,7 @@ map.addControl(new LogoMapaControl());
     if (!areasUrbanasFiltroAtivo || !areasUrbanasData || !areasUrbanasData.features) return;
 
     areasUrbanasLayer = L.geoJSON(areasUrbanasData, {
-      interactive: false,
+      interactive: true,
       pane: 'areasUrbanasPane',
       style: function() {
         return {
@@ -3183,6 +3221,59 @@ map.addControl(new LogoMapaControl());
           fillColor: '#ffb5b5',
           fillOpacity: 0.42
         };
+      },
+      onEachFeature: function(feature, layer) {
+        var titulo = valorSeguro(feature, 'NOME_ACEN') || 'Área urbana';
+        layer.bindPopup(function() {
+          return construirPopupAreaBase(feature, titulo, [
+            { rotulo: 'Município', nome: 'NM_MUN' },
+            { rotulo: 'Região de Planejamento', nome: 'RG_PLAN' },
+            { rotulo: 'População', nome: 'POPULACAO', tipo: 'numero', casas: 0 },
+            { rotulo: 'Área (km²)', nome: 'AREA_KM2', tipo: 'numero', casas: 3 }
+          ]);
+        });
+      }
+    }).addTo(map);
+  }
+
+  function desenharAreasAmbientais() {
+    if (areasAmbientaisLayer) {
+      map.removeLayer(areasAmbientaisLayer);
+      areasAmbientaisLayer = null;
+    }
+
+    if (!areasAmbientaisFiltroAtivo || !areasAmbientaisData || !areasAmbientaisData.features) return;
+
+    areasAmbientaisLayer = L.geoJSON(areasAmbientaisData, {
+      interactive: true,
+      pane: 'areasAmbientaisPane',
+      style: function() {
+        return {
+          color: '#729b2a',
+          weight: 1.5,
+          opacity: 1,
+          fillColor: '#729b2a',
+          fillOpacity: 0.42
+        };
+      },
+      onEachFeature: function(feature, layer) {
+        var titulo = valorSeguro(feature, 'NOME') || valorSeguro(feature, 'UNIDADE') || 'Área ambiental';
+        layer.bindPopup(function() {
+          return construirPopupAreaBase(feature, titulo, [
+            { rotulo: 'Categoria', nome: 'CATEGORIA' },
+            { rotulo: 'Grupo', nome: 'GRUPO' },
+            { rotulo: 'Jurisdição', nome: 'JURIS' },
+            { rotulo: 'UF', nome: 'UF' },
+            { rotulo: 'Municípios', nome: 'MUN' },
+            { rotulo: 'Gestor', nome: 'GESTOR' },
+            { rotulo: 'Criação', nome: 'ANO_CRIA' },
+            { rotulo: 'Ato de criação', nome: 'CRIA_ATO' },
+            { rotulo: 'Registro', nome: 'REGISTRO' },
+            { rotulo: 'Parque', nome: 'PARQUE' },
+            { rotulo: 'Área (ha)', nome: 'AREA_HA', tipo: 'numero', casas: 2 },
+            { rotulo: 'Área (km²)', nome: 'AREA_KM2', tipo: 'numero', casas: 2 }
+          ]);
+        });
       }
     }).addTo(map);
   }
@@ -6796,6 +6887,7 @@ map.addControl(new LogoMapaControl());
 
     desenharEstados();
     desenharMunicipiosBase(feats);
+    desenharAreasAmbientais();
     desenharAreasUrbanas();
     desenharLocalidades();
     desenharAero();
@@ -6844,6 +6936,7 @@ map.addControl(new LogoMapaControl());
     oaeFiltroAtivo = false;
         sreBaseFiltroAtivo = false;
     snvFiltroAtivo = false;
+    areasAmbientaisFiltroAtivo = false;
     areasUrbanasFiltroAtivo = false;
     servicoFiltroAtivo = '';
     preencherServicos();
@@ -6860,6 +6953,8 @@ map.addControl(new LogoMapaControl());
     municipioBaseFiltroAtivo = false;
     var btnMunicipiosOff = document.getElementById('toggleMunicipiosBase');
     if (btnMunicipiosOff) btnMunicipiosOff.classList.remove('ativo-filtro');
+    var btnAreasAmbientaisOff = document.getElementById('toggleAreasAmbientais');
+    if (btnAreasAmbientaisOff) btnAreasAmbientaisOff.classList.remove('ativo-filtro');
     var btnAreasUrbanasOff = document.getElementById('toggleAreasUrbanas');
     if (btnAreasUrbanasOff) btnAreasUrbanasOff.classList.remove('ativo-filtro');
     document.getElementById('localidadeSelect').value = '';
@@ -6871,6 +6966,7 @@ map.addControl(new LogoMapaControl());
     if (snvLabelLayer) { map.removeLayer(snvLabelLayer); snvLabelLayer = null; }
     if (sreBaseLayer) { map.removeLayer(sreBaseLayer); sreBaseLayer = null; }
     if (sreBaseLabelLayer) { map.removeLayer(sreBaseLabelLayer); sreBaseLabelLayer = null; }
+    if (areasAmbientaisLayer) { map.removeLayer(areasAmbientaisLayer); areasAmbientaisLayer = null; }
     if (areasUrbanasLayer) { map.removeLayer(areasUrbanasLayer); areasUrbanasLayer = null; }
     if (aeroLayer) { map.removeLayer(aeroLayer); aeroLayer = null; }
     if (oaeLayer) { map.removeLayer(oaeLayer); oaeLayer = null; }
@@ -6932,6 +7028,7 @@ map.addControl(new LogoMapaControl());
     oaeFiltroAtivo = true;
         sreBaseFiltroAtivo = true;
     snvFiltroAtivo = true;
+    areasAmbientaisFiltroAtivo = false;
     areasUrbanasFiltroAtivo = false;
     servicoFiltroAtivo = '';
     preencherServicos();
@@ -6949,6 +7046,8 @@ map.addControl(new LogoMapaControl());
     municipioBaseFiltroAtivo = false;
     var btnMunicipiosOn = document.getElementById('toggleMunicipiosBase');
     if (btnMunicipiosOn) btnMunicipiosOn.classList.remove('ativo-filtro');
+    var btnAreasAmbientaisOn = document.getElementById('toggleAreasAmbientais');
+    if (btnAreasAmbientaisOn) btnAreasAmbientaisOn.classList.remove('ativo-filtro');
     var btnAreasUrbanasOn = document.getElementById('toggleAreasUrbanas');
     if (btnAreasUrbanasOn) btnAreasUrbanasOn.classList.remove('ativo-filtro');
     document.getElementById('localidadeSelect').value = '';
@@ -7056,6 +7155,7 @@ map.addControl(new LogoMapaControl());
       localidadeFiltroAtivo = true;
       aeroFiltroAtivo = true;
       municipioBaseFiltroAtivo = true;
+      areasAmbientaisFiltroAtivo = true;
       areasUrbanasFiltroAtivo = true;
       densidadeRotulos = 1;
 
@@ -7499,6 +7599,15 @@ map.addControl(new LogoMapaControl());
     });
   }
 
+  var btnToggleAreasAmbientais = document.getElementById('toggleAreasAmbientais');
+  if (btnToggleAreasAmbientais) {
+    btnToggleAreasAmbientais.addEventListener('click', function() {
+      areasAmbientaisFiltroAtivo = !areasAmbientaisFiltroAtivo;
+      atualizarBotoesBase();
+      desenharAreasAmbientais();
+    });
+  }
+
 
 
   function alturaPainelTabelaSalva() {
@@ -7651,6 +7760,7 @@ map.addControl(new LogoMapaControl());
   Promise.all([
     fetchGeoJSON('data/municipios.geojson', true),
     fetchGeoJSON('data/localidades.geojson', true),
+    fetchGeoJSON('data/parques_go.geojson', false),
     fetchGeoJSON('data/areas_urbanas.geojson', false),
     fetchGeoJSON('data/sre_base.geojson', false),
     fetchGeoJSON('data/obras_linhas.geojson', true),
@@ -7663,17 +7773,18 @@ map.addControl(new LogoMapaControl());
   ]).then(function(resultado) {
     municipiosData = resultado[0];
     localidadesData = resultado[1];
-    areasUrbanasData = resultado[2];
-    sreBaseData = resultado[3];
+    areasAmbientaisData = resultado[2];
+    areasUrbanasData = resultado[3];
+    sreBaseData = resultado[4];
     construirIndiceSREBaseCoincidencias();
-    sreData = resultado[4];
-    obrasPontosData = resultado[5];
+    sreData = resultado[5];
+    obrasPontosData = resultado[6];
     oaeData = null;
-    snvData = resultado[6];
-    estadosData = resultado[7];
-    mascaraBrasilData = resultado[8];
-    aeroData = resultado[9];
-    aeroObrasData = resultado[10];
+    snvData = resultado[7];
+    estadosData = resultado[8];
+    mascaraBrasilData = resultado[9];
+    aeroData = resultado[10];
+    aeroObrasData = resultado[11];
 
     desenharMascaraBrasil();
 
@@ -7691,4 +7802,11 @@ map.addControl(new LogoMapaControl());
       '\nDetalhe: ' + (e.message || e)
     );
   });
+
+
+
+
+
+
+
 

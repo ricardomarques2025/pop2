@@ -48,7 +48,7 @@ Inclusao de obras pontuais:
 - Adicionada tabela inferior com os dados do ponto e da tabela vinculada ao clicar no marcador.
 - Ajustado filtro de proposta para respeitar a origem ativa FUNDEINFRA/DOR.
 - Ajustado zoom automatico ao selecionar proposta, incluindo obras pontuais quando aplicavel.
-- Ajustados popup e tabela inferior das linhas para mostrarem apenas dados compatíveis com os filtros ativos.
+- Ajustados popup e tabela inferior das linhas para mostrarem apenas dados compativeis com os filtros ativos.
 - Ajustada formatacao do popup e tabela das obras pontuais para seguir o padrao das obras lineares.
 - Centralizado o alinhamento do texto nas tabelas apresentadas no mapa.
 - Movida a legenda das obras pontuais para dentro da legenda da origem FUNDEINFRA.
@@ -296,3 +296,51 @@ Marco de publicacao da versao 2.0:
 -- Ajustada a formatacao A4 do manual, compactando espacamentos, imagens, tabelas e blocos para evitar quebras inadequadas na exportacao em PDF.
 -- Gerado o PDF Manual_POP2_v2.0_usuario_final_A4.pdf com a formatacao A4 revisada.
 -- Adicionado botao de ajuda na barra superior do mapa, ao lado do botao Home, abrindo manual.html em nova aba.
+
+VERSAO 2.1 - 30/06/2026
+-------------------------
+
+Ajuste de identificacao das obras pontuais FUNDEINFRA:
+--- Ajustado o popup das obras pontuais para exibir Proposta no lugar de Item quando a origem for FUNDEINFRA.
+--- Ajustada a tabela inferior das obras pontuais para usar Proposta nos registros FUNDEINFRA e manter Item para as demais origens.
+--- Ajustado o cabecalho da coluna para Proposta, Item ou Proposta/Item conforme as origens exibidas.
+--- Atualizado o rodape da interface e o manual do site para VER. 2.1.
+
+Exportacao dos dados filtrados:
+--- Ampliada a exportacao CSV para incluir, em uma unica tabela, os campos do shape filtrado (prefixo GEO_) e os campos da tabela vinculada (prefixo TAB_).
+--- Ajustada a coleta da exportacao para incluir todas as origens ativas vinculadas ao mesmo shape, sem limitar a saida aos registros priorizados no desenho do mapa.
+--- Ajustada a exportacao para respeitar tambem os filtros atuais de regiao de planejamento e municipio.
+
+VERSAO 2.2 - 14/07/2026
+-------------------------
+
+Ajustes em obras pontuais:
+--- Corrigida a associacao entre data/obras_pontos.geojson e data/OBRAS_PONTOS.json para aceitar variacao de maiusculas/minusculas nos nomes dos campos, como Link/LINK.
+--- Ajustado o popup e a tabela inferior das obras pontuais para ler SRE, rodovia, trecho, extensao e link diretamente da camada data/obras_pontos.geojson.
+--- Mantida a tabela data/OBRAS_PONTOS.json como fonte dos dados vinculados das obras pontuais pelo campo LINK.
+--- Incluidos os campos MODALIDADE, EMPRESA, CONTRATO e PROCESSO_SEI_CONTRATACAO no popup das obras pontuais.
+--- Incluidos os campos Modalidade, Empresa, Contrato e Processo SEI Contratacao na tabela inferior "Dados das obras pontuais".
+--- Validada a consistencia dos vinculos entre data/obras_pontos.geojson e data/OBRAS_PONTOS.json, com 250 pontos vinculados e nenhum ponto sem registro associado.
+VERSAO 2.3 - 15/07/2026
+-------------------------
+
+Ajustes na malha estadual SRE base:
+--- Ajustado o agrupamento dos rotulos da camada data/sre_base.geojson para evitar escudos duplicados em geometrias coincidentes.
+--- Mantida a formatacao visual existente dos rotulos, exibindo a rodovia de menor valor quando houver sobreposicao entre rodovias.
+--- Ajustado o popup da malha estadual para listar, junto ao SRE clicado, os SREs coincidentes/sobrepostos da mesma geometria.
+--- Validada a nova base com 231 grupos de geometrias coincidentes, incluindo casos como GO-020 sobre GO-139.
+--- Otimizada a chave interna de comparacao das geometrias coincidentes para evitar travamento no carregamento inicial da pagina.
+--- Ajustado o popup da malha estadual para montar as informacoes somente ao clicar no trecho, evitando processamento pesado na abertura do mapa.
+--- Ajustado o popup sem filtro de Rodovia/SRE para exibir como principal a rodovia de menor valor nos trechos coincidentes e listar apenas os codigos dos SREs coincidentes.
+--- Ajustada a leitura de trecho e extensao das obras lineares para aceitar os campos da nova data/obras_linhas.geojson, incluindo trecho em minusculo no popup, painel inferior, exportacao e impressao.
+--- Incluidos os campos Modalidade, Empresa, Contrato e Processo SEI Contratacao da tabela data/OBRAS_LINHAS_FUNDEINFRA.json no popup, painel inferior e tabela de impressao das obras lineares FUNDEINFRA.
+--- Corrigido o titulo da aba do mapa e atualizado o rodape da interface para VER. 2.3.
+VERSAO 2.4 - 24/07/2026
+-------------------------
+
+Atualizacao da camada de areas ambientais:
+--- Ajustado o popup da camada data/parques_go.geojson para a nova estrutura de atributos da base unidades_conservacao_go.
+--- Incluidos no popup ambiental os campos Nome, Categoria, Grupo, Jurisdicao, UF, Municipios, Gestor, Criacao, Ato de criacao, Area (ha) e Area (km2), quando disponiveis.
+--- Mantida compatibilidade com campos antigos da camada ambiental, como UNIDADE, REGISTRO, PARQUE e AREA_KM2.
+--- Mantida a prioridade baixa da camada ambiental por meio do pane areasAmbientaisPane abaixo de areasUrbanasPane.
+--- Atualizado o rodape da interface para VER. 2.4.
