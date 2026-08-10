@@ -144,7 +144,7 @@
       carimbo.innerHTML =
         '<img src="data/Carimbo_POP2.png" alt="Carimbo do mapa">' +
         '<div class="print-stamp-info">' +
-          '<div id="printStampServico" class="print-stamp-servico"></div>' +
+          '<div id="printStampIntervencao" class="print-stamp-servico"></div>' +
           '<div id="printStampData" class="print-stamp-data"></div>' +
         '</div>';
       mapWrap.appendChild(carimbo);
@@ -192,17 +192,17 @@
       return;
     }
 
-    var servico = document.getElementById('printStampServico');
+    var servico = document.getElementById('printStampIntervencao');
     var data = document.getElementById('printStampData');
-    var nomesServico = [];
+    var nomesIntervencao = [];
 
-    if (servicosAtivos.DOR) nomesServico.push('OBRAS');
-    if (servicosAtivos.FUNDEINFRA) nomesServico.push('FUNDEINFRA');
-    if (servicosAtivos.DMA) nomesServico.push('DMA');
-    if (servicosAtivos.DPL) nomesServico.push('DPL');
-    if (servicosAtivos.DPJ) nomesServico.push('DPJ');
+    if (servicosAtivos.DOR) nomesIntervencao.push('OBRAS');
+    if (servicosAtivos.FUNDEINFRA) nomesIntervencao.push('FUNDEINFRA');
+    if (servicosAtivos.DMA) nomesIntervencao.push('DMA');
+    if (servicosAtivos.DPL) nomesIntervencao.push('DPL');
+    if (servicosAtivos.DPJ) nomesIntervencao.push('DPJ');
 
-    if (servico) servico.textContent = nomesServico.join(' / ');
+    if (servico) servico.textContent = nomesIntervencao.join(' / ');
     if (data) data.textContent = textoMesAnoAtualImpressao();
     carimbo.style.display = 'block';
   }
@@ -243,7 +243,7 @@
     destino.style.display = destino.children.length ? 'block' : 'none';
   }
 
-  function atualizarTabelaServicosImpressao(dimensoes) {
+  function atualizarTabelaIntervencaosImpressao(dimensoes) {
     var destino = document.getElementById('printServiceTableBox');
     if (!destino) return;
 
@@ -275,11 +275,15 @@
     function linhaTabela(dados, feature, campoIdentificador, camposExtras) {
       var p = feature.properties || {};
       var html = '<tr>' +
-        '<td>' + valorTabela(dados[campoIdentificador || 'PROPOSTA']) + '</td>' +
+        '<td>' + valorTabela(dados.IDCOD) + '</td>';
+      if (campoIdentificador) {
+        html += '<td>' + valorTabela(dados[campoIdentificador]) + '</td>';
+      }
+      html +=
         '<td>' + valorTabela(p.RODOVIA || p.rodovia) + '</td>' +
         '<td>' + valorTabela(valorTrechoFeature(feature)) + '</td>' +
         '<td>' + valorTabela(valorExtensaoKmFeature(feature)) + '</td>' +
-        '<td>' + valorTabela(dados.SERVICO) + '</td>' +
+        '<td>' + valorTabela(dados.INTERVENCAO) + '</td>' +
         '<td>' + valorTabela(dados.ETAPA) + '</td>' +
         '<td>' + valorTabela(dados.STATUS) + '</td>' +
         '<td>' + valorTabela(dados.SEI) + '</td>' +
@@ -302,7 +306,7 @@
       return '<div class="bloco-servico">' +
         '<div class="titulo-servico">' + escapeHtml(titulo) + '</div>' +
         '<table class="tabela-servico">' +
-          '<tr><th>' + escapeHtml(rotuloIdentificador || 'Proposta') + '</th><th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th>' + extras + '</tr>' +
+          '<tr><th>IDCOD</th>' + (rotuloIdentificador ? '<th>' + escapeHtml(rotuloIdentificador) + '</th>' : '') + '<th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Intervenção</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th>' + extras + '</tr>' +
           linhas.join('') +
         '</table>' +
       '</div>';
@@ -329,7 +333,7 @@
           var linkFund = valorSeguro(feature, 'LINK_FUND');
           var dadosFund = dadosFundeinfraDaFeature(feature);
           if (linkFund && dadosFund) {
-            if (!servicoFiltroAtivo || dadosFund.SERVICO === servicoFiltroAtivo) {
+            if (!servicoFiltroAtivo || dadosFund.INTERVENCAO === servicoFiltroAtivo) {
               if (!propostaSelecionada || String(dadosFund.PROPOSTA) === String(propostaSelecionada)) {
                 var chaveFund = String(linkFund) + '|' + String(dadosFund.PROPOSTA || '');
                 if (!vistosFund[chaveFund]) {
@@ -347,7 +351,7 @@
             var dadosDor = dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
             for (var j = 0; j < dadosDor.length; j++) {
               var itemDor = dadosDor[j];
-              var chaveDor = String(linkDor) + '|' + String(itemDor.ITEM || '') + '|' + String(itemDor.SERVICO || '') + '|' + String(itemDor.SEI || '');
+              var chaveDor = String(linkDor) + '|' + String(itemDor.IDCOD || '') + '|' + String(itemDor.INTERVENCAO || '') + '|' + String(itemDor.SEI || '');
               if (!vistosDor[chaveDor]) {
                 linhasDor.push({ dados: itemDor, feature: feature });
                 vistosDor[chaveDor] = true;
@@ -362,7 +366,7 @@
             var dadosDma = dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
             for (var d = 0; d < dadosDma.length; d++) {
               var itemDma = dadosDma[d];
-              var chaveDma = String(linkDma) + '|' + String(itemDma.ITEM || '') + '|' + String(itemDma.SERVICO || '') + '|' + String(itemDma.SEI || '');
+              var chaveDma = String(linkDma) + '|' + String(itemDma.IDCOD || '') + '|' + String(itemDma.INTERVENCAO || '') + '|' + String(itemDma.SEI || '');
               if (!vistosDma[chaveDma]) {
                 linhasDma.push({ dados: itemDma, feature: feature });
                 vistosDma[chaveDma] = true;
@@ -377,7 +381,7 @@
             var dadosDpl = dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
             for (var p = 0; p < dadosDpl.length; p++) {
               var itemDpl = dadosDpl[p];
-              var chaveDpl = String(linkDpl) + '|' + String(itemDpl.ITEM || '') + '|' + String(itemDpl.SERVICO || '') + '|' + String(itemDpl.SEI || '');
+              var chaveDpl = String(linkDpl) + '|' + String(itemDpl.IDCOD || '') + '|' + String(itemDpl.INTERVENCAO || '') + '|' + String(itemDpl.SEI || '');
               if (!vistosDpl[chaveDpl]) {
                 linhasDpl.push({ dados: itemDpl, feature: feature });
                 vistosDpl[chaveDpl] = true;
@@ -392,7 +396,7 @@
             var dadosDpj = dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
             for (var q = 0; q < dadosDpj.length; q++) {
               var itemDpj = dadosDpj[q];
-              var chaveDpj = String(linkDpj) + '|' + String(itemDpj.ITEM || '') + '|' + String(itemDpj.SERVICO || '') + '|' + String(itemDpj.SEI || '');
+              var chaveDpj = String(linkDpj) + '|' + String(itemDpj.IDCOD || '') + '|' + String(itemDpj.INTERVENCAO || '') + '|' + String(itemDpj.SEI || '');
               if (!vistosDpj[chaveDpj]) {
                 linhasDpj.push({ dados: itemDpj, feature: feature });
                 vistosDpj[chaveDpj] = true;
@@ -404,17 +408,17 @@
     }
 
     linhasFund.sort(function(a, b) { return compararCampo('PROPOSTA')(a.dados, b.dados); });
-    linhasDor.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
-    linhasDma.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
-    linhasDpl.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
-    linhasDpj.sort(function(a, b) { return compararCampo('ITEM')(a.dados, b.dados); });
+    linhasDor.sort(function(a, b) { return compararCampo('IDCOD')(a.dados, b.dados); });
+    linhasDma.sort(function(a, b) { return compararCampo('IDCOD')(a.dados, b.dados); });
+    linhasDpl.sort(function(a, b) { return compararCampo('IDCOD')(a.dados, b.dados); });
+    linhasDpj.sort(function(a, b) { return compararCampo('IDCOD')(a.dados, b.dados); });
 
     destino.innerHTML =
       blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature, 'PROPOSTA', ['MODALIDADE', 'EMPRESA', 'CONTRATO', 'PROCESSO_SEI_CONTRATACAO']); }), 'Proposta', ['Modalidade', 'Empresa', 'Contrato', 'Processo SEI Contratação']) +
-      blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
-      blocoTabela('Dados DMA', linhasDma.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
-      blocoTabela('Dados DPL', linhasDpl.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item') +
-      blocoTabela('Dados DPJ', linhasDpj.map(function(item) { return linhaTabela(item.dados, item.feature, 'ITEM'); }), 'Item');
+      blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
+      blocoTabela('Dados DMA', linhasDma.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
+      blocoTabela('Dados DPL', linhasDpl.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
+      blocoTabela('Dados DPJ', linhasDpj.map(function(item) { return linhaTabela(item.dados, item.feature); }));
     destino.style.display = destino.children.length ? 'block' : 'none';
   }
 
@@ -597,7 +601,7 @@
     atualizarLegendaImpressao();
     atualizarTituloImpressao();
     atualizarCarimboImpressao(dimensoes);
-    atualizarTabelaServicosImpressao(dimensoes);
+    atualizarTabelaIntervencaosImpressao(dimensoes);
 
     setTimeout(function() {
       ajustarMapaParaImpressao(dimensoes);

@@ -1,4 +1,4 @@
-// Configuracoes visuais das camadas do mapa.
+﻿// Configuracoes visuais das camadas do mapa.
 // Para alterar cores, espessuras ou itens da legenda das linhas, comece aqui.
 // A logica que desenha e filtra as camadas fica em js/mapa.js.
 
@@ -328,4 +328,6 @@ const REGRAS_ESTILO = [
   window.ROD_EST_INFO = ROD_EST_INFO;
   window.ROD_FED_INFO = ROD_FED_INFO;
   window.OBRAS_PONTOS_INFO = OBRAS_PONTOS_INFO;
+
+
 

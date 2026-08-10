@@ -29,30 +29,30 @@ function criarPanesMapa() {
 
 criarPanesMapa();
 
-var hoverIconeServicoAtivo = 0;
+var hoverIconeIntervencaoAtivo = 0;
 
-function alvoHoverIconeServico(el) {
+function alvoHoverIconeIntervencao(el) {
   return el && el.closest && el.closest('.obra-ponto-icon, .obras-pontos-cluster, .marker-cluster');
 }
 
-function atualizarPrimeiroPlanoIconesServico(ativo) {
+function atualizarPrimeiroPlanoIconesIntervencao(ativo) {
   var pane = map.getPane('oaePane');
   if (!pane) return;
   pane.style.zIndex = ativo ? 1300 : MAPA_PANES.oaePane;
 }
 
 map.getContainer().addEventListener('mouseover', function(e) {
-  if (!alvoHoverIconeServico(e.target)) return;
-  hoverIconeServicoAtivo++;
-  atualizarPrimeiroPlanoIconesServico(true);
+  if (!alvoHoverIconeIntervencao(e.target)) return;
+  hoverIconeIntervencaoAtivo++;
+  atualizarPrimeiroPlanoIconesIntervencao(true);
 }, true);
 
 map.getContainer().addEventListener('mouseout', function(e) {
-  var alvo = alvoHoverIconeServico(e.target);
+  var alvo = alvoHoverIconeIntervencao(e.target);
   if (!alvo) return;
   if (e.relatedTarget && alvo.contains(e.relatedTarget)) return;
-  hoverIconeServicoAtivo = Math.max(0, hoverIconeServicoAtivo - 1);
-  if (!hoverIconeServicoAtivo) atualizarPrimeiroPlanoIconesServico(false);
+  hoverIconeIntervencaoAtivo = Math.max(0, hoverIconeIntervencaoAtivo - 1);
+  if (!hoverIconeIntervencaoAtivo) atualizarPrimeiroPlanoIconesIntervencao(false);
 }, true);
 
 function criarMapasBase() {
@@ -414,11 +414,16 @@ map.addControl(new LogoMapaControl());
   var sreBaseCoincidenciasIndex = null;
   var sreData = null;
   var obrasPontosData = null;
+  var obrasPontosBaseData = null;
+  var obrasPontosCoordenadasData = null;
   var aeroData = null;
   var aeroObrasData = null;
   var oaeData = null;
   var estadosData = null;
   var snvData = null;
+  var alteracoesData = null;
+  var alteracoesTabelaData = [];
+  var alteracoesPorId = {};
 
   var estadosLayer = null;
   var municipiosLayer = null;
@@ -436,7 +441,11 @@ map.addControl(new LogoMapaControl());
   var snvLayer = null;
   var obrasLabelLayer = null;
   var regraLayers = [];
+  var alteracoesLayer = null;
   var rotulosObrasPrintAtivos = false;
+  var registrosZoomTabelaCompleta = [];
+  var destaqueTabelaCompletaLayer = null;
+  var htmlPainelAntesListaCompleta = '';
 
   var programaAtivo = '';
   var programas = [];
@@ -447,9 +456,20 @@ map.addControl(new LogoMapaControl());
       DMA: true,
       DPL: true,
       DPJ: true,
-      DOC: true
+      DOC: true,
+      DSV: true
     };
     var servicoFiltroAtivo = '';
+
+    var TIPOS_ALTERACAO = [
+      'Estadualiza\u00e7\u00e3o',
+      'Federaliza\u00e7\u00e3o',
+      'Municipaliza\u00e7\u00e3o'
+    ];
+    var alteracoesAtivas = {};
+    for (var iAltInicial = 0; iAltInicial < TIPOS_ALTERACAO.length; iAltInicial++) {
+      alteracoesAtivas[TIPOS_ALTERACAO[iAltInicial]] = true;
+    }
 
   var anotacoesLayer = L.featureGroup().addTo(map);
   var anotacoesHistorico = [];
@@ -2031,37 +2051,11 @@ map.addControl(new LogoMapaControl());
   var obrasDplPorLink = {};
   var obrasDpjData = [];
   var obrasDpjPorLink = {};
-  var obrasAeroTabelaPromise = null;
+  var dadosUnificadosPromise = null;
+  var dadosUnificadosData = [];
+  var dadosUnificadosPorGrupo = {};
   var obrasPontosTabelaData = [];
   var obrasPontosPorLink = {};
-
-  function carregarTabelaObrasAero() {
-    if (!obrasAeroTabelaPromise) {
-      obrasAeroTabelaPromise = fetch('data/OBRAS_AERO.json')
-        .then(function(r) { return r.json(); })
-        .then(function(resultado) {
-          return Array.isArray(resultado) ? resultado : [];
-        })
-        .catch(function(e) {
-          console.warn('Falha ao carregar OBRAS_AERO:', e);
-          return [];
-        });
-    }
-    return obrasAeroTabelaPromise;
-  }
-
-  function origemTabelaAero(item) {
-    return String((item && item.ORIGEM) || '').trim().toUpperCase();
-  }
-
-  function registrosAeroPorOrigem(registros, origem) {
-    var filtrados = [];
-    var origemNormalizada = String(origem || '').trim().toUpperCase();
-    for (var i = 0; i < registros.length; i++) {
-      if (origemTabelaAero(registros[i]) === origemNormalizada) filtrados.push(registros[i]);
-    }
-    return filtrados;
-  }
 
   function indexarObrasPorLink(registros, camposLink) {
     var indice = {};
@@ -2080,172 +2074,330 @@ map.addControl(new LogoMapaControl());
     }
     return indice;
   }
+  function tipoRegistroDados(item) {
+    return String((item && item.TIPO) || '').trim().toUpperCase();
+  }
 
-    function carregarTabelasFundeinfra() {
-    fetch('data/OBRAS_LINHAS_FUNDEINFRA.json')
-      .then(function(r) { return r.json(); })
-      .then(function(resultado) {
-        obrasFundeinfraData = Array.isArray(resultado) ? resultado : [];
-        obrasFundeinfraPorLink = {};
+  function valorIntervencaoDados(dados) {
+    return String((dados && dados.INTERVENCAO) || '').trim();
+  }
 
-        for (var i = 0; i < obrasFundeinfraData.length; i++) {
-          var item = obrasFundeinfraData[i];
-          var link = item && item.LINK_FUND;
-          if (link && !obrasFundeinfraPorLink[String(link)]) {
-            obrasFundeinfraPorLink[String(link)] = item;
-          }
-        }
+  function normalizarRegistroDados(item) {
+    var normalizado = Object.assign({}, item || {});
+    normalizado.ORIGEM = origemNormalizadaObraPonto(normalizado);
+    normalizado.INTERVENCAO = valorIntervencaoDados(normalizado);
+    normalizado.SERVICO = normalizado.INTERVENCAO;
+    if (normalizado.ITEM === null || normalizado.ITEM === undefined || String(normalizado.ITEM).trim() === '') {
+      normalizado.ITEM = normalizado.REF || normalizado.IDCOD || '';
+    }
+    if (!normalizado.PROCESSO_SEI_CONTRATACAO && normalizado.SEI_OBRA_CONTRATO) {
+      normalizado.PROCESSO_SEI_CONTRATACAO = normalizado.SEI_OBRA_CONTRATO;
+    }
+    return normalizado;
+  }
 
-                console.log('OBRAS_LINHAS_FUNDEINFRA carregado:', obrasFundeinfraData.length);
-        preencherServicos();
-        if (sreData && municipiosData) {
-          preencherRodovias();
-          preencherSREs();
-          preencherPropostas();
-          aplicarFiltros();
-        }
+  function carregarDadosUnificados() {
+    if (!dadosUnificadosPromise) {
+      dadosUnificadosPromise = carregarJsonOpcional('data/DADOS.json')
+        .then(function(resultado) {
+          return Array.isArray(resultado) ? resultado.map(normalizarRegistroDados) : [];
+        });
+    }
+    return dadosUnificadosPromise;
+  }
+
+  function registrosDadosPorTipo(registros, tipo) {
+    var tipoNormalizado = String(tipo || '').trim().toUpperCase();
+    return registros.filter(function(item) {
+      return tipoRegistroDados(item) === tipoNormalizado;
+    });
+  }
+
+  function registrosDadosPorUnidade(registros, unidade) {
+    var unidadeNormalizada = String(unidade || '').trim().toUpperCase();
+    return registros.filter(function(item) {
+      return origemNormalizadaObraPonto(item) === unidadeNormalizada;
+    });
+  }
+
+  function indexarDadosPorIdcod(registros) {
+    var indice = {};
+    for (var i = 0; i < registros.length; i++) {
+      var item = registros[i];
+      var idcod = item && item.IDCOD;
+      if (idcod === null || idcod === undefined || String(idcod).trim() === '') continue;
+      var chave = String(idcod).trim();
+      if (!indice[chave]) indice[chave] = [];
+      indice[chave].push(item);
+    }
+    return indice;
+  }
+
+  function chaveIdGrupo(dados) {
+    var valor = dados && dados.IDGRUPO;
+    if (valor === null || valor === undefined) return '';
+    return String(valor).trim();
+  }
+
+  function chaveIdcod(dados) {
+    var valor = dados && dados.IDCOD;
+    if (valor === null || valor === undefined) return '';
+    return String(valor).trim();
+  }
+
+  function indexarDadosPorGrupo(registros) {
+    var indice = {};
+    for (var i = 0; i < registros.length; i++) {
+      var grupo = chaveIdGrupo(registros[i]);
+      if (!grupo) continue;
+      if (!indice[grupo]) indice[grupo] = [];
+      indice[grupo].push(registros[i]);
+    }
+    return indice;
+  }
+
+  function expandirRegistrosPorGrupo(registros, opcoes) {
+    if (!registros || !registros.length) return [];
+    opcoes = opcoes || {};
+    var selecionados = {};
+    var resultado = [];
+    var vistos = {};
+
+    for (var s = 0; s < registros.length; s++) {
+      var idSelecionado = chaveIdcod(registros[s]);
+      if (idSelecionado && chaveIdGrupo(registros[s])) selecionados[idSelecionado] = true;
+    }
+
+    function adicionar(item) {
+      if (!item) return;
+      if (opcoes.tipo && tipoRegistroDados(item) !== String(opcoes.tipo).trim().toUpperCase()) return;
+      if (opcoes.unidade && origemNormalizadaObraPonto(item) !== String(opcoes.unidade).trim().toUpperCase()) return;
+      var id = chaveIdcod(item);
+      var chave = (id || JSON.stringify(item)) + '|' + origemNormalizadaObraPonto(item) + '|' + tipoRegistroDados(item);
+      if (vistos[chave]) return;
+      vistos[chave] = true;
+      var copia = Object.assign({}, item);
+      if (chaveIdGrupo(item) && id && selecionados[id]) copia.__SELECIONADO_GRUPO = true;
+      resultado.push(copia);
+    }
+
+    for (var i = 0; i < registros.length; i++) {
+      var grupo = chaveIdGrupo(registros[i]);
+      if (grupo && dadosUnificadosPorGrupo[grupo] && dadosUnificadosPorGrupo[grupo].length) {
+        var membros = dadosUnificadosPorGrupo[grupo];
+        for (var m = 0; m < membros.length; m++) adicionar(membros[m]);
+      } else {
+        adicionar(registros[i]);
+      }
+    }
+
+    resultado.sort(function(a, b) {
+      return String(chaveIdGrupo(a)).localeCompare(String(chaveIdGrupo(b)), 'pt-BR', { numeric: true }) ||
+        String(chaveIdcod(a)).localeCompare(String(chaveIdcod(b)), 'pt-BR', { numeric: true });
+    });
+    return resultado;
+  }
+
+  function tabelaTemGrupo(registros) {
+    if (!registros) return false;
+    for (var i = 0; i < registros.length; i++) {
+      if (chaveIdGrupo(registros[i])) return true;
+    }
+    return false;
+  }
+
+  function valorTituloGrupo(valor) {
+    var exibicao = valorExibicao(valor);
+    return exibicao === '' ? '' : String(exibicao);
+  }
+
+  function tituloTabelaComGrupo(titulo, registros) {
+    var grupos = [];
+    var extensoes = [];
+    for (var i = 0; i < registros.length; i++) {
+      var grupo = chaveIdGrupo(registros[i]);
+      if (!grupo) continue;
+      adicionarUnico(grupos, grupo);
+      var ext = valorTituloGrupo(registros[i] && registros[i].EXT_CONTRATO_KM);
+      if (ext) adicionarUnico(extensoes, ext);
+    }
+    if (!grupos.length) return titulo;
+    var partes = [titulo + ' - Grupo ' + grupos.join(', ')];
+    if (extensoes.length) partes.push('Ext. Contrato ' + extensoes.join(', ') + ' km');
+    return partes.join(' - ');
+  }
+
+  function camposTabelaAjustadosPorGrupo(campos, registros) {
+    return campos;
+  }
+  function carregarJsonOpcional(nome) {
+    return fetch(nome)
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' em ' + nome);
+        return r.json();
       })
       .catch(function(e) {
-        console.warn('Falha ao carregar OBRAS_LINHAS_FUNDEINFRA:', e);
+        console.warn('Tabela opcional nao carregada:', nome, e);
+        return [];
       });
   }
 
-  function carregarTabelasDor() {
-    Promise.all([
-      fetch('data/OBRAS_LINHAS_DOR.json').then(function(r) { return r.json(); }),
-      carregarTabelaObrasAero()
-    ])
-      .then(function(resultado) {
-        var linhas = Array.isArray(resultado[0]) ? resultado[0] : [];
-        var aeros = registrosAeroPorOrigem(Array.isArray(resultado[1]) ? resultado[1] : [], 'DOR');
-        obrasDorData = linhas.concat(aeros);
-        obrasDorPorLink = indexarObrasPorLink(obrasDorData, ['LINK_DOR', 'LINK_FUND']);
+  function origemNormalizadaObraPonto(dados) {
+    var origem = String((dados && (dados.ORIGEM || dados.UNIDADE)) || 'FUNDEINFRA').trim().toUpperCase();
+    return origem || 'FUNDEINFRA';
+  }
 
-        console.log('OBRAS_LINHAS_DOR/OBRAS_AERO(DOR) carregados:', obrasDorData.length);
-        preencherServicos();
-        if (sreData && municipiosData) {
-          preencherRodovias();
-          preencherSREs();
-          preencherPropostas();
-          aplicarFiltros();
-        }
-      })
-      .catch(function(e) {
-        console.warn('Falha ao carregar OBRAS_LINHAS_DOR:', e);
-      });
+  function numeroCoordenadaObraPonto(valor) {
+    if (valor === null || valor === undefined || String(valor).trim() === '') return null;
+    var numero = Number(String(valor).trim().replace(',', '.'));
+    return isFinite(numero) ? numero : null;
+  }
+
+  function criarFeatureObraPontoCoordenada(item) {
+    var lat = numeroCoordenadaObraPonto(item && item.LATITUDE);
+    var lon = numeroCoordenadaObraPonto(item && item.LONGITUDE);
+    if (lat === null || lon === null) return null;
+    if ((lat < -35 || lat > 10) && lon >= -35 && lon <= 10 && lat >= -75 && lat <= -30) {
+      var coordenadaInvertida = lat;
+      lat = lon;
+      lon = coordenadaInvertida;
+    }
+    if (lat < -35 || lat > 10 || lon < -75 || lon > -30) return null;
+
+    var props = Object.assign({}, item || {});
+    props.ORIGEM = origemNormalizadaObraPonto(props);
+    props.RODOVIA = props.RODOVIA || '';
+    props.trecho = props.TRECHO || props.DESCRICAO || props.LOCALIDADE || '';
+    var dadosObra = Object.assign({}, props);
+    props.__PONTO_TABELA_COORDENADA = true;
+    props.__CHAVE_AGREGADORA_PONTO = String(props.IDCOD || '').trim();
+    props.__DADOS_OBRA_PONTO = dadosObra;
+
+    return {
+      type: 'Feature',
+      properties: props,
+      geometry: {
+        type: 'Point',
+        coordinates: [lon, lat]
+      }
+    };
+  }
+
+  function atualizarObrasPontosDataComCoordenadas() {
+    var featuresBase = obrasPontosBaseData && obrasPontosBaseData.features ? obrasPontosBaseData.features : [];
+    var featuresCoordenadas = obrasPontosCoordenadasData && obrasPontosCoordenadasData.features ? obrasPontosCoordenadasData.features : [];
+    var origensCoordenadas = {};
+
+    for (var i = 0; i < featuresCoordenadas.length; i++) {
+      var dadosCoord = dadosObrasPontosDaFeature(featuresCoordenadas[i]);
+      origensCoordenadas[origemObraPonto(dadosCoord)] = true;
+    }
+
+    var featuresFiltradas = featuresBase.filter(function(feature) {
+      var dados = dadosObrasPontosDaFeatureTodos(feature);
+      for (var d = 0; d < dados.length; d++) {
+        if (origensCoordenadas[origemObraPonto(dados[d])]) return false;
+      }
+      return true;
+    });
+
+    obrasPontosData = {
+      type: 'FeatureCollection',
+      features: featuresFiltradas.concat(featuresCoordenadas)
+    };
   }
 
   function carregarTabelaObrasPontos() {
-    fetch('data/OBRAS_PONTOS.json')
-      .then(function(r) { return r.json(); })
-      .then(function(resultado) {
-        obrasPontosTabelaData = Array.isArray(resultado) ? resultado : [];
-        obrasPontosPorLink = {};
+    carregarDadosUnificados().then(function(registros) {
+      var tabelaLegada = [];
+      var tabelaCoordenadas = registrosDadosPorTipo(registros, 'Ponto');
+      var featuresCoordenadas = [];
+      var origensCoordenadas = {};
 
-        for (var i = 0; i < obrasPontosTabelaData.length; i++) {
-          var item = obrasPontosTabelaData[i];
-          var link = item && item.LINK;
-          if (!link) continue;
-          var chave = String(link).trim();
-          if (!obrasPontosPorLink[chave]) obrasPontosPorLink[chave] = [];
-          obrasPontosPorLink[chave].push(item);
-        }
+      var featuresCoordenadasPorIdcod = {};
+      for (var c = 0; c < tabelaCoordenadas.length; c++) {
+        var itemCoord = Object.assign({}, tabelaCoordenadas[c]);
+        itemCoord.ORIGEM = origemNormalizadaObraPonto(itemCoord);
+        var chaveIdcod = String(itemCoord.IDCOD || '').trim();
+        if (!chaveIdcod) continue;
+        origensCoordenadas[itemCoord.ORIGEM] = true;
+        if (featuresCoordenadasPorIdcod[chaveIdcod]) continue;
+        var featureCoord = criarFeatureObraPontoCoordenada(itemCoord);
+        if (!featureCoord) continue;
+        featuresCoordenadasPorIdcod[chaveIdcod] = featureCoord;
+        featuresCoordenadas.push(featureCoord);
+      }
 
-        console.log('OBRAS_PONTOS carregado:', obrasPontosTabelaData.length);
-        if (municipiosData) preencherPropostas();
-        if (obrasPontosData && municipiosData) aplicarFiltros();
-      })
+      obrasPontosCoordenadasData = {
+        type: 'FeatureCollection',
+        features: featuresCoordenadas
+      };
+
+      obrasPontosTabelaData = tabelaLegada.filter(function(item) {
+        return !origensCoordenadas[origemNormalizadaObraPonto(item)];
+      }).concat(tabelaCoordenadas.map(function(item) {
+        var normalizado = Object.assign({}, item);
+        normalizado.ORIGEM = origemNormalizadaObraPonto(normalizado);
+        return normalizado;
+      }));
+
+      obrasPontosPorLink = {};
+      for (var i = 0; i < obrasPontosTabelaData.length; i++) {
+        var item = obrasPontosTabelaData[i];
+        var chave = item && (item.IDCOD || item.LINK);
+        if (!chave) continue;
+        chave = String(chave).trim();
+        if (!obrasPontosPorLink[chave]) obrasPontosPorLink[chave] = [];
+        obrasPontosPorLink[chave].push(item);
+      }
+
+      atualizarObrasPontosDataComCoordenadas();
+      console.log('OBRAS_PONTOS/DADOS carregados:', obrasPontosTabelaData.length, 'registros; pontos por coordenada:', featuresCoordenadas.length);
+      if (municipiosData) preencherPropostas();
+      if (obrasPontosData && municipiosData) aplicarFiltros();
+    }).catch(function(e) {
+      console.warn('Falha ao carregar tabelas de obras pontuais:', e);
+    });
+  }
+  function atualizarDadosObrasUnificadas(registros) {
+    dadosUnificadosData = registros || [];
+    dadosUnificadosPorGrupo = indexarDadosPorGrupo(dadosUnificadosData);
+    var linhas = registrosDadosPorTipo(registros, 'Linha');
+    obrasFundeinfraData = registrosDadosPorUnidade(linhas, 'FUNDEINFRA');
+    obrasDorData = registrosDadosPorUnidade(linhas, 'DOR');
+    obrasDmaData = registrosDadosPorUnidade(linhas, 'DMA');
+    obrasDplData = registrosDadosPorUnidade(linhas, 'DPL');
+    obrasDpjData = registrosDadosPorUnidade(linhas, 'DPJ');
+
+    var indiceFundeinfra = indexarDadosPorIdcod(obrasFundeinfraData);
+    obrasFundeinfraPorLink = {};
+    Object.keys(indiceFundeinfra).forEach(function(chave) {
+      obrasFundeinfraPorLink[chave] = indiceFundeinfra[chave][0];
+    });
+    obrasDorPorLink = indexarDadosPorIdcod(obrasDorData);
+    obrasDmaPorLink = indexarDadosPorIdcod(obrasDmaData);
+    obrasDplPorLink = indexarDadosPorIdcod(obrasDplData);
+    obrasDpjPorLink = indexarDadosPorIdcod(obrasDpjData);
+
+    console.log('DADOS.json linhas carregadas:', linhas.length);
+    preencherIntervencaos();
+    if (sreData && municipiosData) {
+      preencherRodovias();
+      preencherSREs();
+      preencherPropostas();
+      aplicarFiltros();
+    }
+  }
+
+  function carregarTabelasDadosUnificados() {
+    carregarDadosUnificados()
+      .then(atualizarDadosObrasUnificadas)
       .catch(function(e) {
-        console.warn('Falha ao carregar OBRAS_PONTOS:', e);
+        console.warn('Falha ao carregar dados unificados:', e);
       });
   }
 
-  function carregarTabelasDma() {
-    Promise.all([
-      fetch('data/OBRAS_LINHAS_DMA.json').then(function(r) { return r.json(); }),
-      carregarTabelaObrasAero()
-    ])
-      .then(function(resultado) {
-        var linhas = Array.isArray(resultado[0]) ? resultado[0] : [];
-        var aeros = registrosAeroPorOrigem(Array.isArray(resultado[1]) ? resultado[1] : [], 'DMA');
-        obrasDmaData = linhas.concat(aeros);
-        obrasDmaPorLink = indexarObrasPorLink(obrasDmaData, ['LINK_DMA', 'LINK_DOR', 'LINK_FUND']);
-
-        console.log('OBRAS_LINHAS_DMA/OBRAS_AERO(DMA) carregados:', obrasDmaData.length);
-        preencherServicos();
-        if (sreData && municipiosData) {
-          preencherRodovias();
-          preencherSREs();
-          preencherPropostas();
-          aplicarFiltros();
-        }
-      })
-      .catch(function(e) {
-        console.warn('Falha ao carregar OBRAS_LINHAS_DMA:', e);
-      });
-  }
-
-  function carregarTabelasDpl() {
-    fetch('data/OBRAS_LINHAS_DPL.json')
-      .then(function(r) { return r.json(); })
-      .then(function(resultado) {
-        obrasDplData = Array.isArray(resultado) ? resultado : [];
-        obrasDplPorLink = {};
-
-        for (var i = 0; i < obrasDplData.length; i++) {
-          var item = obrasDplData[i];
-          var link = item && (item.LINK_DPL || item.LINK_DMA || item.LINK_DOR || item.LINK_FUND);
-          if (link) {
-            var chave = String(link);
-            if (!obrasDplPorLink[chave]) obrasDplPorLink[chave] = [];
-            obrasDplPorLink[chave].push(item);
-          }
-        }
-
-        console.log('OBRAS_LINHAS_DPL carregado:', obrasDplData.length);
-        preencherServicos();
-        if (sreData && municipiosData) {
-          preencherRodovias();
-          preencherSREs();
-          preencherPropostas();
-          aplicarFiltros();
-        }
-      })
-      .catch(function(e) {
-        console.warn('Falha ao carregar OBRAS_LINHAS_DPL:', e);
-      });
-  }
-
-  function carregarTabelasDpj() {
-    Promise.all([
-      fetch('data/OBRAS_LINHAS_DPJ.json').then(function(r) { return r.json(); }),
-      carregarTabelaObrasAero()
-    ])
-      .then(function(resultado) {
-        var linhas = Array.isArray(resultado[0]) ? resultado[0] : [];
-        var aeros = registrosAeroPorOrigem(Array.isArray(resultado[1]) ? resultado[1] : [], 'DPJ');
-        obrasDpjData = linhas.concat(aeros);
-        obrasDpjPorLink = indexarObrasPorLink(obrasDpjData, ['LINK_DPJ', 'LINK_DPL', 'LINK_DMA', 'LINK_DOR', 'LINK_FUND']);
-
-        console.log('OBRAS_LINHAS_DPJ/OBRAS_AERO(DPJ) carregados:', obrasDpjData.length);
-        preencherServicos();
-        if (sreData && municipiosData) {
-          preencherRodovias();
-          preencherSREs();
-          preencherPropostas();
-          aplicarFiltros();
-        }
-      })
-      .catch(function(e) {
-        console.warn('Falha ao carregar OBRAS_LINHAS_DPJ:', e);
-      });
-  }
-
-  carregarTabelasFundeinfra();
-  carregarTabelasDor();
-  carregarTabelasDma();
-  carregarTabelasDpl();
-  carregarTabelasDpj();
+  carregarTabelasDadosUnificados();
   carregarTabelaObrasPontos();
   
   
@@ -2274,6 +2426,7 @@ map.addControl(new LogoMapaControl());
     if (btnAreasUrbanas) {
       btnAreasUrbanas.classList.toggle('ativo-filtro', areasUrbanasFiltroAtivo);
     }
+    atualizarBotoesAlteracoes();
   }
 
 
@@ -2294,6 +2447,10 @@ map.addControl(new LogoMapaControl());
       map.removeLayer(aeroObrasIconLayer);
       aeroObrasIconLayer = null;
     }
+    if (alteracoesLayer) {
+      map.removeLayer(alteracoesLayer);
+      alteracoesLayer = null;
+    }
     aeroObrasClusterRefs = [];
   }
 
@@ -2311,14 +2468,27 @@ map.addControl(new LogoMapaControl());
         }
       }
     }
+    if (valor === null || valor === undefined) {
+      var aliasesLinkIdcod = {
+        LINK_FUND: 'IDCOD_FUND',
+        LINK_DOR: 'IDCOD_DOR',
+        LINK_DMA: 'IDCOD_DMA',
+        LINK_DPL: 'IDCOD_DPL',
+        LINK_DPJ: 'IDCOD_DPJ',
+        LINK_DOC: 'IDCOD_DOC',
+        LINK_DSV: 'IDCOD_DSV'
+      };
+      var alias = aliasesLinkIdcod[String(campo || '').toUpperCase()];
+      if (alias) valor = valorSeguro(obj, alias);
+    }
     if (valor === null || valor === undefined) return '';
     return typeof valor === 'string' ? valor.trim() : valor;
   }
 
-  function featureComOrigemServico(feature, origem) {
+  function featureComOrigemIntervencao(feature, origem) {
     if (!feature) return feature;
     var props = Object.assign({}, feature.properties || {});
-    props.__ORIGEM_SERVICO = origem;
+    props.__ORIGEM_INTERVENCAO = origem;
 
     return {
       type: feature.type || 'Feature',
@@ -2328,8 +2498,8 @@ map.addControl(new LogoMapaControl());
     };
   }
 
-  function origemServicoFeature(feature) {
-    return valorSeguro(feature, '__ORIGEM_SERVICO');
+  function origemIntervencaoFeature(feature) {
+    return valorSeguro(feature, '__ORIGEM_INTERVENCAO');
   }
 
   function numeroSeguro(v) {
@@ -2650,7 +2820,7 @@ map.addControl(new LogoMapaControl());
     var select = document.getElementById('sreSelect');
     var valorAtual = select.value;
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
-    var filtrarPorOrigemServicoProposta = filtroOrigemServicoPropostaAtivo();
+    var filtrarPorOrigemIntervencaoProposta = filtroOrigemIntervencaoPropostaAtivo();
     var sres = [];
 
     select.innerHTML = '<option value="">Todos</option>';
@@ -2661,7 +2831,7 @@ map.addControl(new LogoMapaControl());
 
       if (!sre) return;
       if (rodoviaSelecionada && rodovia !== rodoviaSelecionada) return;
-      if (filtrarPorOrigemServicoProposta && feature.geometry && !featureAtendeOrigemServicoProposta(feature)) return;
+      if (filtrarPorOrigemIntervencaoProposta && feature.geometry && !featureAtendeOrigemIntervencaoProposta(feature)) return;
       adicionarUnico(sres, sre);
     }
 
@@ -2700,7 +2870,7 @@ map.addControl(new LogoMapaControl());
       var dadosFund = dadosFundeinfraDaFeature(feature);
 
       if (respeitarOrigem && !servicosAtivos.FUNDEINFRA) return;
-      if (servicoFiltroAtivo && (!dadosFund || dadosFund.SERVICO !== servicoFiltroAtivo)) return;
+      if (servicoFiltroAtivo && (!dadosFund || dadosFund.INTERVENCAO !== servicoFiltroAtivo)) return;
 
       if (dadosFund && dadosFund.PROPOSTA !== null && dadosFund.PROPOSTA !== undefined && String(dadosFund.PROPOSTA).trim() !== '') {
         adicionarUnico(propostas, String(dadosFund.PROPOSTA));
@@ -2733,7 +2903,7 @@ map.addControl(new LogoMapaControl());
     select.value = propostas.indexOf(valorAtual) !== -1 ? valorAtual : '';
   }
 
-  function preencherServicos() {
+  function preencherIntervencaos() {
     var select = document.getElementById('servicoSelect');
     if (!select) return;
     var valorAtual = select.value;
@@ -2741,14 +2911,14 @@ map.addControl(new LogoMapaControl());
 
     var servicos = [];
 
-    function addServicos(lista) {
+    function addIntervencaos(lista) {
       for (var i = 0; i < lista.length; i++) {
-        var s = lista[i] && lista[i].SERVICO;
+        var s = lista[i] && lista[i].INTERVENCAO;
         if (s && servicos.indexOf(s) === -1) servicos.push(s);
       }
     }
 
-    function addServicosPontos(lista) {
+    function addIntervencaosPontos(lista) {
       for (var i = 0; i < lista.length; i++) {
         var item = lista[i];
         var origem = origemObraPonto(item);
@@ -2759,12 +2929,12 @@ map.addControl(new LogoMapaControl());
     }
 
     var respeitarOrigem = algumaOrigemAtiva();
-    if (!respeitarOrigem || servicosAtivos.FUNDEINFRA) addServicos(obrasFundeinfraData);
-    if (!respeitarOrigem || servicosAtivos.DOR) addServicos(obrasDorData);
-    if (!respeitarOrigem || servicosAtivos.DMA) addServicos(obrasDmaData);
-    if (!respeitarOrigem || servicosAtivos.DPL) addServicos(obrasDplData);
-    if (!respeitarOrigem || servicosAtivos.DPJ) addServicos(obrasDpjData);
-    addServicosPontos(obrasPontosTabelaData);
+    if (!respeitarOrigem || servicosAtivos.FUNDEINFRA) addIntervencaos(obrasFundeinfraData);
+    if (!respeitarOrigem || servicosAtivos.DOR) addIntervencaos(obrasDorData);
+    if (!respeitarOrigem || servicosAtivos.DMA) addIntervencaos(obrasDmaData);
+    if (!respeitarOrigem || servicosAtivos.DPL) addIntervencaos(obrasDplData);
+    if (!respeitarOrigem || servicosAtivos.DPJ) addIntervencaos(obrasDpjData);
+    addIntervencaosPontos(obrasPontosTabelaData);
 
     servicos.sort(function(a, b) {
       return String(a).localeCompare(String(b), 'pt-BR');
@@ -2786,7 +2956,7 @@ map.addControl(new LogoMapaControl());
     }
   }
 
-  function obterFeaturesZoomServicos() {
+  function obterFeaturesZoomIntervencaos() {
     var rgSelecionada = document.getElementById('rgPlanSelect').value;
     var municipioSelecionado = document.getElementById('municipioSelect').value;
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
@@ -2851,7 +3021,7 @@ map.addControl(new LogoMapaControl());
       var feature = sreData.features[i];
       var dadosFund = dadosFundeinfraDaFeature(feature);
       if (!dadosFund || String(dadosFund.PROPOSTA) !== String(propostaSelecionada)) continue;
-      if (servicoFiltroAtivo && dadosFund.SERVICO !== servicoFiltroAtivo) continue;
+      if (servicoFiltroAtivo && dadosFund.INTERVENCAO !== servicoFiltroAtivo) continue;
 
       var nmMun = valorSeguro(feature, 'NM_MUN');
       var rgPlan = valorSeguro(feature, 'RG_PLAN');
@@ -2883,7 +3053,7 @@ map.addControl(new LogoMapaControl());
   function preencherRodovias() {
     var select = document.getElementById('rodoviaSelect');
     var valorAtual = select.value;
-    var filtrarPorOrigemServicoProposta = filtroOrigemServicoPropostaAtivo();
+    var filtrarPorOrigemIntervencaoProposta = filtroOrigemIntervencaoPropostaAtivo();
     var rodovias = [];
 
     select.innerHTML = '<option value="">Todas</option>';
@@ -2892,7 +3062,7 @@ map.addControl(new LogoMapaControl());
       var nome = nomeRodoviaFeature(feature);
 
       if (!nome) return;
-      if (filtrarPorOrigemServicoProposta && feature.geometry && !featureAtendeOrigemServicoProposta(feature)) return;
+      if (filtrarPorOrigemIntervencaoProposta && feature.geometry && !featureAtendeOrigemIntervencaoProposta(feature)) return;
       adicionarUnico(rodovias, nome);
     }
 
@@ -3000,7 +3170,7 @@ map.addControl(new LogoMapaControl());
     }
   }
 
-    function resetarBotoesServico() {
+    function resetarBotoesIntervencao() {
     var botoes = document.querySelectorAll('.servico-btn');
     for (var i = 0; i < botoes.length; i++) {
       botoes[i].classList.remove('ativo-filtro');
@@ -3008,7 +3178,7 @@ map.addControl(new LogoMapaControl());
     }
   }
 
-  function resetarSelectServico() {
+  function resetarSelectIntervencao() {
     document.getElementById('servicoSelect').value = '';
     servicoFiltroAtivo = '';
   }
@@ -3024,15 +3194,15 @@ map.addControl(new LogoMapaControl());
     resetarBotoesPrograma();
   }
 
-  function atualizarIndicadoresServicoEOAE(nomeMunicipio) {
-    resetarBotoesServico();
+  function atualizarIndicadoresIntervencaoEOAE(nomeMunicipio) {
+    resetarBotoesIntervencao();
     resetarBotaoOAE();
 
-    var botoesServicoGerais = document.querySelectorAll('.servico-btn');
-    for (var x = 0; x < botoesServicoGerais.length; x++) {
-      var chaveGeral = botoesServicoGerais[x].getAttribute('data-servico');
+    var botoesIntervencaoGerais = document.querySelectorAll('.servico-btn');
+    for (var x = 0; x < botoesIntervencaoGerais.length; x++) {
+      var chaveGeral = botoesIntervencaoGerais[x].getAttribute('data-servico');
       if (servicosAtivos[chaveGeral]) {
-        botoesServicoGerais[x].classList.add('ativo-filtro');
+        botoesIntervencaoGerais[x].classList.add('ativo-filtro');
       }
     }
   }
@@ -3465,13 +3635,13 @@ map.addControl(new LogoMapaControl());
     return false;
   }
 
-  function filtroOrigemServicoPropostaAtivo() {
+  function filtroOrigemIntervencaoPropostaAtivo() {
     var propostaSelect = document.getElementById('propostaSelect');
     var propostaSelecionada = propostaSelect ? propostaSelect.value : '';
     return algumaOrigemAtiva() || !!servicoFiltroAtivo || !!propostaSelecionada;
   }
 
-  function featureTemServicoAtivo(feature) {
+  function featureTemIntervencaoAtivo(feature) {
     var linkFund = valorSeguro(feature, 'LINK_FUND');
     var linkDor = valorSeguro(feature, 'LINK_DOR');
     var linkDma = valorSeguro(feature, 'LINK_DMA');
@@ -3486,7 +3656,7 @@ map.addControl(new LogoMapaControl());
     );
   }
 
-  function featureAtendeOrigemServicoProposta(feature) {
+  function featureAtendeOrigemIntervencaoProposta(feature) {
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
     var servico = servicoFiltroAtivo;
     var respeitarOrigem = algumaOrigemAtiva();
@@ -3496,13 +3666,13 @@ map.addControl(new LogoMapaControl());
       var dadosProposta = dadosFundeinfraDaFeature(feature);
       if (!dadosProposta) return false;
       if (String(dadosProposta.PROPOSTA) !== String(propostaSelecionada)) return false;
-      if (servico && dadosProposta.SERVICO !== servico) return false;
+      if (servico && dadosProposta.INTERVENCAO !== servico) return false;
       return true;
     }
 
     if (!respeitarOrigem || servicosAtivos.FUNDEINFRA) {
       var dadosFund = dadosFundeinfraDaFeature(feature);
-      if (dadosFund && (!servico || dadosFund.SERVICO === servico)) return true;
+      if (dadosFund && (!servico || dadosFund.INTERVENCAO === servico)) return true;
     }
 
     if ((!respeitarOrigem || servicosAtivos.DOR) && dadosDorDaFeatureFiltrados(feature, servico, '').length) return true;
@@ -4156,7 +4326,7 @@ map.addControl(new LogoMapaControl());
     var dados = dadosFundeinfraDaFeature(feature);
     if (!dados) return null;
     if (!servicosAtivos.FUNDEINFRA) return null;
-    if (servicoFiltroAtivo && dados.SERVICO !== servicoFiltroAtivo) return null;
+    if (servicoFiltroAtivo && dados.INTERVENCAO !== servicoFiltroAtivo) return null;
     if (proposta && String(dados.PROPOSTA) !== String(proposta)) return null;
     return dados;
   }
@@ -4179,7 +4349,7 @@ map.addControl(new LogoMapaControl());
 
     for (var i = 0; i < todos.length; i++) {
       var item = todos[i];
-      if (servico && item.SERVICO !== servico) continue;
+      if (servico && item.INTERVENCAO !== servico) continue;
       if (proposta && String(item.PROPOSTA) !== String(proposta)) continue;
       filtrados.push(item);
     }
@@ -4205,7 +4375,7 @@ map.addControl(new LogoMapaControl());
 
     for (var i = 0; i < todos.length; i++) {
       var item = todos[i];
-      if (servico && item.SERVICO !== servico) continue;
+      if (servico && item.INTERVENCAO !== servico) continue;
       filtrados.push(item);
     }
 
@@ -4230,7 +4400,7 @@ map.addControl(new LogoMapaControl());
 
     for (var i = 0; i < todos.length; i++) {
       var item = todos[i];
-      if (servico && item.SERVICO !== servico) continue;
+      if (servico && item.INTERVENCAO !== servico) continue;
       filtrados.push(item);
     }
 
@@ -4255,7 +4425,7 @@ map.addControl(new LogoMapaControl());
 
     for (var i = 0; i < todos.length; i++) {
       var item = todos[i];
-      if (servico && item.SERVICO !== servico) continue;
+      if (servico && item.INTERVENCAO !== servico) continue;
       filtrados.push(item);
     }
 
@@ -4271,29 +4441,29 @@ map.addControl(new LogoMapaControl());
     lista.push({ origem: origem, proposta: proposta, chave: chave });
   }
 
-  function adicionarReferenciaItem(lista, origem, item) {
-    if (item === null || item === undefined || String(item).trim() === '') return;
-    var chave = origem + '|ITEM|' + String(item);
+  function adicionarReferenciaIdcod(lista, origem, idcod) {
+    if (idcod === null || idcod === undefined || String(idcod).trim() === '') return;
+    var chave = origem + '|IDCOD|' + String(idcod);
     for (var i = 0; i < lista.length; i++) {
       if (lista[i].chave === chave) return;
     }
-    lista.push({ origem: origem, item: item, chave: chave });
+    lista.push({ origem: origem, idcod: idcod, chave: chave });
   }
 
   function referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos) {
     var referencias = [];
     if (dadosFund) adicionarReferenciaProposta(referencias, 'FUNDEINFRA', dadosFund.PROPOSTA);
     for (var i = 0; i < dadosDorTodos.length; i++) {
-      adicionarReferenciaItem(referencias, 'DOR', dadosDorTodos[i].ITEM);
+      adicionarReferenciaIdcod(referencias, 'DOR', dadosDorTodos[i].IDCOD);
     }
     for (var d = 0; d < dadosDmaTodos.length; d++) {
-      adicionarReferenciaItem(referencias, 'DMA', dadosDmaTodos[d].ITEM);
+      adicionarReferenciaIdcod(referencias, 'DMA', dadosDmaTodos[d].IDCOD);
     }
     for (var p = 0; p < dadosDplTodos.length; p++) {
-      adicionarReferenciaItem(referencias, 'DPL', dadosDplTodos[p].ITEM);
+      adicionarReferenciaIdcod(referencias, 'DPL', dadosDplTodos[p].IDCOD);
     }
     for (var j = 0; j < dadosDpjTodos.length; j++) {
-      adicionarReferenciaItem(referencias, 'DPJ', dadosDpjTodos[j].ITEM);
+      adicionarReferenciaIdcod(referencias, 'DPJ', dadosDpjTodos[j].IDCOD);
     }
     return referencias;
   }
@@ -4306,25 +4476,25 @@ map.addControl(new LogoMapaControl());
     if (referencia.origem === 'DOR') {
       var dadosDor = dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
       for (var i = 0; i < dadosDor.length; i++) {
-        if (String(dadosDor[i].ITEM) === String(referencia.item)) return true;
+        if (String(dadosDor[i].IDCOD) === String(referencia.idcod)) return true;
       }
     }
     if (referencia.origem === 'DMA') {
       var dadosDma = dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
       for (var d = 0; d < dadosDma.length; d++) {
-        if (String(dadosDma[d].ITEM) === String(referencia.item)) return true;
+        if (String(dadosDma[d].IDCOD) === String(referencia.idcod)) return true;
       }
     }
     if (referencia.origem === 'DPL') {
       var dadosDpl = dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
       for (var p = 0; p < dadosDpl.length; p++) {
-        if (String(dadosDpl[p].ITEM) === String(referencia.item)) return true;
+        if (String(dadosDpl[p].IDCOD) === String(referencia.idcod)) return true;
       }
     }
     if (referencia.origem === 'DPJ') {
       var dadosDpj = dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
       for (var j = 0; j < dadosDpj.length; j++) {
-        if (String(dadosDpj[j].ITEM) === String(referencia.item)) return true;
+        if (String(dadosDpj[j].IDCOD) === String(referencia.idcod)) return true;
       }
     }
     return false;
@@ -4373,61 +4543,60 @@ map.addControl(new LogoMapaControl());
     var itensDpj = [];
     for (var i = 0; i < referencias.length; i++) {
       if (referencias[i].origem === 'DOR') {
-        adicionarUnico(itensDor, String(referencias[i].item));
+        adicionarUnico(itensDor, String(referencias[i].idcod));
       } else if (referencias[i].origem === 'DMA') {
-        adicionarUnico(itensDma, String(referencias[i].item));
+        adicionarUnico(itensDma, String(referencias[i].idcod));
       } else if (referencias[i].origem === 'DPL') {
-        adicionarUnico(itensDpl, String(referencias[i].item));
+        adicionarUnico(itensDpl, String(referencias[i].idcod));
       } else if (referencias[i].origem === 'DPJ') {
-        adicionarUnico(itensDpj, String(referencias[i].item));
+        adicionarUnico(itensDpj, String(referencias[i].idcod));
       } else {
         adicionarUnico(propostas, String(referencias[i].proposta));
       }
     }
     var titulo = 'Dados do SRE';
     if (propostas.length) titulo += ' - Proposta ' + propostas.join(', ');
-    if (itensDor.length) titulo += ' - Item DOR ' + itensDor.join(', ');
-    if (itensDma.length) titulo += ' - Item DMA ' + itensDma.join(', ');
-    if (itensDpl.length) titulo += ' - Item DPL ' + itensDpl.join(', ');
-    if (itensDpj.length) titulo += ' - Item DPJ ' + itensDpj.join(', ');
+    if (itensDor.length) titulo += ' - IDCOD DOR ' + itensDor.join(', ');
+    if (itensDma.length) titulo += ' - IDCOD DMA ' + itensDma.join(', ');
+    if (itensDpl.length) titulo += ' - IDCOD DPL ' + itensDpl.join(', ');
+    if (itensDpj.length) titulo += ' - IDCOD DPJ ' + itensDpj.join(', ');
 
-    var html = `
-        <div class="bloco-servico">
-          <div class="titulo-servico titulo-cinza">${escapeHtml(titulo)}</div>
-          <table class="tabela-servico">
-            <tr><th>SRE</th><th>Rodovia</th><th>Trecho</th><th>Extensão</th></tr>`;
-
+    var registros = [];
     var totalExtensao = 0;
     for (var f = 0; f < features.length; f++) {
       var p = features[f].properties || {};
       var extensao = valorExtensaoKmFeature(features[f]);
       var numeroExtensao = Number(String(extensao).replace(',', '.'));
       if (isFinite(numeroExtensao)) totalExtensao += numeroExtensao;
-      html += `
-            <tr>
-              <td>${escapeHtml(p.sre || p.SRE || '')}</td>
-              <td>${escapeHtml(p.RODOVIA || p.rodovia || '')}</td>
-              <td>${escapeHtml(valorTrechoFeature(features[f]))}</td>
-              <td>${escapeHtml(extensao)} km</td>
-            </tr>`;
+      registros.push({
+        SRE: p.sre || p.SRE || '',
+        RODOVIA: p.RODOVIA || p.rodovia || '',
+        TRECHO: valorTrechoFeature(features[f]),
+        EXTENSAO: extensao === '' ? '' : String(extensao) + ' km'
+      });
     }
 
-    html += `
-            <tr>
-              <th colspan="3">Total</th>
-              <th>${escapeHtml(totalExtensao.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))} km</th>
-            </tr>`;
+    if (features.length > 1) {
+      registros.push({
+        SRE: 'Total',
+        EXTENSAO: totalExtensao.toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + ' km'
+      });
+    }
 
-    html += `
-          </table>
-        </div>`;
-    return html;
+    var html = tabelaRegistrosHtml(titulo, registros, [
+      { chave: 'SRE', rotulo: 'SRE' },
+      { chave: 'RODOVIA', rotulo: 'Rodovia' },
+      { chave: 'TRECHO', rotulo: 'Trecho' },
+      { chave: 'EXTENSAO', rotulo: 'Extensão' }
+    ]);
+    return html.replace('titulo-servico', 'titulo-servico titulo-cinza');
   }
-
   function dadosObrasPontosDaFeatureTodos(feature) {
-    var link = valorSeguro(feature, 'LINK');
-    if (!link) return [];
-    var dados = obrasPontosPorLink[String(link)] || [];
+    var props = feature && feature.properties ? feature.properties : {};
+    var chave = props.__PONTO_TABELA_COORDENADA ? props.__CHAVE_AGREGADORA_PONTO : valorSeguro(feature, 'LINK');
+    if (!chave) return [];
+    var dados = obrasPontosPorLink[String(chave).trim()] || [];
+    if (!dados.length && props.__PONTO_TABELA_COORDENADA && props.__DADOS_OBRA_PONTO) return [props.__DADOS_OBRA_PONTO];
     return Array.isArray(dados) ? dados : [dados];
   }
 
@@ -4437,17 +4606,16 @@ map.addControl(new LogoMapaControl());
   }
 
   function origemObraPonto(dados) {
-    var origem = String((dados && dados.ORIGEM) || 'FUNDEINFRA').trim().toUpperCase();
-    return origem || 'FUNDEINFRA';
+    return origemNormalizadaObraPonto(dados);
   }
 
   function rotuloIdentificadorObraPonto(dados) {
-    return origemObraPonto(dados) === 'FUNDEINFRA' ? 'Proposta' : 'Item';
+    return origemObraPonto(dados) === 'FUNDEINFRA' ? 'Proposta' : 'IDCOD';
   }
 
   function valorIdentificadorObraPonto(dados) {
     if (!dados) return '';
-    return origemObraPonto(dados) === 'FUNDEINFRA' ? dados.PROPOSTA : dados.ITEM;
+    return origemObraPonto(dados) === 'FUNDEINFRA' ? dados.PROPOSTA : (dados.IDCOD || dados.LINK || '');
   }
 
   function rotuloColunaIdentificadorObraPonto(dadosLista) {
@@ -4459,20 +4627,29 @@ map.addControl(new LogoMapaControl());
       else temOutrasOrigens = true;
     }
 
-    if (temFundeinfra && temOutrasOrigens) return 'Proposta/Item';
-    return temFundeinfra ? 'Proposta' : 'Item';
+    if (temFundeinfra && temOutrasOrigens) return 'Proposta/IDCOD';
+    return temFundeinfra ? 'Proposta' : 'IDCOD';
+  }
+
+  function intervencaoEhOAE(dados) {
+    return valorIntervencaoDados(dados).toUpperCase().indexOf('OAE') >= 0;
   }
 
   function tipoObraPonto(dados) {
-    return String((dados && dados.TIPO) || '').trim().toUpperCase();
+    var tipo = String((dados && dados.TIPO) || '').trim().toUpperCase();
+    if (tipo === 'PONTO' || tipo === 'LINHA') {
+      if (intervencaoEhOAE(dados)) return 'OAE';
+      return valorIntervencaoDados(dados).toUpperCase();
+    }
+    return tipo;
   }
 
   function valorFiltroObraPonto(dados) {
-    return String((dados && (dados.TIPO || dados.SERVICO)) || '').trim();
+    return valorIntervencaoDados(dados);
   }
 
   function algumaOrigemObraPontoAtiva() {
-    return !!(servicosAtivos.FUNDEINFRA || servicosAtivos.DOC || servicosAtivos.DOR || servicosAtivos.DMA || servicosAtivos.DPL || servicosAtivos.DPJ);
+    return !!(servicosAtivos.FUNDEINFRA || servicosAtivos.DOC || servicosAtivos.DSV || servicosAtivos.DOR || servicosAtivos.DMA || servicosAtivos.DPL || servicosAtivos.DPJ);
   }
 
   function algumaOrigemObraAeroAtiva() {
@@ -4567,7 +4744,7 @@ map.addControl(new LogoMapaControl());
     var registro = {
       ORIGEM: origem,
       TIPO: tipo,
-      SERVICO: (dados && dados.SERVICO) || '',
+      INTERVENCAO: (dados && dados.INTERVENCAO) || '',
       ETAPA: (dados && dados.ETAPA) || '',
       PROPOSTA_ITEM: valorItemExportacao(dados),
       RODOVIA: nomeRodoviaFeature(feature),
@@ -4652,7 +4829,7 @@ map.addControl(new LogoMapaControl());
         for (var ip = 0; ip < dadosPontos.length; ip++) {
           var itemPonto = dadosPontos[ip];
           linhas.push(registroExportacao(ponto, origemObraPonto(itemPonto), 'Obra pontual', Object.assign({}, itemPonto, {
-            SERVICO: itemPonto.SERVICO || 'Obra pontual'
+            INTERVENCAO: itemPonto.INTERVENCAO || 'Obra pontual'
           })));
         }
       }
@@ -4668,7 +4845,7 @@ map.addControl(new LogoMapaControl());
         for (var ia = 0; ia < dadosAero.length; ia++) {
           var itemAero = dadosAero[ia];
           linhas.push(registroExportacao(aero, origemObraPonto(itemAero), 'Obra em aeródromo/aeroporto', Object.assign({}, itemAero, {
-            SERVICO: itemAero.SERVICO || 'Aeródromos'
+            INTERVENCAO: itemAero.INTERVENCAO || 'Aeródromos'
           })));
         }
       }
@@ -4701,7 +4878,7 @@ map.addControl(new LogoMapaControl());
   }
 
   function colunasExportacao(linhas) {
-    var principais = ['ORIGEM', 'TIPO', 'SERVICO', 'ETAPA', 'PROPOSTA_ITEM', 'RODOVIA', 'SRE', 'TRECHO', 'EXT_KM', 'MUNICIPIO', 'REGIAO_PLANEJAMENTO', 'LINK'];
+    var principais = ['ORIGEM', 'TIPO', 'INTERVENCAO', 'ETAPA', 'PROPOSTA_ITEM', 'RODOVIA', 'SRE', 'TRECHO', 'EXT_KM', 'MUNICIPIO', 'REGIAO_PLANEJAMENTO', 'LINK'];
     var vistas = {};
     var colunas = [];
 
@@ -4772,7 +4949,7 @@ map.addControl(new LogoMapaControl());
   }
 
     function estiloDor(dados) {
-      var servico = String((dados && dados.SERVICO) || '').toLowerCase();
+      var servico = String((dados && dados.INTERVENCAO) || '').toLowerCase();
       var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
       var cor = '#666666';
       var tipoLinha = 'NORMAL';
@@ -4793,7 +4970,7 @@ map.addControl(new LogoMapaControl());
         cor: cor,
         tipo_linha: tipoLinha,
         espessura: 7,
-        legenda: ((dados && dados.SERVICO) || 'Serviço') + ' - ' + ((dados && dados.ETAPA) || 'Etapa')
+        legenda: ((dados && dados.INTERVENCAO) || 'Intervenção') + ' - ' + ((dados && dados.ETAPA) || 'Etapa')
       };
     }
 
@@ -4816,7 +4993,7 @@ map.addControl(new LogoMapaControl());
   }
 
   function estiloFundeinfra(dados) {
-    var servico = String((dados && dados.SERVICO) || '').toLowerCase();
+    var servico = String((dados && dados.INTERVENCAO) || '').toLowerCase();
     var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
     var cor = '#666666';
 
@@ -4829,7 +5006,7 @@ map.addControl(new LogoMapaControl());
       cor: cor,
       tipo_linha: etapa.indexOf('projeto') >= 0 ? 'COM LINHA BRANCA' : 'NORMAL',
       espessura: 9,
-      legenda: ((dados && dados.SERVICO) || 'Serviço') + ' - ' + ((dados && dados.ETAPA) || 'Etapa')
+      legenda: ((dados && dados.INTERVENCAO) || 'Intervenção') + ' - ' + ((dados && dados.ETAPA) || 'Etapa')
     };
   }
 
@@ -4902,7 +5079,7 @@ map.addControl(new LogoMapaControl());
     } else {
       identificador = dados && dados.ITEM !== null && dados.ITEM !== undefined ? String(dados.ITEM) : '';
     }
-    var titulo = origem + ' - ' + ((dados && dados.SERVICO) || 'Servico') + ' - ' + ((dados && dados.ETAPA) || 'Etapa');
+    var titulo = origem + ' - ' + ((dados && dados.INTERVENCAO) || 'Intervencao') + ' - ' + ((dados && dados.ETAPA) || 'Etapa');
     var anguloOffset = isFinite(angulo) ? angulo + 90 : 0;
 
     return L.marker(latlng, {
@@ -5148,6 +5325,485 @@ map.addControl(new LogoMapaControl());
     });
   }
 
+  function valorExibicao(valor) {
+    if (valor === null || valor === undefined) return '';
+    if (typeof valor === 'string') return valor.trim();
+    return valor;
+  }
+
+  function campoPreenchido(valor) {
+    return valorExibicao(valor) !== '';
+  }
+
+  function htmlCampoPopup(rotulo, valor, sufixo) {
+    var exibicao = valorExibicao(valor);
+    if (exibicao === '') return '';
+    return '<b>' + escapeHtml(rotulo) + ':</b> ' + escapeHtml(exibicao) + (sufixo || '') + '<br>';
+  }
+
+  function htmlCamposPopup(dados, campos) {
+    var html = '';
+    for (var i = 0; i < campos.length; i++) {
+      html += htmlCampoPopup(campos[i].rotulo, dados && dados[campos[i].chave]);
+    }
+    return html.replace(/<br>$/, '');
+  }
+
+  function camposVisiveisTabela(registros, campos) {
+    var visiveis = [];
+    for (var c = 0; c < campos.length; c++) {
+      var campo = campos[c];
+      for (var i = 0; i < registros.length; i++) {
+        if (campoPreenchido(registros[i] && registros[i][campo.chave])) {
+          visiveis.push(campo);
+          break;
+        }
+      }
+    }
+    return visiveis;
+  }
+
+  function tabelaRegistrosHtml(titulo, registros, campos) {
+    if (!registros || !registros.length) return '';
+    var camposVisiveis = camposVisiveisTabela(registros, campos);
+    if (!camposVisiveis.length) return '';
+
+    var html = '<div class="bloco-servico">' +
+      '<div class="titulo-servico">' + escapeHtml(titulo) + '</div>' +
+      '<table class="tabela-servico"><tr>';
+
+    for (var c = 0; c < camposVisiveis.length; c++) {
+      html += '<th>' + escapeHtml(camposVisiveis[c].rotulo) + '</th>';
+    }
+
+    html += '</tr>';
+    for (var i = 0; i < registros.length; i++) {
+      var classeLinha = registros[i] && registros[i].__SELECIONADO_GRUPO ? ' class="linha-selecionada-grupo"' : '';
+      html += '<tr' + classeLinha + '>';
+      for (var d = 0; d < camposVisiveis.length; d++) {
+        html += '<td>' + escapeHtml(valorExibicao(registros[i][camposVisiveis[d].chave])) + '</td>';
+      }
+      html += '</tr>';
+    }
+
+    return html + '</table></div>';
+  }
+
+  var CORES_ALTERACAO = {
+    'Estadualiza\u00e7\u00e3o': '#159447',
+    'Federaliza\u00e7\u00e3o': '#1d4ed8',
+    'Municipaliza\u00e7\u00e3o': '#dc2626'
+  };
+
+  var CAMPOS_ALTERACOES_POPUP = [
+    { chave: 'TIPO', rotulo: 'Tipo' },
+    { chave: 'PROCESSO', rotulo: 'Processo' },
+    { chave: 'MUNICIPIOS', rotulo: 'Munic\u00edpios' },
+    { chave: 'SITUACAO_ATUAL', rotulo: 'Situa\u00e7\u00e3o atual' }
+  ];
+
+  var CAMPOS_ALTERACOES_TABELA = [
+    { chave: 'ID', rotulo: 'ID' },
+    { chave: 'TIPO', rotulo: 'Tipo' },
+    { chave: 'PROCESSO', rotulo: 'Processo' },
+    { chave: 'MUNICIPIOS', rotulo: 'Munic\u00edpios' },
+    { chave: 'RODOVIA', rotulo: 'Rodovia' },
+    { chave: 'EXTENSAO_KM', rotulo: 'Extens\u00e3o km' },
+    { chave: 'PORTARIA_SRE', rotulo: 'Portaria SRE' },
+    { chave: 'TRECHO', rotulo: 'Trecho' },
+    { chave: 'LEI_MUNICIPAL', rotulo: 'Lei municipal' },
+    { chave: 'EXPOSICAO_DE_MOTIVOS', rotulo: 'Exposi\u00e7\u00e3o de motivos' },
+    { chave: 'LEI_ESTADUAL', rotulo: 'Lei estadual' },
+    { chave: 'TERMO_DE_TRANSFERENCIA', rotulo: 'Termo de transfer\u00eancia' },
+    { chave: 'SITUACAO_ATUAL', rotulo: 'Situa\u00e7\u00e3o atual' }
+  ];
+
+  function atualizarBotoesAlteracoes() {
+    var botoes = document.querySelectorAll('.alteracao-btn');
+    for (var i = 0; i < botoes.length; i++) {
+      var tipo = botoes[i].getAttribute('data-alteracao');
+      botoes[i].classList.toggle('ativo-filtro', !!alteracoesAtivas[tipo]);
+      botoes[i].classList.remove('ativo-municipio');
+    }
+  }
+
+  function definirAlteracoesAtivas(valor) {
+    for (var i = 0; i < TIPOS_ALTERACAO.length; i++) {
+      alteracoesAtivas[TIPOS_ALTERACAO[i]] = !!valor;
+    }
+    atualizarBotoesAlteracoes();
+  }
+
+  function algumaAlteracaoAtiva() {
+    for (var i = 0; i < TIPOS_ALTERACAO.length; i++) {
+      if (alteracoesAtivas[TIPOS_ALTERACAO[i]]) return true;
+    }
+    return false;
+  }
+
+  function normalizarAlteracaoRegistro(item) {
+    var registro = {};
+    item = item || {};
+    for (var i = 0; i < CAMPOS_ALTERACOES_TABELA.length; i++) {
+      var chave = CAMPOS_ALTERACOES_TABELA[i].chave;
+      registro[chave] = item[chave];
+    }
+    return registro;
+  }
+
+  function atualizarAlteracoesTabela(registros) {
+    alteracoesTabelaData = Array.isArray(registros) ? registros.map(normalizarAlteracaoRegistro) : [];
+    alteracoesPorId = {};
+    for (var i = 0; i < alteracoesTabelaData.length; i++) {
+      var id = alteracoesTabelaData[i].ID;
+      if (id === null || id === undefined || String(id).trim() === '') continue;
+      alteracoesPorId[String(id).trim()] = alteracoesTabelaData[i];
+    }
+  }
+
+  function dadosAlteracaoDaFeature(feature) {
+    var id = valorSeguro(feature, 'ID');
+    if (id === null || id === undefined || String(id).trim() === '') return null;
+    return alteracoesPorId[String(id).trim()] || null;
+  }
+
+  function corAlteracao(tipo) {
+    return CORES_ALTERACAO[tipo] || '#64748b';
+  }
+
+  function construirPopupAlteracao(feature) {
+    var dados = dadosAlteracaoDaFeature(feature);
+    if (!dados) return '<b>Nenhum dado encontrado</b>';
+    return htmlCamposPopup(dados, CAMPOS_ALTERACOES_POPUP) || '<b>Nenhum dado encontrado</b>';
+  }
+
+  function atualizarPainelInferiorAlteracao(feature) {
+    var dados = dadosAlteracaoDaFeature(feature);
+    var registros = dados ? [dados] : [];
+    var html = tabelaRegistrosHtml('Altera\u00e7\u00f5es de Jurisdi\u00e7\u00e3o', registros, CAMPOS_ALTERACOES_TABELA);
+    if (html) html += htmlAcoesTabelaCompleta('alteracao');
+    document.getElementById('painelTabelaConteudo').innerHTML = html || '<em>Nenhum dado encontrado para este trecho.</em>';
+  }
+
+  function desenharAlteracoesJuridicao() {
+    if (alteracoesLayer) {
+      map.removeLayer(alteracoesLayer);
+      alteracoesLayer = null;
+    }
+    if (!alteracoesData || !alteracoesData.features || !algumaAlteracaoAtiva()) return {};
+
+    var features = [];
+    var legendas = {};
+    for (var i = 0; i < alteracoesData.features.length; i++) {
+      var feature = alteracoesData.features[i];
+      var dados = dadosAlteracaoDaFeature(feature);
+      if (!dados || !alteracoesAtivas[dados.TIPO]) continue;
+      features.push(feature);
+      legendas[dados.TIPO] = corAlteracao(dados.TIPO);
+    }
+    if (!features.length) return legendas;
+
+    var sombra = L.geoJSON({ type: 'FeatureCollection', features: features }, {
+      pane: 'servicosPane',
+      interactive: false,
+      style: function(feature) {
+        var dados = dadosAlteracaoDaFeature(feature);
+        return {
+          color: dados ? corAlteracao(dados.TIPO) : '#111827',
+          weight: 10,
+          opacity: 0.20,
+          lineCap: 'round',
+          lineJoin: 'round'
+        };
+      }
+    });
+
+    var linhas = L.geoJSON({ type: 'FeatureCollection', features: features }, {
+      pane: 'servicosPane',
+      style: function(feature) {
+        var dados = dadosAlteracaoDaFeature(feature);
+        return {
+          color: dados ? corAlteracao(dados.TIPO) : '#64748b',
+          weight: 5,
+          opacity: 0.95,
+          lineCap: 'round',
+          lineJoin: 'round'
+        };
+      },
+      onEachFeature: function(feature, layer) {
+        layer.bindPopup(construirPopupAlteracao(feature));
+        layer.on('click', function() {
+          atualizarPainelInferiorAlteracao(feature);
+        });
+      }
+    });
+
+    alteracoesLayer = L.layerGroup([sombra, linhas]).addTo(map);
+    return legendas;
+  }
+
+  var CAMPOS_LINHA_FUNDEINFRA = [
+    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'PROPOSTA', rotulo: 'Proposta' },
+    { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
+    { chave: 'ETAPA', rotulo: 'Etapa' },
+    { chave: 'STATUS', rotulo: 'Status' },
+    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'CONCLUSAO', rotulo: 'Conclusão' },
+    { chave: 'MODALIDADE', rotulo: 'Modalidade' },
+    { chave: 'EMPRESA', rotulo: 'Empresa' },
+    { chave: 'CONTRATO', rotulo: 'Contrato' },
+    { chave: 'PROCESSO_SEI_CONTRATACAO', rotulo: 'Processo SEI Contratação' }
+  ];
+
+  var CAMPOS_LINHA_FUNDEINFRA_TABELA = CAMPOS_LINHA_FUNDEINFRA.concat([
+    { chave: 'DESCRICAO', rotulo: 'Descrição' },
+    { chave: 'ATUALIZACAO', rotulo: 'Atualização' }
+  ]);
+
+  var CAMPOS_LINHA_UNIDADE = [
+    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
+    { chave: 'ETAPA', rotulo: 'Etapa' },
+    { chave: 'STATUS', rotulo: 'Status' },
+    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'CONCLUSAO', rotulo: 'Conclusão' }
+  ];
+
+  var CAMPOS_LINHA_UNIDADE_TABELA = CAMPOS_LINHA_UNIDADE.concat([
+    { chave: 'DESCRICAO', rotulo: 'Descrição' },
+    { chave: 'ATUALIZACAO', rotulo: 'Atualização' }
+  ]);
+
+  var CAMPOS_LISTA_LINHAS_FILTRADAS = [
+    { chave: '__ORIGEM_LISTA', rotulo: 'Origem' },
+    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'PROPOSTA', rotulo: 'Proposta' },
+    { chave: 'INTERVENCAO', rotulo: 'Interven\u00e7\u00e3o' },
+    { chave: 'ETAPA', rotulo: 'Etapa' },
+    { chave: 'STATUS', rotulo: 'Status' },
+    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'DESCRICAO', rotulo: 'Descri\u00e7\u00e3o' },
+    { chave: 'ATUALIZACAO', rotulo: 'Atualiza\u00e7\u00e3o' }
+  ];
+
+  var CAMPOS_LISTA_PONTOS_FILTRADOS = [
+    { chave: '__ORIGEM_LISTA', rotulo: 'Origem' },
+    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'PROPOSTA', rotulo: 'Proposta' },
+    { chave: 'LOCALIDADE', rotulo: 'Localidade' },
+    { chave: 'INTERVENCAO', rotulo: 'Interven\u00e7\u00e3o' },
+    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'CONTRATO', rotulo: 'Contrato' },
+    { chave: 'RODOVIA', rotulo: 'Rodovia' },
+    { chave: 'ETAPA', rotulo: 'Etapa' },
+    { chave: 'STATUS', rotulo: 'Status' },
+    { chave: 'DESCRICAO', rotulo: 'Descri\u00e7\u00e3o' },
+    { chave: 'ATUALIZACAO', rotulo: 'Atualiza\u00e7\u00e3o' }
+  ];
+
+  function htmlAcoesTabelaCompleta(tipo) {
+    return '<div class="painel-tabela-acoes">' +
+      '<button type="button" class="btn-tabela-acao" data-lista-filtrada="' + tipo + '">Mostrar todos registros</button>' +
+      '</div>';
+  }
+
+  function limparDestaqueTabelaCompleta() {
+    if (destaqueTabelaCompletaLayer) {
+      map.removeLayer(destaqueTabelaCompletaLayer);
+      destaqueTabelaCompletaLayer = null;
+    }
+  }
+
+  function registrarZoomTabelaCompleta(feature, tipo) {
+    var id = registrosZoomTabelaCompleta.length;
+    registrosZoomTabelaCompleta.push({ feature: feature, tipo: tipo });
+    return id;
+  }
+
+  function prepararRegistroListaCompleta(dados, origem, feature, tipo) {
+    var registro = Object.assign({}, dados || {});
+    registro.__ORIGEM_LISTA = origem || '';
+    registro.__ZOOM_ID = registrarZoomTabelaCompleta(feature, tipo);
+    return registro;
+  }
+
+  function rotuloCampoListaCompleta(chave) {
+    if (chave === '__ORIGEM_LISTA') return 'Origem';
+    return String(chave).replace(/_/g, ' ');
+  }
+
+  function camposTodosPreenchidosTabelaCompleta(registros) {
+    var ordem = [];
+    var vistos = {};
+    function adicionar(chave) {
+      if (!chave || chave === '__ZOOM_ID' || chave === '__SELECIONADO_GRUPO' || vistos[chave]) return;
+      vistos[chave] = true;
+      ordem.push(chave);
+    }
+    adicionar('__ORIGEM_LISTA');
+    for (var i = 0; i < registros.length; i++) {
+      var chaves = Object.keys(registros[i] || {});
+      for (var c = 0; c < chaves.length; c++) adicionar(chaves[c]);
+    }
+    var campos = [];
+    for (var o = 0; o < ordem.length; o++) {
+      var chave = ordem[o];
+      for (var r = 0; r < registros.length; r++) {
+        if (campoPreenchido(registros[r][chave])) {
+          campos.push({ chave: chave, rotulo: rotuloCampoListaCompleta(chave) });
+          break;
+        }
+      }
+    }
+    return campos;
+  }
+
+  function tabelaRegistrosComZoomHtml(titulo, registros, campos) {
+    if (!registros || !registros.length) return '';
+    var camposVisiveis = camposTodosPreenchidosTabelaCompleta(registros);
+    var html = '<div class="bloco-servico bloco-lista-filtrada">' +
+      '<div class="titulo-servico">' + escapeHtml(titulo) + '</div>' +
+      '<div class="busca-lista-filtrada-wrap"><input id="buscaListaFiltrada" class="busca-lista-filtrada" type="search" placeholder="Pesquisar nesta tabela" autocomplete="off" /></div>' +
+      '<table class="tabela-servico tabela-lista-filtrada"><tr><th>Zoom</th>';
+    for (var c = 0; c < camposVisiveis.length; c++) html += '<th>' + escapeHtml(camposVisiveis[c].rotulo) + '</th>';
+    html += '</tr>';
+    for (var i = 0; i < registros.length; i++) {
+      html += '<tr data-linha-zoom="' + registros[i].__ZOOM_ID + '"><td><button type="button" class="btn-zoom-registro" data-zoom-registro="' + registros[i].__ZOOM_ID + '">Zoom</button></td>';
+      for (var d = 0; d < camposVisiveis.length; d++) html += '<td>' + escapeHtml(valorExibicao(registros[i][camposVisiveis[d].chave])) + '</td>';
+      html += '</tr>';
+    }
+    return html + '</table></div>';
+  }
+
+  function featureAtendeFiltrosLinhaLista(feature, rodoviaSelecionada, sreSelecionado) {
+    if (rodoviaSelecionada && nomeRodoviaFeature(feature) !== rodoviaSelecionada) return false;
+    if (sreSelecionado && nomeSREFeature(feature) !== sreSelecionado) return false;
+    return true;
+  }
+
+  function coletarLinhasFiltradasParaTabela() {
+    var registros = [];
+    var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
+    var sreSelecionado = document.getElementById('sreSelect').value;
+    var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+    var linksFundIncluidos = {};
+    if (!sreData || !sreData.features) return registros;
+    function addLista(feature, origem, lista) {
+      for (var i = 0; i < lista.length; i++) registros.push(prepararRegistroListaCompleta(lista[i], origem, feature, 'linha'));
+    }
+    if (servicosAtivos.FUNDEINFRA) {
+      for (var f = 0; f < sreData.features.length; f++) {
+        var featureFund = sreData.features[f];
+        var linkFund = valorSeguro(featureFund, 'LINK_FUND');
+        if (!linkFund) continue;
+        if (!featureAtendeFiltrosLinhaLista(featureFund, rodoviaSelecionada, sreSelecionado)) continue;
+        var dadosFund = dadosFundeinfraDaFeatureFiltrado(featureFund, propostaSelecionada);
+        if (!dadosFund) continue;
+        addLista(featureFund, 'FUNDEINFRA', [dadosFund]);
+        linksFundIncluidos[String(linkFund)] = true;
+      }
+    }
+    var configs = [
+      { origem: 'DOR', campo: 'LINK_DOR', fn: dadosDorDaFeatureFiltrados },
+      { origem: 'DMA', campo: 'LINK_DMA', fn: dadosDmaDaFeatureFiltrados },
+      { origem: 'DPL', campo: 'LINK_DPL', fn: dadosDplDaFeatureFiltrados },
+      { origem: 'DPJ', campo: 'LINK_DPJ', fn: dadosDpjDaFeatureFiltrados }
+    ];
+    for (var c = 0; c < configs.length; c++) {
+      var cfg = configs[c];
+      if (!servicosAtivos[cfg.origem]) continue;
+      for (var i = 0; i < sreData.features.length; i++) {
+        var feature = sreData.features[i];
+        if (!valorSeguro(feature, cfg.campo)) continue;
+        if (servicosAtivos.FUNDEINFRA && valorSeguro(feature, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(feature, 'LINK_FUND'))]) continue;
+        if (!featureAtendeFiltrosLinhaLista(feature, rodoviaSelecionada, sreSelecionado)) continue;
+        addLista(feature, cfg.origem, cfg.fn(feature, servicoFiltroAtivo, ''));
+      }
+    }
+    return registros;
+  }
+
+  function coletarPontosFiltradosParaTabela() {
+    var registros = [];
+    var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
+    var sreSelecionado = document.getElementById('sreSelect').value;
+    var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
+    var featuresMunicipios = municipiosFiltrados();
+    if (!obrasPontosData || !obrasPontosData.features || !algumaOrigemObraPontoAtiva()) return registros;
+    for (var i = 0; i < obrasPontosData.features.length; i++) {
+      var feature = obrasPontosData.features[i];
+      if (rodoviaSelecionada && nomeRodoviaFeature(feature) !== rodoviaSelecionada) continue;
+      if (sreSelecionado && nomeSREFeature(feature) !== sreSelecionado) continue;
+      var coords = feature.geometry && feature.geometry.coordinates;
+      if (!coords || coords.length < 2) continue;
+      if (!pontoDentroSelecaoMunicipios(coords[0], coords[1], featuresMunicipios)) continue;
+      var dadosFiltrados = dadosObrasPontosFiltrados(feature, propostaSelecionada);
+      for (var d = 0; d < dadosFiltrados.length; d++) registros.push(prepararRegistroListaCompleta(dadosFiltrados[d], origemObraPonto(dadosFiltrados[d]), feature, 'ponto'));
+    }
+    return registros;
+  }
+
+  function coletarAlteracoesFiltradasParaTabela() {
+    var registros = [];
+    if (!alteracoesData || !alteracoesData.features || !algumaAlteracaoAtiva()) return registros;
+    for (var i = 0; i < alteracoesData.features.length; i++) {
+      var feature = alteracoesData.features[i];
+      var dados = dadosAlteracaoDaFeature(feature);
+      if (!dados || !alteracoesAtivas[dados.TIPO]) continue;
+      registros.push(prepararRegistroListaCompleta(dados, dados.TIPO, feature, 'alteracao'));
+    }
+    return registros;
+  }
+
+  function renderizarListaCompletaFiltrada(tipo) {
+    var painel = document.getElementById('painelTabelaConteudo');
+    htmlPainelAntesListaCompleta = painel ? painel.innerHTML : '';
+    limparDestaqueTabelaCompleta();
+    registrosZoomTabelaCompleta = [];
+    var registros = [];
+    var campos = [];
+    var titulo = 'Registros filtrados';
+    if (tipo === 'alteracao') {
+      registros = coletarAlteracoesFiltradasParaTabela();
+      campos = CAMPOS_ALTERACOES_TABELA;
+      titulo = 'Altera\u00e7\u00f5es de Jurisdi\u00e7\u00e3o filtradas (' + registros.length + ')';
+    } else if (tipo === 'ponto') {
+      registros = coletarPontosFiltradosParaTabela();
+      campos = CAMPOS_LISTA_PONTOS_FILTRADOS;
+      titulo = 'Obras pontuais filtradas (' + registros.length + ')';
+    } else {
+      registros = coletarLinhasFiltradasParaTabela();
+      campos = CAMPOS_LISTA_LINHAS_FILTRADAS;
+      titulo = 'Obras lineares filtradas (' + registros.length + ')';
+    }
+    var html = '<div class="painel-tabela-acoes">' +
+      '<button type="button" class="btn-tabela-acao" data-voltar-lista-filtrada="1">Voltar</button>' +
+      '<span class="painel-tabela-info">Filtros atuais confirmados.</span>' +
+      '</div>';
+    html += registros.length ? tabelaRegistrosComZoomHtml(titulo, registros, campos) : '<em>Nenhum registro encontrado com os filtros atuais.</em>';
+    document.getElementById('painelTabelaConteudo').innerHTML = html;
+  }
+
+  function zoomParaRegistroTabelaCompleta(id) {
+    var item = registrosZoomTabelaCompleta[Number(id)];
+    if (!item || !item.feature) return;
+    limparDestaqueTabelaCompleta();
+    destaqueTabelaCompletaLayer = L.geoJSON(item.feature, {
+      pane: item.tipo === 'ponto' ? 'oaePane' : 'servicosPane',
+      pointToLayer: function(feature, latlng) {
+        return L.circleMarker(latlng, { radius: 11, color: '#0b7a2a', weight: 4, fillColor: '#dff5e6', fillOpacity: 0.65 });
+      },
+      style: function() {
+        return { color: '#0b7a2a', weight: 9, opacity: 0.9, lineCap: 'round', lineJoin: 'round' };
+      }
+    }).addTo(map);
+    var bounds = destaqueTabelaCompletaLayer.getBounds && destaqueTabelaCompletaLayer.getBounds();
+    if (bounds && bounds.isValid && bounds.isValid()) {
+      map.fitBounds(bounds, { paddingTopLeft: [70, 70], paddingBottomRight: [70, 70], maxZoom: item.tipo === 'ponto' ? 13 : 11 });
+    }
+  }
+
     function construirPopupLinha(feature) {
       var p = feature.properties || {};
       var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
@@ -5158,100 +5814,36 @@ map.addControl(new LogoMapaControl());
       var dadosDpjTodos = servicosAtivos.DPJ ? dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
 
       var html = '';
-      html += '<b>SRE:</b> ' + escapeHtml(p.sre || p.SRE || '') + '<br>';
-      html += '<b>Rodovia:</b> ' + escapeHtml(p.RODOVIA || p.rodovia || '') + '<br>';
-      html += '<b>Trecho:</b> ' + escapeHtml(valorTrechoFeature(feature)) + '<br>';
-      html += '<b>Extensão:</b> ' + escapeHtml(valorExtensaoKmFeature(feature)) + ' km<br>';
+      html += htmlCampoPopup('SRE', p.sre || p.SRE);
+      html += htmlCampoPopup('Rodovia', p.RODOVIA || p.rodovia);
+      html += htmlCampoPopup('Trecho', valorTrechoFeature(feature));
+      html += htmlCampoPopup('Extensão', valorExtensaoKmFeature(feature), ' km');
 
       if (dadosFund) {
-        html += '<br><b>— FUNDEINFRA —</b><br>';
-        html += '<b>Proposta:</b> ' + escapeHtml(dadosFund.PROPOSTA || '') + '<br>';
-        html += '<b>Serviço:</b> ' + escapeHtml(dadosFund.SERVICO || '') + '<br>';
-        html += '<b>Etapa:</b> ' + escapeHtml(dadosFund.ETAPA || '') + '<br>';
-        html += '<b>Status:</b> ' + escapeHtml(dadosFund.STATUS || '') + '<br>';
-        html += '<b>SEI:</b> ' + escapeHtml(dadosFund.SEI || '') + '<br>';
-        html += '<b>Conclusão:</b> ' + escapeHtml(dadosFund.CONCLUSAO || '') + '<br>';
-        html += '<b>Modalidade:</b> ' + escapeHtml(dadosFund.MODALIDADE || '') + '<br>';
-        html += '<b>Empresa:</b> ' + escapeHtml(dadosFund.EMPRESA || '') + '<br>';
-        html += '<b>Contrato:</b> ' + escapeHtml(dadosFund.CONTRATO || '') + '<br>';
-        html += '<b>Processo SEI Contratação:</b> ' + escapeHtml(dadosFund.PROCESSO_SEI_CONTRATACAO || '');
+        var htmlFund = htmlCamposPopup(dadosFund, CAMPOS_LINHA_FUNDEINFRA);
+        if (htmlFund) html += '<br><b>-- FUNDEINFRA --</b><br>' + htmlFund;
       }
 
-      if (dadosDorTodos.length) {
-        html += '<br><br><b>-- DOR --</b><br>';
-        for (var i = 0; i < dadosDorTodos.length; i++) {
-          var dadosDor = dadosDorTodos[i];
-          if (dadosDorTodos.length > 1) {
-            if (i > 0) html += '<br>';
-            html += '<b>Registro ' + (i + 1) + '</b><br>';
-          }
-          html += '<b>Item:</b> ' + escapeHtml(dadosDor.ITEM || '') + '<br>';
-          html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dadosDor.SERVICO || '') + '<br>';
-          html += '<b>Etapa:</b> ' + escapeHtml(dadosDor.ETAPA || '') + '<br>';
-          html += '<b>Status:</b> ' + escapeHtml(dadosDor.STATUS || '') + '<br>';
-          html += '<b>SEI:</b> ' + escapeHtml(dadosDor.SEI || '') + '<br>';
-          html += '<b>Conclusao:</b> ' + escapeHtml(dadosDor.CONCLUSAO || '');
-          if (i < dadosDorTodos.length - 1) html += '<br>';
+      function adicionarRegistrosPopup(titulo, registros) {
+        if (!registros.length) return;
+        var bloco = '';
+        for (var i = 0; i < registros.length; i++) {
+          var htmlRegistro = htmlCamposPopup(registros[i], CAMPOS_LINHA_UNIDADE);
+          if (!htmlRegistro) continue;
+          if (bloco) bloco += '<br>';
+          if (registros.length > 1) bloco += '<b>Registro ' + (i + 1) + '</b><br>';
+          bloco += htmlRegistro;
         }
+        if (bloco) html += '<br><br><b>-- ' + escapeHtml(titulo) + ' --</b><br>' + bloco;
       }
 
-      if (dadosDmaTodos.length) {
-        html += '<br><br><b>-- DMA --</b><br>';
-        for (var d = 0; d < dadosDmaTodos.length; d++) {
-          var dadosDma = dadosDmaTodos[d];
-          if (dadosDmaTodos.length > 1) {
-            if (d > 0) html += '<br>';
-            html += '<b>Registro ' + (d + 1) + '</b><br>';
-          }
-          html += '<b>Item:</b> ' + escapeHtml(dadosDma.ITEM || '') + '<br>';
-          html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dadosDma.SERVICO || '') + '<br>';
-          html += '<b>Etapa:</b> ' + escapeHtml(dadosDma.ETAPA || '') + '<br>';
-          html += '<b>Status:</b> ' + escapeHtml(dadosDma.STATUS || '') + '<br>';
-          html += '<b>SEI:</b> ' + escapeHtml(dadosDma.SEI || '') + '<br>';
-          html += '<b>Conclusao:</b> ' + escapeHtml(dadosDma.CONCLUSAO || '');
-          if (d < dadosDmaTodos.length - 1) html += '<br>';
-        }
-      }
+      adicionarRegistrosPopup('DOR', dadosDorTodos);
+      adicionarRegistrosPopup('DMA', dadosDmaTodos);
+      adicionarRegistrosPopup('DPL', dadosDplTodos);
+      adicionarRegistrosPopup('DPJ', dadosDpjTodos);
 
-      if (dadosDplTodos.length) {
-        html += '<br><br><b>-- DPL --</b><br>';
-        for (var p = 0; p < dadosDplTodos.length; p++) {
-          var dadosDpl = dadosDplTodos[p];
-          if (dadosDplTodos.length > 1) {
-            if (p > 0) html += '<br>';
-            html += '<b>Registro ' + (p + 1) + '</b><br>';
-          }
-          html += '<b>Item:</b> ' + escapeHtml(dadosDpl.ITEM || '') + '<br>';
-          html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dadosDpl.SERVICO || '') + '<br>';
-          html += '<b>Etapa:</b> ' + escapeHtml(dadosDpl.ETAPA || '') + '<br>';
-          html += '<b>Status:</b> ' + escapeHtml(dadosDpl.STATUS || '') + '<br>';
-          html += '<b>SEI:</b> ' + escapeHtml(dadosDpl.SEI || '') + '<br>';
-          html += '<b>Conclusao:</b> ' + escapeHtml(dadosDpl.CONCLUSAO || '');
-          if (p < dadosDplTodos.length - 1) html += '<br>';
-        }
-      }
-
-      if (dadosDpjTodos.length) {
-        html += '<br><br><b>-- DPJ --</b><br>';
-        for (var j = 0; j < dadosDpjTodos.length; j++) {
-          var dadosDpj = dadosDpjTodos[j];
-          if (dadosDpjTodos.length > 1) {
-            if (j > 0) html += '<br>';
-            html += '<b>Registro ' + (j + 1) + '</b><br>';
-          }
-          html += '<b>Item:</b> ' + escapeHtml(dadosDpj.ITEM || '') + '<br>';
-          html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dadosDpj.SERVICO || '') + '<br>';
-          html += '<b>Etapa:</b> ' + escapeHtml(dadosDpj.ETAPA || '') + '<br>';
-          html += '<b>Status:</b> ' + escapeHtml(dadosDpj.STATUS || '') + '<br>';
-          html += '<b>SEI:</b> ' + escapeHtml(dadosDpj.SEI || '') + '<br>';
-          html += '<b>Conclusao:</b> ' + escapeHtml(dadosDpj.CONCLUSAO || '');
-          if (j < dadosDpjTodos.length - 1) html += '<br>';
-        }
-      }
-
-      return html;
+      return html || '<b>Nenhum dado encontrado</b>';
     }
-
     function construirLayerNormal(features, cor, espessura) {
       var sombra = L.geoJSON({
         type: 'FeatureCollection',
@@ -5460,9 +6052,30 @@ map.addControl(new LogoMapaControl());
     '</span>';
   }
 
-  function renderizarLegendaServicos(legendasVisiveis) {
-    var alvo = document.getElementById('legendaServicos'); if(!alvo) return;
-    var bloco = document.getElementById('legendaServicos').closest('.bloco');
+  function renderizarLegendaAlteracoes(legendasVisiveis) {
+    var bloco = document.getElementById('blocoLegendaAlteracoes');
+    var alvo = document.getElementById('legendaAlteracoes');
+    if (!bloco || !alvo) return;
+
+    alvo.innerHTML = '';
+    var total = 0;
+    for (var i = 0; i < TIPOS_ALTERACAO.length; i++) {
+      var tipo = TIPOS_ALTERACAO[i];
+      if (!legendasVisiveis || !legendasVisiveis[tipo]) continue;
+      var item = document.createElement('div');
+      item.className = 'legenda-item';
+      item.innerHTML = '<span class="legenda-linha-wrap">' +
+        '<span class="legenda-linha" style="height:9px;background:' + legendasVisiveis[tipo] + ';"></span>' +
+        '</span><div class="legenda-texto">' + escapeHtml(tipo) + '</div>';
+      alvo.appendChild(item);
+      total++;
+    }
+    bloco.style.display = total > 0 ? '' : 'none';
+  }
+
+  function renderizarLegendaIntervencaos(legendasVisiveis) {
+    var alvo = document.getElementById('legendaIntervencaos'); if(!alvo) return;
+    var bloco = document.getElementById('legendaIntervencaos').closest('.bloco');
     alvo.innerHTML = '';
 
     var total = 0;
@@ -5542,6 +6155,10 @@ map.addControl(new LogoMapaControl());
     renderizarLegendaPontos('legendaDoc', legendasVisiveis || {});
   }
 
+  function renderizarLegendaDsv(legendasVisiveis) {
+    renderizarLegendaPontos('legendaDsv', legendasVisiveis || {});
+  }
+
   function adicionarItensLegendaPontos(alvo, pontos) {
     var total = 0;
     var ordemPontos = ['OaePlanejamento', 'OaeProjeto', 'OaeObra', 'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'];
@@ -5560,25 +6177,25 @@ map.addControl(new LogoMapaControl());
     return total;
   }
 
-  function corLegendaServico(info) {
+  function corLegendaIntervencao(info) {
     if (info && typeof info === 'object') return info.cor || '#666666';
     return info || '#666666';
   }
 
-  function tipoLinhaLegendaServico(info) {
+  function tipoLinhaLegendaIntervencao(info) {
     if (info && typeof info === 'object') return info.tipo_linha || 'NORMAL';
     return 'NORMAL';
   }
 
-  function htmlLegendaServico(info) {
-    var cor = corLegendaServico(info);
-    if (tipoLinhaLegendaServico(info) === 'COM LINHA BRANCA TRACEJADA') {
+  function htmlLegendaIntervencao(info) {
+    var cor = corLegendaIntervencao(info);
+    if (tipoLinhaLegendaIntervencao(info) === 'COM LINHA BRANCA TRACEJADA') {
       return '<span class="legenda-linha-wrap">' +
         '<span class="legenda-linha-projeto-base" style="height:9px;background:' + cor + ';"></span>' +
         '<span class="legenda-linha-projeto-topo" style="height:0;border-top:4.5px dashed #ffffff;background:transparent;"></span>' +
       '</span>';
     }
-    if (tipoLinhaLegendaServico(info) === 'COM LINHA BRANCA DOR' || tipoLinhaLegendaServico(info) === 'COM LINHA BRANCA') {
+    if (tipoLinhaLegendaIntervencao(info) === 'COM LINHA BRANCA DOR' || tipoLinhaLegendaIntervencao(info) === 'COM LINHA BRANCA') {
       return '<span class="legenda-linha-wrap">' +
         '<span class="legenda-linha-projeto-base" style="height:9px;background:' + cor + ';"></span>' +
         '<span class="legenda-linha-projeto-topo" style="height:4.5px;"></span>' +
@@ -5605,7 +6222,7 @@ map.addControl(new LogoMapaControl());
       var item = document.createElement('div');
       item.className = 'legenda-item';
       item.innerHTML =
-        htmlLegendaServico(infoLegenda) +
+        htmlLegendaIntervencao(infoLegenda) +
         legenda;
       alvo.appendChild(item);
       total++;
@@ -5632,7 +6249,7 @@ map.addControl(new LogoMapaControl());
       var item = document.createElement('div');
       item.className = 'legenda-item';
       item.innerHTML =
-        htmlLegendaServico(infoLegenda) +
+        htmlLegendaIntervencao(infoLegenda) +
         legenda;
       alvo.appendChild(item);
       total++;
@@ -5659,7 +6276,7 @@ map.addControl(new LogoMapaControl());
       var item = document.createElement('div');
       item.className = 'legenda-item';
       item.innerHTML =
-        htmlLegendaServico(infoLegenda) +
+        htmlLegendaIntervencao(infoLegenda) +
         legenda;
       alvo.appendChild(item);
       total++;
@@ -5686,7 +6303,7 @@ map.addControl(new LogoMapaControl());
       var item = document.createElement('div');
       item.className = 'legenda-item';
       item.innerHTML =
-        htmlLegendaServico(infoLegenda) +
+        htmlLegendaIntervencao(infoLegenda) +
         legenda;
       alvo.appendChild(item);
       total++;
@@ -5823,7 +6440,9 @@ map.addControl(new LogoMapaControl());
 
   function tabelaHtmlObjeto(titulo, dados, classeTitulo) {
     dados = dados || {};
-    var chaves = Object.keys(dados);
+    var chaves = Object.keys(dados).filter(function(chave) {
+      return campoPreenchido(dados[chave]);
+    });
     if (!chaves.length) return '';
 
     var html = '<div class="bloco-servico">' +
@@ -5832,42 +6451,56 @@ map.addControl(new LogoMapaControl());
 
     for (var i = 0; i < chaves.length; i++) {
       var chave = chaves[i];
-      html += '<tr><th>' + escapeHtml(chave) + '</th><td>' + escapeHtml(dados[chave]) + '</td></tr>';
+      html += '<tr><th>' + escapeHtml(chave) + '</th><td>' + escapeHtml(valorExibicao(dados[chave])) + '</td></tr>';
     }
 
     html += '</table></div>';
     return html;
   }
 
+  var CAMPOS_OBRA_PONTO_POPUP = [
+    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'UNIDADE', rotulo: 'Unidade' },
+    { chave: 'PROPOSTA', rotulo: 'Proposta' },
+    { chave: 'LOCALIDADE', rotulo: 'Localidade' },
+    { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
+    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'SEI_OBRA', rotulo: 'SEI Obra' },
+    { chave: 'CONTRATO', rotulo: 'Contrato' },
+    { chave: 'RODOVIA', rotulo: 'Rodovia' },
+    { chave: 'ETAPA', rotulo: 'Etapa' },
+    { chave: 'STATUS', rotulo: 'Status' }
+  ];
+
+  var CAMPOS_OBRA_PONTO_TABELA = CAMPOS_OBRA_PONTO_POPUP.concat([
+    { chave: 'DESCRICAO', rotulo: 'Descrição' },
+    { chave: 'ATUALIZACAO', rotulo: 'Atualização' }
+  ]);
+
+  function valorCampoTabelaObraPonto(dados, chave) {
+    if (!dados) return '';
+    var valor = dados[chave];
+    if (valor === null || valor === undefined) return '';
+    return typeof valor === 'string' ? valor.trim() : valor;
+  }
+
+  function htmlPopupCamposTabelaObraPonto(dados) {
+    var html = '';
+    for (var i = 0; i < CAMPOS_OBRA_PONTO_POPUP.length; i++) {
+      var campo = CAMPOS_OBRA_PONTO_POPUP[i];
+      var valor = valorCampoTabelaObraPonto(dados, campo.chave);
+      if (valor === '') continue;
+      html += '<b>' + escapeHtml(campo.rotulo) + ':</b> ' + escapeHtml(valor) + '<br>';
+    }
+    return html.replace(/<br>$/, '');
+  }
+
   function construirPopupObraPonto(feature) {
-    var p = feature.properties || {};
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
     var dadosTodos = dadosObrasPontosFiltrados(feature, propostaSelecionada);
     var totalDados = dadosTodos.length;
     var dadosPopup = totalDados ? dadosTodos[0] : null;
-    var html = '';
-
-    html += '<b>SRE:</b> ' + escapeHtml(nomeSREFeature(feature)) + '<br>';
-    html += '<b>Rodovia:</b> ' + escapeHtml(nomeRodoviaFeature(feature)) + '<br>';
-    html += '<b>Trecho:</b> ' + escapeHtml(valorSeguro(feature, 'trecho')) + '<br>';
-    html += '<b>Extensão:</b> ' + escapeHtml(valorSeguro(feature, 'EXT_M')) + ' m';
-
-    if (dadosPopup) {
-      var dados = dadosPopup;
-      var origem = origemObraPonto(dados);
-      html += '<br><br><b>— ' + escapeHtml(origem) + ' —</b><br>';
-      html += '<b>' + escapeHtml(rotuloIdentificadorObraPonto(dados)) + ':</b> ' + escapeHtml(valorIdentificadorObraPonto(dados) || '') + '<br>';
-      html += '<b>Etapa:</b> ' + escapeHtml(dados.ETAPA || '') + '<br>';
-      html += '<b>Status:</b> ' + escapeHtml(dados.STATUS || '') + '<br>';
-      html += '<b>SEI:</b> ' + escapeHtml(dados.SEI || '') + '<br>';
-      html += '<b>Conclusão:</b> ' + escapeHtml(dados.CONCLUSAO || '') + '<br>';
-      html += '<b>Tipo:</b> ' + escapeHtml(dados.TIPO || '') + '<br>';
-      html += '<b>Servi&ccedil;o:</b> ' + escapeHtml(dados.SERVICO || '') + '<br>';
-      html += '<b>Modalidade:</b> ' + escapeHtml(dados.MODALIDADE || '') + '<br>';
-      html += '<b>Empresa:</b> ' + escapeHtml(dados.EMPRESA || '') + '<br>';
-      html += '<b>Contrato:</b> ' + escapeHtml(dados.CONTRATO || '') + '<br>';
-      html += '<b>Processo SEI Contrata&ccedil;&atilde;o:</b> ' + escapeHtml(dados.PROCESSO_SEI_CONTRATACAO || '');
-    }
+    var html = dadosPopup ? htmlPopupCamposTabelaObraPonto(dadosPopup) : '';
 
     if (totalDados > 1) {
       var restantes = totalDados - 1;
@@ -5876,91 +6509,69 @@ map.addControl(new LogoMapaControl());
         ' neste ponto. Veja a lista completa no painel inferior.</span>';
     }
 
-    return html;
+    return html || '<b>Nenhum dado encontrado</b>';
   }
 
   function atualizarPainelInferiorObraPonto(feature) {
-    var p = feature.properties || {};
     var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
-    var dadosTodos = dadosObrasPontosFiltrados(feature, propostaSelecionada);
-    var srePonto = nomeSREFeature(feature);
-    var rodoviaPonto = nomeRodoviaFeature(feature);
-    var trechoPonto = valorSeguro(feature, 'trecho');
-    var extensaoPonto = valorSeguro(feature, 'EXT_M');
-    var linkPonto = valorSeguro(feature, 'LINK');
-    var html = `
-        <div class="bloco-servico">
-          <div class="titulo-servico titulo-cinza">Dados do ponto</div>
-          <table class="tabela-servico">
-            <tr><th>SRE</th><th>Rodovia</th><th>Trecho</th><th>Extensão</th><th>Link</th></tr>
-            <tr>
-              <td>${escapeHtml(srePonto)}</td>
-              <td>${escapeHtml(rodoviaPonto)}</td>
-              <td>${escapeHtml(trechoPonto)}</td>
-              <td>${escapeHtml(extensaoPonto)} m</td>
-              <td>${escapeHtml(linkPonto)}</td>
-            </tr>
-          </table>
-        </div>`;
-
-    if (dadosTodos.length) {
-      html += `
-        <div class="bloco-servico">
-          <div class="titulo-servico">Dados das obras pontuais</div>
-          <table class="tabela-servico">
-            <tr><th>Origem</th><th>${escapeHtml(rotuloColunaIdentificadorObraPonto(dadosTodos))}</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th><th>Tipo</th><th>Servi&ccedil;o</th><th>Modalidade</th><th>Empresa</th><th>Contrato</th><th>Processo SEI Contrata&ccedil;&atilde;o</th></tr>`;
-    }
-
-    for (var i = 0; i < dadosTodos.length; i++) {
-      var dados = dadosTodos[i];
-      html += `
-            <tr>
-              <td>${escapeHtml(origemObraPonto(dados))}</td>
-              <td>${escapeHtml(valorIdentificadorObraPonto(dados) || '')}</td>
-              <td>${escapeHtml(dados.ETAPA || '')}</td>
-              <td>${escapeHtml(dados.STATUS || '')}</td>
-              <td>${escapeHtml(dados.SEI || '')}</td>
-              <td>${escapeHtml(dados.CONCLUSAO || '')}</td>
-              <td>${escapeHtml(dados.TIPO || '')}</td>
-              <td>${escapeHtml(dados.SERVICO || '')}</td>
-              <td>${escapeHtml(dados.MODALIDADE || '')}</td>
-              <td>${escapeHtml(dados.EMPRESA || '')}</td>
-              <td>${escapeHtml(dados.CONTRATO || '')}</td>
-              <td>${escapeHtml(dados.PROCESSO_SEI_CONTRATACAO || '')}</td>
-            </tr>`;
-    }
-
-    if (dadosTodos.length) {
-      html += `
-          </table>
-        </div>`;
-    }
-
-    document.getElementById('painelTabelaConteudo').innerHTML = html || '<b>Nenhum dado encontrado</b>';
+    var dadosTodos = expandirRegistrosPorGrupo(dadosObrasPontosFiltrados(feature, propostaSelecionada), { tipo: 'Ponto' });
+    var html = tabelaRegistrosHtml(tituloTabelaComGrupo('Dados das obras pontuais', dadosTodos), dadosTodos, camposTabelaAjustadosPorGrupo(CAMPOS_OBRA_PONTO_TABELA, dadosTodos));
+    if (html) html += htmlAcoesTabelaCompleta('ponto');
+    document.getElementById('painelTabelaConteudo').innerHTML = html || '<em>Nenhum dado encontrado para este ponto.</em>';
   }
+  var CAMPOS_AERO_INFO = [
+    { chave: 'COD', rotulo: 'Código' },
+    { chave: 'TIPO', rotulo: 'Tipo' },
+    { chave: 'NOME', rotulo: 'Nome' },
+    { chave: 'MUNICIPIO', rotulo: 'Município' },
+    { chave: 'COMP_M', rotulo: 'Comprimento' },
+    { chave: 'LARG_M', rotulo: 'Largura' },
+    { chave: 'REVESTIMENTO', rotulo: 'Revestimento' }
+  ];
 
+  var CAMPOS_AERO_OBRA_POPUP = [
+    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'ETAPA', rotulo: 'Etapa' },
+    { chave: 'STATUS', rotulo: 'Status' },
+    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'CONCLUSAO', rotulo: 'Conclusão' },
+    { chave: 'INTERVENCAO', rotulo: 'Intervenção' }
+  ];
+
+  var CAMPOS_AERO_OBRA_TABELA = [
+    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: '__ORIGEM', rotulo: 'Origem' },
+    { chave: '__IDENTIFICADOR', rotulo: 'Proposta' },
+    { chave: 'ETAPA', rotulo: 'Etapa' },
+    { chave: 'STATUS', rotulo: 'Status' },
+    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'CONCLUSAO', rotulo: 'Conclusão' },
+    { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
+    { chave: 'DESCRICAO', rotulo: 'Descrição' },
+    { chave: 'ATUALIZACAO', rotulo: 'Atualização' }
+  ];
   function construirPopupObraAero(feature, dadosSelecionado) {
     var p = feature.properties || {};
     var dadosTodos = dadosObrasAeroFiltrados(feature);
     var totalDados = dadosTodos.length;
     var dadosPopup = dadosSelecionado || (totalDados ? dadosTodos[0] : null);
-    var html = '';
-
-    html += '<b>Aeródromo/Aeroporto:</b> ' + escapeHtml(p.NOME || '') + '<br>';
-    html += '<b>Tipo:</b> ' + escapeHtml(p.TIPO || '') + '<br>';
-    html += '<b>Município:</b> ' + escapeHtml(p.MUNICIPIO || '') + '<br>';
-    html += '<b>Código:</b> ' + escapeHtml(p.COD || '');
+    var html = htmlCamposPopup(p, [
+      { chave: 'NOME', rotulo: 'Aeródromo/Aeroporto' },
+      { chave: 'TIPO', rotulo: 'Tipo' },
+      { chave: 'MUNICIPIO', rotulo: 'Município' },
+      { chave: 'COD', rotulo: 'Código' }
+    ]);
 
     if (dadosPopup) {
-      var dados = dadosPopup;
+      var dados = Object.assign({}, dadosPopup);
       var origem = origemObraPonto(dados);
-      html += '<br><br><b>— ' + escapeHtml(origem) + ' —</b><br>';
-      html += '<b>' + escapeHtml(rotuloIdentificadorObraPonto(dados)) + ':</b> ' + escapeHtml(valorIdentificadorObraPonto(dados) || '') + '<br>';
-      html += '<b>Etapa:</b> ' + escapeHtml(dados.ETAPA || '') + '<br>';
-      html += '<b>Status:</b> ' + escapeHtml(dados.STATUS || '') + '<br>';
-      html += '<b>SEI:</b> ' + escapeHtml(dados.SEI || '') + '<br>';
-      html += '<b>Conclusão:</b> ' + escapeHtml(dados.CONCLUSAO || '') + '<br>';
-      html += '<b>Serviço:</b> ' + escapeHtml(dados.SERVICO || '');
+      var camposObra = CAMPOS_AERO_OBRA_POPUP;
+      if (origem === 'FUNDEINFRA') {
+        camposObra = [{ chave: '__IDENTIFICADOR', rotulo: 'Proposta' }].concat(CAMPOS_AERO_OBRA_POPUP);
+        dados.__IDENTIFICADOR = valorIdentificadorObraPonto(dados);
+      }
+      var htmlObra = htmlCamposPopup(dados, camposObra);
+      if (htmlObra) html += '<br><br><b>-- ' + escapeHtml(origem) + ' --</b><br>' + htmlObra;
     }
 
     if (totalDados > 1) {
@@ -5970,7 +6581,7 @@ map.addControl(new LogoMapaControl());
         ' neste aeródromo/aeroporto. Veja a lista completa no painel inferior.</span>';
     }
 
-    return html;
+    return html || '<b>Nenhum dado encontrado</b>';
   }
 
   function atualizarPainelInferiorObraAero(feature, dadosSelecionado) {
@@ -5979,57 +6590,22 @@ map.addControl(new LogoMapaControl());
     if (dadosSelecionado) {
       dadosTodos = [dadosSelecionado].concat(dadosTodos.filter(function(item) {
         return origemObraPonto(item) !== origemObraPonto(dadosSelecionado) ||
-          String(item.ITEM || '') !== String(dadosSelecionado.ITEM || '');
+          String(item.IDCOD || '') !== String(dadosSelecionado.IDCOD || '');
       }));
     }
-    var html = `
-        <div class="bloco-servico">
-          <div class="titulo-servico titulo-cinza">Dados do aeródromo/aeroporto</div>
-          <table class="tabela-servico">
-            <tr><th>Código</th><th>Tipo</th><th>Nome</th><th>Município</th><th>Comprimento</th><th>Largura</th><th>Revestimento</th></tr>
-            <tr>
-              <td>${escapeHtml(p.COD || '')}</td>
-              <td>${escapeHtml(p.TIPO || '')}</td>
-              <td>${escapeHtml(p.NOME || '')}</td>
-              <td>${escapeHtml(p.MUNICIPIO || '')}</td>
-              <td>${escapeHtml(p.COMP_M || '')}</td>
-              <td>${escapeHtml(p.LARG_M || '')}</td>
-              <td>${escapeHtml(p.REVESTIMENTO || '')}</td>
-            </tr>
-          </table>
-        </div>`;
+    dadosTodos = expandirRegistrosPorGrupo(dadosTodos);
 
-    if (dadosTodos.length) {
-      html += `
-        <div class="bloco-servico">
-          <div class="titulo-servico">Dados das obras em aeródromos/aeroportos</div>
-          <table class="tabela-servico">
-            <tr><th>Origem</th><th>${escapeHtml(rotuloColunaIdentificadorObraPonto(dadosTodos))}</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Serviço</th></tr>`;
-    }
+    var dadosTabela = dadosTodos.map(function(item) {
+      var normalizado = Object.assign({}, item);
+      normalizado.__ORIGEM = origemObraPonto(item);
+      normalizado.__IDENTIFICADOR = origemObraPonto(item) === 'FUNDEINFRA' ? valorIdentificadorObraPonto(item) : '';
+      return normalizado;
+    });
 
-    for (var i = 0; i < dadosTodos.length; i++) {
-      var dados = dadosTodos[i];
-      html += `
-            <tr>
-              <td>${escapeHtml(origemObraPonto(dados))}</td>
-              <td>${escapeHtml(valorIdentificadorObraPonto(dados) || '')}</td>
-              <td>${escapeHtml(dados.ETAPA || '')}</td>
-              <td>${escapeHtml(dados.STATUS || '')}</td>
-              <td>${escapeHtml(dados.SEI || '')}</td>
-              <td>${escapeHtml(dados.CONCLUSAO || '')}</td>
-              <td>${escapeHtml(dados.SERVICO || '')}</td>
-            </tr>`;
-    }
-
-    if (dadosTodos.length) {
-      html += `
-          </table>
-        </div>`;
-    }
-
+    var html = tabelaRegistrosHtml('Dados do aeródromo/aeroporto', [p], CAMPOS_AERO_INFO);
+    html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados das obras em aeródromos/aeroportos', dadosTabela), dadosTabela, camposTabelaAjustadosPorGrupo(CAMPOS_AERO_OBRA_TABELA, dadosTabela));
     document.getElementById('painelTabelaConteudo').innerHTML = html || '<b>Nenhum dado encontrado</b>';
   }
-
   function criarIconeObraPonto(dados, quantidadeItens, opcoes) {
     opcoes = opcoes || {};
     var estilo = estiloObraPonto(dados);
@@ -6234,6 +6810,7 @@ map.addControl(new LogoMapaControl());
     var tiposVisiveisDpl = {};
     var tiposVisiveisDpj = {};
     var tiposVisiveisDoc = {};
+    var tiposVisiveisDsv = {};
     var total = 0;
 
     obrasPontosLayer = criarCamadaObrasPontos();
@@ -6246,7 +6823,8 @@ map.addControl(new LogoMapaControl());
         legendaDma: tiposVisiveisDma,
         legendaDpl: tiposVisiveisDpl,
         legendaDpj: tiposVisiveisDpj,
-        legendaDoc: tiposVisiveisDoc
+        legendaDoc: tiposVisiveisDoc,
+        legendaDsv: tiposVisiveisDsv
       };
     }
 
@@ -6267,6 +6845,7 @@ map.addControl(new LogoMapaControl());
         var tipoLegenda = chaveLegendaObraPonto(itemFiltrado);
         var origemLegenda = origemObraPonto(itemFiltrado);
         if (origemLegenda === 'DOC') tiposVisiveisDoc[tipoLegenda] = true;
+        else if (origemLegenda === 'DSV') tiposVisiveisDsv[tipoLegenda] = true;
         else if (origemLegenda === 'DOR') tiposVisiveisDor[tipoLegenda] = true;
         else if (origemLegenda === 'DMA') tiposVisiveisDma[tipoLegenda] = true;
         else if (origemLegenda === 'DPL') tiposVisiveisDpl[tipoLegenda] = true;
@@ -6301,7 +6880,8 @@ map.addControl(new LogoMapaControl());
       legendaDma: tiposVisiveisDma,
       legendaDpl: tiposVisiveisDpl,
       legendaDpj: tiposVisiveisDpj,
-      legendaDoc: tiposVisiveisDoc
+      legendaDoc: tiposVisiveisDoc,
+        legendaDsv: tiposVisiveisDsv
     };
   }
 
@@ -6401,6 +6981,7 @@ map.addControl(new LogoMapaControl());
 
     var situacoesFedVisiveis = desenharSNV();
     var situacoesEstVisiveis = desenharSREBase();
+    var alteracoesVisiveis = desenharAlteracoesJuridicao();
 
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
     var sreSelecionado = document.getElementById('sreSelect').value;
@@ -6426,13 +7007,13 @@ map.addControl(new LogoMapaControl());
         if (!link) continue;
         var dadosF = dadosFundeinfraDaFeature(f);
         if (!dadosF) continue;
-        if (servicoFiltroAtivo && dadosF.SERVICO !== servicoFiltroAtivo) continue;
+        if (servicoFiltroAtivo && dadosF.INTERVENCAO !== servicoFiltroAtivo) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(f) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(f) !== sreSelecionado) continue;
         if (propostaSelecionada) {
           if (!dadosF || String(dadosF.PROPOSTA) !== String(propostaSelecionada)) continue;
         }
-        linhasBase.push(featureComOrigemServico(f, 'FUNDEINFRA'));
+        linhasBase.push(featureComOrigemIntervencao(f, 'FUNDEINFRA'));
         linksFundIncluidos[String(link)] = true;
       }
     }
@@ -6449,7 +7030,7 @@ map.addControl(new LogoMapaControl());
         if (servicosAtivos.FUNDEINFRA && valorSeguro(fd, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fd, 'LINK_FUND'))]) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(fd) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(fd) !== sreSelecionado) continue;
-        linhasBase.push(featureComOrigemServico(fd, 'DOR'));
+        linhasBase.push(featureComOrigemIntervencao(fd, 'DOR'));
       }
     }
 
@@ -6464,7 +7045,7 @@ map.addControl(new LogoMapaControl());
         if (servicosAtivos.FUNDEINFRA && valorSeguro(fdm, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fdm, 'LINK_FUND'))]) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(fdm) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(fdm) !== sreSelecionado) continue;
-        linhasBase.push(featureComOrigemServico(fdm, 'DMA'));
+        linhasBase.push(featureComOrigemIntervencao(fdm, 'DMA'));
       }
     }
 
@@ -6479,7 +7060,7 @@ map.addControl(new LogoMapaControl());
         if (servicosAtivos.FUNDEINFRA && valorSeguro(fdp, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fdp, 'LINK_FUND'))]) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(fdp) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(fdp) !== sreSelecionado) continue;
-        linhasBase.push(featureComOrigemServico(fdp, 'DPL'));
+        linhasBase.push(featureComOrigemIntervencao(fdp, 'DPL'));
       }
     }
 
@@ -6494,7 +7075,7 @@ map.addControl(new LogoMapaControl());
         if (servicosAtivos.FUNDEINFRA && valorSeguro(fdj, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fdj, 'LINK_FUND'))]) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(fdj) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(fdj) !== sreSelecionado) continue;
-        linhasBase.push(featureComOrigemServico(fdj, 'DPJ'));
+        linhasBase.push(featureComOrigemIntervencao(fdj, 'DPJ'));
       }
     }
 
@@ -6516,7 +7097,7 @@ map.addControl(new LogoMapaControl());
 
       var dados, estilo, chaveId, origemDados;
 
-      var origemPreferida = origemServicoFeature(feat);
+      var origemPreferida = origemIntervencaoFeature(feat);
 
       if (origemPreferida === 'FUNDEINFRA' && linkFund && dadosFundeinfraDaFeature(feat) && servicosAtivos.FUNDEINFRA) {
         dados = dadosFundeinfraDaFeature(feat);
@@ -6619,7 +7200,7 @@ map.addControl(new LogoMapaControl());
       var estiloRotulo = null;
       var origemRotulo = '';
       var linkRotulo = '';
-      var origemPreferidaRotulo = origemServicoFeature(featRotulo);
+      var origemPreferidaRotulo = origemIntervencaoFeature(featRotulo);
 
       if (origemPreferidaRotulo === 'FUNDEINFRA' && linkFundRotulo && dadosFundeinfraDaFeature(featRotulo) && servicosAtivos.FUNDEINFRA) {
         dadosRotulo = dadosFundeinfraDaFeature(featRotulo);
@@ -6650,7 +7231,7 @@ map.addControl(new LogoMapaControl());
 
       if (!dadosRotulo || !estiloRotulo) continue;
 
-      var chaveRotulo = origemRotulo + '|' + String(linkRotulo) + '|' + String(dadosRotulo.PROPOSTA || '') + '|' + String(dadosRotulo.SERVICO || '');
+      var chaveRotulo = origemRotulo + '|' + String(linkRotulo) + '|' + String(dadosRotulo.PROPOSTA || '') + '|' + String(dadosRotulo.INTERVENCAO || '');
       if (rotulosIncluidos[chaveRotulo]) continue;
       rotulosIncluidos[chaveRotulo] = true;
       adicionarRotuloObra(obrasLabelLayer, featRotulo, dadosRotulo, origemRotulo, linkRotulo, estiloRotulo.cor);
@@ -6667,7 +7248,7 @@ map.addControl(new LogoMapaControl());
     var countDpl = 0;
     var countDpj = 0;
     for (var ci = 0; ci < linhasBase.length; ci++) {
-      var origemContador = origemServicoFeature(linhasBase[ci]);
+      var origemContador = origemIntervencaoFeature(linhasBase[ci]);
       if (origemContador === 'FUNDEINFRA') countFund++;
       else if (origemContador === 'DOR') countDor++;
       else if (origemContador === 'DMA') countDma++;
@@ -6692,7 +7273,7 @@ map.addControl(new LogoMapaControl());
     var contadorDpj = document.getElementById('countDpj');
     if (contadorDpj) contadorDpj.textContent = countDpj + resultadoObrasAero.countDpj;
 
-        renderizarLegendaServicos({
+        renderizarLegendaIntervencaos({
       linhas: servicosVisiveis,
       pontos: resultadoObrasPontos.legenda
     });
@@ -6701,11 +7282,12 @@ map.addControl(new LogoMapaControl());
     renderizarLegendaDpl(servicosVisiveisDpl, resultadoObrasPontos.legendaDpl);
     renderizarLegendaDpj(servicosVisiveisDpj, Object.assign({}, resultadoObrasPontos.legendaDpj, resultadoObrasAero.legendaDpj));
     renderizarLegendaDoc(resultadoObrasPontos.legendaDoc);
+    renderizarLegendaDsv(resultadoObrasPontos.legendaDsv);
+    renderizarLegendaAlteracoes(alteracoesVisiveis);
     renderizarLegendaOAE({});
     renderizarLegendaRodEst(situacoesEstVisiveis);
     renderizarLegendaRodFed(situacoesFedVisiveis);
   }
-
     function atualizarPainelInferior(feature) {
       var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
       var dadosFund = dadosFundeinfraDaFeatureFiltrado(feature, propostaSelecionada);
@@ -6717,124 +7299,20 @@ map.addControl(new LogoMapaControl());
       var featuresSre = featuresSrePorReferenciasProposta(feature, referenciasProposta);
 
       var html = htmlTabelaDadosSre(featuresSre, referenciasProposta);
+      var dadosFundTabela = expandirRegistrosPorGrupo(dadosFund ? [dadosFund] : [], { tipo: 'Linha', unidade: 'FUNDEINFRA' });
+      var dadosDorTabela = expandirRegistrosPorGrupo(dadosDorTodos, { tipo: 'Linha', unidade: 'DOR' });
+      var dadosDmaTabela = expandirRegistrosPorGrupo(dadosDmaTodos, { tipo: 'Linha', unidade: 'DMA' });
+      var dadosDplTabela = expandirRegistrosPorGrupo(dadosDplTodos, { tipo: 'Linha', unidade: 'DPL' });
+      var dadosDpjTabela = expandirRegistrosPorGrupo(dadosDpjTodos, { tipo: 'Linha', unidade: 'DPJ' });
+      html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados FUNDEINFRA', dadosFundTabela), dadosFundTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_FUNDEINFRA_TABELA, dadosFundTabela));
+      html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados DOR', dadosDorTabela), dadosDorTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_UNIDADE_TABELA, dadosDorTabela));
+      html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados DMA', dadosDmaTabela), dadosDmaTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_UNIDADE_TABELA, dadosDmaTabela));
+      html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados DPL', dadosDplTabela), dadosDplTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_UNIDADE_TABELA, dadosDplTabela));
+      html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados DPJ', dadosDpjTabela), dadosDpjTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_UNIDADE_TABELA, dadosDpjTabela));
+      if (html) html += htmlAcoesTabelaCompleta('linha');
 
-      if (dadosFund) {
-        html += `
-        <div class="bloco-servico">
-          <div class="titulo-servico">Dados FUNDEINFRA</div>
-          <table class="tabela-servico">
-            <tr><th>Proposta</th><th>Serviço</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th><th>Modalidade</th><th>Empresa</th><th>Contrato</th><th>Processo SEI Contratação</th></tr>
-            <tr>
-              <td>${escapeHtml(dadosFund.PROPOSTA || '')}</td>
-              <td>${escapeHtml(dadosFund.SERVICO || '')}</td>
-              <td>${escapeHtml(dadosFund.ETAPA || '')}</td>
-              <td>${escapeHtml(dadosFund.STATUS || '')}</td>
-              <td>${escapeHtml(dadosFund.SEI || '')}</td>
-              <td>${escapeHtml(dadosFund.CONCLUSAO || '')}</td>
-              <td>${escapeHtml(dadosFund.MODALIDADE || '')}</td>
-              <td>${escapeHtml(dadosFund.EMPRESA || '')}</td>
-              <td>${escapeHtml(dadosFund.CONTRATO || '')}</td>
-              <td>${escapeHtml(dadosFund.PROCESSO_SEI_CONTRATACAO || '')}</td>
-            </tr>
-          </table>
-        </div>`;
-      }
-
-      if (dadosDorTodos.length) {
-        html += `
-        <div class="bloco-servico">
-          <div class="titulo-servico">Dados DOR</div>
-          <table class="tabela-servico">
-            <tr><th>Item</th><th>Servi&ccedil;o</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th></tr>`;
-        for (var i = 0; i < dadosDorTodos.length; i++) {
-          var dadosDor = dadosDorTodos[i];
-          html += `
-            <tr>
-              <td>${escapeHtml(dadosDor.ITEM || '')}</td>
-              <td>${escapeHtml(dadosDor.SERVICO || '')}</td>
-              <td>${escapeHtml(dadosDor.ETAPA || '')}</td>
-              <td>${escapeHtml(dadosDor.STATUS || '')}</td>
-              <td>${escapeHtml(dadosDor.SEI || '')}</td>
-              <td>${escapeHtml(dadosDor.CONCLUSAO || '')}</td>
-            </tr>`;
-        }
-        html += `
-          </table>
-        </div>`;
-      }
-
-      if (dadosDmaTodos.length) {
-        html += `
-        <div class="bloco-servico">
-          <div class="titulo-servico">Dados DMA</div>
-          <table class="tabela-servico">
-            <tr><th>Item</th><th>Servi&ccedil;o</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th></tr>`;
-        for (var d = 0; d < dadosDmaTodos.length; d++) {
-          var dadosDma = dadosDmaTodos[d];
-          html += `
-            <tr>
-              <td>${escapeHtml(dadosDma.ITEM || '')}</td>
-              <td>${escapeHtml(dadosDma.SERVICO || '')}</td>
-              <td>${escapeHtml(dadosDma.ETAPA || '')}</td>
-              <td>${escapeHtml(dadosDma.STATUS || '')}</td>
-              <td>${escapeHtml(dadosDma.SEI || '')}</td>
-              <td>${escapeHtml(dadosDma.CONCLUSAO || '')}</td>
-            </tr>`;
-        }
-        html += `
-          </table>
-        </div>`;
-      }
-
-      if (dadosDplTodos.length) {
-        html += `
-        <div class="bloco-servico">
-          <div class="titulo-servico">Dados DPL</div>
-          <table class="tabela-servico">
-            <tr><th>Item</th><th>Servi&ccedil;o</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th></tr>`;
-        for (var p = 0; p < dadosDplTodos.length; p++) {
-          var dadosDpl = dadosDplTodos[p];
-          html += `
-            <tr>
-              <td>${escapeHtml(dadosDpl.ITEM || '')}</td>
-              <td>${escapeHtml(dadosDpl.SERVICO || '')}</td>
-              <td>${escapeHtml(dadosDpl.ETAPA || '')}</td>
-              <td>${escapeHtml(dadosDpl.STATUS || '')}</td>
-              <td>${escapeHtml(dadosDpl.SEI || '')}</td>
-              <td>${escapeHtml(dadosDpl.CONCLUSAO || '')}</td>
-            </tr>`;
-        }
-        html += `
-          </table>
-        </div>`;
-      }
-
-      if (dadosDpjTodos.length) {
-        html += `
-        <div class="bloco-servico">
-          <div class="titulo-servico">Dados DPJ</div>
-          <table class="tabela-servico">
-            <tr><th>Item</th><th>Servi&ccedil;o</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclus&atilde;o</th></tr>`;
-        for (var j = 0; j < dadosDpjTodos.length; j++) {
-          var dadosDpj = dadosDpjTodos[j];
-          html += `
-            <tr>
-              <td>${escapeHtml(dadosDpj.ITEM || '')}</td>
-              <td>${escapeHtml(dadosDpj.SERVICO || '')}</td>
-              <td>${escapeHtml(dadosDpj.ETAPA || '')}</td>
-              <td>${escapeHtml(dadosDpj.STATUS || '')}</td>
-              <td>${escapeHtml(dadosDpj.SEI || '')}</td>
-              <td>${escapeHtml(dadosDpj.CONCLUSAO || '')}</td>
-            </tr>`;
-        }
-        html += `
-          </table>
-        </div>`;
-      }
-
-      document.getElementById('painelTabelaConteudo').innerHTML = html;
+      document.getElementById('painelTabelaConteudo').innerHTML = html || '<em>Nenhum dado encontrado para este trecho.</em>';
     }
-  
     function atualizarTituloTopBar() {
     var municipioSelecionado = document.getElementById('municipioSelect').value;
     var rgSelecionada = document.getElementById('rgPlanSelect').value;
@@ -6852,7 +7330,7 @@ map.addControl(new LogoMapaControl());
       elementoTitulo.textContent = novoTitulo;
     }
 
-    // Atualizar topbar-left conforme serviços ativos
+    // Atualizar topbar-left conforme intervenções ativas
     var topbarLeft = document.querySelector('.topbar-left');
     if (topbarLeft) {
       var strong = topbarLeft.querySelector('strong');
@@ -6863,9 +7341,11 @@ map.addControl(new LogoMapaControl());
       var dplAtivo = servicosAtivos.DPL;
       var dpjAtivo = servicosAtivos.DPJ;
       var docAtivo = servicosAtivos.DOC;
+      var dsvAtivo = servicosAtivos.DSV;
+      var alteracaoAtiva = algumaAlteracaoAtiva();
 
       strong.textContent = 'PLANO GOINFRA';
-      if (fundAtivo && dorAtivo && dmaAtivo && dplAtivo && dpjAtivo && docAtivo) {
+      if (fundAtivo && dorAtivo && dmaAtivo && dplAtivo && dpjAtivo && docAtivo && dsvAtivo && alteracaoAtiva) {
         span.textContent = '';
       } else {
         var origensAtivas = [];
@@ -6875,10 +7355,13 @@ map.addControl(new LogoMapaControl());
         if (dplAtivo) origensAtivas.push('DPL');
         if (dpjAtivo) origensAtivas.push('DPJ');
         if (docAtivo) origensAtivas.push('DOC');
+        if (dsvAtivo) origensAtivas.push('DSV');
         span.textContent = origensAtivas.length ? '- ' + origensAtivas.join(' / ') : '';
       }
     }
-  }function aplicarFiltros(opcoes) {
+  }
+
+  function aplicarFiltros(opcoes) {
     opcoes = opcoes || {};
     desenharMascaraBrasil();
     atualizarBotoesBase();
@@ -6893,7 +7376,7 @@ map.addControl(new LogoMapaControl());
     desenharAero();
     desenharLinhasEPontos(feats);
     atualizarIndicadoresProgramaMunicipio(municipioSelecionado);
-    atualizarIndicadoresServicoEOAE(municipioSelecionado);
+    atualizarIndicadoresIntervencaoEOAE(municipioSelecionado);
 
     if (!opcoes.preservarZoom) {
       var localidadeSelecionada = document.getElementById('localidadeSelect').value;
@@ -6903,7 +7386,7 @@ map.addControl(new LogoMapaControl());
         var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
         var sreSelecionado = document.getElementById('sreSelect').value;
         var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
-        var featsZoom = obterFeaturesZoomServicos();
+        var featsZoom = obterFeaturesZoomIntervencaos();
 
         if (propostaSelecionada && zoomParaPropostaFundeinfra()) {
           // Zoom aplicado ao trecho FUNDEINFRA da proposta.
@@ -6933,13 +7416,14 @@ map.addControl(new LogoMapaControl());
     for (var chave in servicosAtivos) {
       servicosAtivos[chave] = false;
     }
+    definirAlteracoesAtivas(false);
     oaeFiltroAtivo = false;
         sreBaseFiltroAtivo = false;
     snvFiltroAtivo = false;
     areasAmbientaisFiltroAtivo = false;
     areasUrbanasFiltroAtivo = false;
     servicoFiltroAtivo = '';
-    preencherServicos();
+    preencherIntervencaos();
 
     var btnOAEOff = document.getElementById('toggleOAE');
     if (btnOAEOff) btnOAEOff.classList.remove('ativo-filtro');
@@ -6960,7 +7444,7 @@ map.addControl(new LogoMapaControl());
     document.getElementById('localidadeSelect').value = '';
     document.getElementById('localidadeBusca').value = '';
 
-    resetarBotoesServico();
+    resetarBotoesIntervencao();
 
     if (snvLayer) { map.removeLayer(snvLayer); snvLayer = null; }
     if (snvLabelLayer) { map.removeLayer(snvLabelLayer); snvLabelLayer = null; }
@@ -6975,12 +7459,14 @@ map.addControl(new LogoMapaControl());
     var b1 = document.getElementById('blocoLegendaRodFed');
     var b2 = document.getElementById('blocoLegendaRodEst');
     var b3 = document.getElementById('blocoLegendaOAE');
-        var b4 = document.getElementById('legendaServicos') ? document.getElementById('legendaServicos').closest('.bloco') : null;
+        var b4 = document.getElementById('legendaIntervencaos') ? document.getElementById('legendaIntervencaos').closest('.bloco') : null;
     var b5 = document.getElementById('legendaDor') ? document.getElementById('legendaDor').closest('.bloco') : null;
     var bDma = document.getElementById('legendaDma') ? document.getElementById('legendaDma').closest('.bloco') : null;
     var bDpl = document.getElementById('legendaDpl') ? document.getElementById('legendaDpl').closest('.bloco') : null;
     var bDpj = document.getElementById('legendaDpj') ? document.getElementById('legendaDpj').closest('.bloco') : null;
     var bDoc = document.getElementById('legendaDoc') ? document.getElementById('legendaDoc').closest('.bloco') : null;
+    var bDsv = document.getElementById('legendaDsv') ? document.getElementById('legendaDsv').closest('.bloco') : null;
+    var bAlteracoes = document.getElementById('blocoLegendaAlteracoes');
     var bAero = document.getElementById('blocoLegendaAero');
     if (b1) b1.style.display = 'none';
     if (b2) b2.style.display = 'none';
@@ -6991,6 +7477,8 @@ map.addControl(new LogoMapaControl());
     if (bDpl) bDpl.style.display = 'none';
     if (bDpj) bDpj.style.display = 'none';
     if (bDoc) bDoc.style.display = 'none';
+    if (bDsv) bDsv.style.display = 'none';
+    if (bAlteracoes) bAlteracoes.style.display = 'none';
     if (bAero) bAero.style.display = 'none';
 
     desenharEstados();
@@ -7025,13 +7513,14 @@ map.addControl(new LogoMapaControl());
     for (var chave in servicosAtivos) {
       servicosAtivos[chave] = true;
     }
+    definirAlteracoesAtivas(true);
     oaeFiltroAtivo = true;
         sreBaseFiltroAtivo = true;
     snvFiltroAtivo = true;
     areasAmbientaisFiltroAtivo = false;
     areasUrbanasFiltroAtivo = false;
     servicoFiltroAtivo = '';
-    preencherServicos();
+    preencherIntervencaos();
 
     var btnOAEOn = document.getElementById('toggleOAE');
     if (btnOAEOn) btnOAEOn.classList.add('ativo-filtro');
@@ -7096,9 +7585,10 @@ map.addControl(new LogoMapaControl());
     for (var chave in servicosAtivos) {
       servicosAtivos[chave] = !origemAtiva || chave === origemAtiva;
     }
+    definirAlteracoesAtivas(!origemAtiva);
 
-    preencherServicos();
-    resetarBotoesServico();
+    preencherIntervencaos();
+    resetarBotoesIntervencao();
     preencherPropostas();
     preencherRodovias();
     preencherSREs();
@@ -7134,9 +7624,22 @@ map.addControl(new LogoMapaControl());
     var params = parametrosEntradaMapa();
     var origem = String(params.get('origem') || '').toUpperCase();
     var perfil = String(params.get('perfil') || '').toLowerCase();
-    var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'DOC'];
+    var alteracoesEntrada = params.get('alteracoes') === '1';
+    var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'DOC', 'DSV'];
 
-    if (origem && origensValidas.indexOf(origem) !== -1) {
+    if (alteracoesEntrada) {
+      limparCamposFiltroEntrada();
+      for (var chaveAltEntrada in servicosAtivos) {
+        servicosAtivos[chaveAltEntrada] = false;
+      }
+      definirAlteracoesAtivas(true);
+      preencherIntervencaos();
+      resetarBotoesIntervencao();
+      preencherPropostas();
+      preencherRodovias();
+      preencherSREs();
+      aplicarFiltros();
+    } else if (origem && origensValidas.indexOf(origem) !== -1) {
       limparCamposFiltroEntrada();
       definirOrigensAtivas(origem);
       aplicarFiltros();
@@ -7146,8 +7649,9 @@ map.addControl(new LogoMapaControl());
       for (var chave in servicosAtivos) {
         servicosAtivos[chave] = false;
       }
-      preencherServicos();
-      resetarBotoesServico();
+      definirAlteracoesAtivas(false);
+      preencherIntervencaos();
+      resetarBotoesIntervencao();
 
       oaeFiltroAtivo = true;
       sreBaseFiltroAtivo = true;
@@ -7524,16 +8028,26 @@ map.addControl(new LogoMapaControl());
     });
   }
 
-  var botoesServico = document.querySelectorAll('.servico-btn');
-  for (var iServ = 0; iServ < botoesServico.length; iServ++) {
-    botoesServico[iServ].addEventListener('click', function() {
+  var botoesAlteracoes = document.querySelectorAll('.alteracao-btn');
+  for (var iAltBot = 0; iAltBot < botoesAlteracoes.length; iAltBot++) {
+    botoesAlteracoes[iAltBot].addEventListener('click', function() {
+      var tipoAlteracao = this.getAttribute('data-alteracao');
+      alteracoesAtivas[tipoAlteracao] = !alteracoesAtivas[tipoAlteracao];
+      atualizarBotoesAlteracoes();
+      aplicarFiltros({ preservarZoom: true });
+    });
+  }
+
+  var botoesIntervencao = document.querySelectorAll('.servico-btn');
+  for (var iServ = 0; iServ < botoesIntervencao.length; iServ++) {
+    botoesIntervencao[iServ].addEventListener('click', function() {
       var chave = this.getAttribute('data-servico');
       var tinhaFiltroEspacial =
         !!(document.getElementById('propostaSelect') && document.getElementById('propostaSelect').value) ||
         !!document.getElementById('rodoviaSelect').value ||
         !!document.getElementById('sreSelect').value;
       servicosAtivos[chave] = !servicosAtivos[chave];
-      preencherServicos();
+      preencherIntervencaos();
       document.getElementById('propostaSelect').value = '';
       document.getElementById('rodoviaSelect').value = '';
       document.getElementById('sreSelect').value = '';
@@ -7757,6 +8271,43 @@ map.addControl(new LogoMapaControl());
       });
   }
 
+  var painelTabelaConteudoEl = document.getElementById('painelTabelaConteudo');
+  if (painelTabelaConteudoEl) {
+    painelTabelaConteudoEl.addEventListener('click', function(e) {
+      var alvoLista = e.target && e.target.closest ? e.target.closest('[data-lista-filtrada]') : null;
+      if (alvoLista) {
+        renderizarListaCompletaFiltrada(alvoLista.getAttribute('data-lista-filtrada'));
+        return;
+      }
+      var alvoVoltar = e.target && e.target.closest ? e.target.closest('[data-voltar-lista-filtrada]') : null;
+      if (alvoVoltar) {
+        limparDestaqueTabelaCompleta();
+        if (htmlPainelAntesListaCompleta) painelTabelaConteudoEl.innerHTML = htmlPainelAntesListaCompleta;
+        return;
+      }
+      var alvoZoom = e.target && e.target.closest ? e.target.closest('[data-zoom-registro]') : null;
+      if (alvoZoom) {
+        var linhas = painelTabelaConteudoEl.querySelectorAll('.tabela-lista-filtrada tr.linha-selecionada-grupo');
+        for (var i = 0; i < linhas.length; i++) linhas[i].classList.remove('linha-selecionada-grupo');
+        var linha = alvoZoom.closest('tr');
+        if (linha) linha.classList.add('linha-selecionada-grupo');
+        zoomParaRegistroTabelaCompleta(alvoZoom.getAttribute('data-zoom-registro'));
+      }
+    });
+  }
+
+  if (painelTabelaConteudoEl) {
+    painelTabelaConteudoEl.addEventListener('input', function(e) {
+      var busca = e.target && e.target.id === 'buscaListaFiltrada' ? e.target : null;
+      if (!busca) return;
+      var termo = busca.value.toLowerCase();
+      var linhas = painelTabelaConteudoEl.querySelectorAll('.tabela-lista-filtrada tr[data-linha-zoom]');
+      for (var i = 0; i < linhas.length; i++) {
+        linhas[i].style.display = !termo || linhas[i].textContent.toLowerCase().indexOf(termo) >= 0 ? '' : 'none';
+      }
+    });
+  }
+
   Promise.all([
     fetchGeoJSON('data/municipios.geojson', true),
     fetchGeoJSON('data/localidades.geojson', true),
@@ -7769,7 +8320,9 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/estados.geojson', false),
     fetchGeoJSON('data/mascara_brasil.geojson', false),
     fetchGeoJSON('data/AERO.geojson', false),
-    fetchGeoJSON('data/aerodromos_obras.geojson', false)
+    fetchGeoJSON('data/aerodromos_obras.geojson', false),
+    fetchGeoJSON('data/alteracoes_linhas.geojson', false),
+    carregarJsonOpcional('data/ALTERACOES.json')
   ]).then(function(resultado) {
     municipiosData = resultado[0];
     localidadesData = resultado[1];
@@ -7778,13 +8331,17 @@ map.addControl(new LogoMapaControl());
     sreBaseData = resultado[4];
     construirIndiceSREBaseCoincidencias();
     sreData = resultado[5];
+    obrasPontosBaseData = resultado[6];
     obrasPontosData = resultado[6];
+    atualizarObrasPontosDataComCoordenadas();
     oaeData = null;
     snvData = resultado[7];
     estadosData = resultado[8];
     mascaraBrasilData = resultado[9];
     aeroData = resultado[10];
     aeroObrasData = resultado[11];
+    alteracoesData = resultado[12];
+    atualizarAlteracoesTabela(resultado[13]);
 
     desenharMascaraBrasil();
 
@@ -7802,6 +8359,40 @@ map.addControl(new LogoMapaControl());
       '\nDetalhe: ' + (e.message || e)
     );
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

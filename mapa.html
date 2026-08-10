@@ -39,13 +39,25 @@
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DPL" type="button">DPL</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DPJ" type="button">DPJ</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOC" type="button">DOC</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DSV" type="button">DSV</button>
       </div>
     </div>
+
+    <details class="painel-colapsavel bloco-alteracoes-jurisdicao">
+      <summary class="subtitulo subtitulo-painel">ALTERA&Ccedil;&Otilde;ES DE JURISDI&Ccedil;&Atilde;O</summary>
+      <div class="conteudo-colapsavel">
+        <div class="grid-servicos grid-alteracoes" id="alteracoesBotoes">
+          <button class="filtro-btn alteracao-btn" data-alteracao="Estadualiza&#231;&#227;o" type="button">Estadualiza&ccedil;&atilde;o</button>
+          <button class="filtro-btn alteracao-btn" data-alteracao="Federaliza&#231;&#227;o" type="button">Federaliza&ccedil;&atilde;o</button>
+          <button class="filtro-btn alteracao-btn" data-alteracao="Municipaliza&#231;&#227;o" type="button">Municipaliza&ccedil;&atilde;o</button>
+        </div>
+      </div>
+    </details>
 
     <details class="painel-colapsavel">
       <summary class="subtitulo subtitulo-painel">Filtros</summary>
       <div class="conteudo-colapsavel">
-        <label for="servicoSelect">Serviço</label>
+        <label for="servicoSelect">Intervenção</label>
         <select id="servicoSelect">
           <option value="">Todos</option>
         </select>
@@ -245,6 +257,7 @@
         <span id="countDma">0</span>
         <span id="countDpl">0</span>
         <span id="countDpj">0</span>
+        <span id="countDsv">0</span>
       </div>
 
       <div class="rodape-versao">
@@ -283,7 +296,7 @@
 
       <div class="bloco legenda-categoria">
         <div class="subtitulo">FUNDEINFRA</div>
-        <div id="legendaServicos"></div>
+        <div id="legendaIntervencaos"></div>
       </div>
 
       <div class="bloco legenda-categoria">
@@ -311,6 +324,16 @@
         <div id="legendaDoc"></div>
       </div>
 
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DSV</div>
+        <div id="legendaDsv"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaAlteracoes" style="display: none;">
+        <div class="subtitulo">ALTERA&Ccedil;&Otilde;ES DE JURISDI&Ccedil;&Atilde;O</div>
+        <div id="legendaAlteracoes"></div>
+      </div>
+
       <div class="bloco legenda-categoria" id="blocoLegendaRodEst">
         <div class="subtitulo">Rodovia Estadual</div>
         <div id="legendaRodEst"></div>
@@ -336,10 +359,19 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-<script src="js/estilos.js"></script>
-<script src="js/mapa.js"></script>
-<script src="js/impressao.js"></script>
+<script src="js/estilos.js?v=dados-20260803d"></script>
+<script src="js/mapa.js?v=dados-20260803d"></script>
+<script src="js/impressao.js?v=dados-20260803d"></script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 

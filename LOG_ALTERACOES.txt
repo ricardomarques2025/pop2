@@ -344,3 +344,43 @@ Atualizacao da camada de areas ambientais:
 --- Mantida compatibilidade com campos antigos da camada ambiental, como UNIDADE, REGISTRO, PARQUE e AREA_KM2.
 --- Mantida a prioridade baixa da camada ambiental por meio do pane areasAmbientaisPane abaixo de areasUrbanasPane.
 --- Atualizado o rodape da interface para VER. 2.4.
+VERSAO 2.5 - 03/08/2026
+-------------------------
+
+Migracao progressiva das obras pontuais para tabela por coordenadas:
+--- Adicionada leitura da nova tabela data/DADOS.json como fonte de obras pontuais por coordenadas LATITUDE e LONGITUDE.
+--- Adicionada a origem DSV como Seguranca Viaria na pagina inicial, com imagem data/DSV.jpg e filtro dedicado no mapa.
+--- Ajustada a origem DOC para usar os pontos gerados pela tabela data/DADOS.json, sem depender inicialmente do shape antigo de pontos.
+--- Definido o campo IDCOD como chave agregadora dos novos dados por coordenada.
+--- Ajustado o agrupamento dos marcadores de DADOS.json para gerar um ponto por IDCOD e vincular todos os registros correspondentes no popup e na tabela inferior.
+--- Mantida compatibilidade temporaria com o fluxo antigo por LINK para as bases legadas ainda nao migradas.
+--- Removida a exibicao dos campos LATITUDE, LONGITUDE e LINK no popup e na tabela inferior das obras pontuais, mantendo latitude e longitude apenas para posicionamento dos marcadores.
+--- Corrigida a acentuacao dos textos do site apos a inclusao da nova base de dados.
+
+
+VERSAO 2.6 - 07/08/2026
+-------------------------
+
+Unificacao das bases de obras no arquivo DADOS.json:
+--- Consolidada a leitura dos dados do site a partir de data/DADOS.json, usando o campo TIPO para separar obras de Ponto e Linha.
+--- Ajustada a leitura de data/obras_linhas.geojson para usar os novos vinculos por unidade: IDCOD_FUND, IDCOD_DOR, IDCOD_DMA, IDCOD_DPL e IDCOD_DPJ, referenciando DADOS.IDCOD.
+--- Mantida a exibicao somente de campos preenchidos em popups e tabelas do painel inferior.
+--- Renomeado o filtro visual de Servico para Intervencao e ajustada a populacao do filtro exclusivamente pelo campo INTERVENCAO.
+--- Ajustada a filtragem das obras pontuais e lineares para comparar somente com INTERVENCAO, sem fallback para SERVICO ou DESCRICAO.
+--- Incluido o campo PROPOSTA nos registros FUNDEINFRA, inclusive nas obras pontuais.
+--- Incluido o campo ATUALIZACAO somente nas tabelas do painel inferior do site, sem exibicao nos popups.
+--- Ajustada a classificacao visual de OAE para considerar qualquer valor de INTERVENCAO que contenha a palavra OAE, como Implantacao de OAE, Recuperacao de OAE e Restauracao de OAE.
+--- Padronizada a exibicao do campo IDCOD em todas as tabelas e popups vinculados aos dados de obras.
+--- Substituido o rotulo Item por IDCOD nas tabelas e popups das unidades DOR, DMA, DPL e DPJ.
+--- Ajustada a tabela de impressao para incluir IDCOD e remover duplicidades de identificador nas unidades vinculadas.
+--- Adicionada a nova funcao Alteracoes de Jurisdicao na pagina inicial, com imagem data/ALTERACAO.jpg e entrada dedicada para abrir o mapa somente com esta camada ativa.
+--- Adicionado bloco lateral independente para Alteracoes de Jurisdicao, com botoes Estadualizacao, Federalizacao e Municipalizacao.
+--- Adicionada leitura de data/alteracoes_linhas.geojson e data/ALTERACOES.json, vinculadas pelo campo ID.
+--- Implementada simbologia das alteracoes: Estadualizacao em verde, Federalizacao em azul e Municipalizacao em vermelho.
+--- Adicionado popup das alteracoes com Tipo, Processo, Municipios e Situacao atual, ocultando campos vazios.
+--- Adicionada tabela inferior das alteracoes com todos os campos preenchidos da tabela ALTERACOES.json para o trecho selecionado.
+--- Ajustado o index.html para exibir Alteracoes de Jurisdicao como menu proprio no bloco de acessos gerais da tela inicial, usando data/ALTERACAO.jpg no hover.
+--- Ajustado o menu lateral de Alteracoes de Jurisdicao para ficar colapsavel, com botoes em uma coluna, e adicionada legenda propria no painel direito.
+--- Adicionado recurso no painel inferior para mostrar os registros filtrados de obras lineares, obras pontuais e alteracoes de jurisdicao, com botao de zoom em cada linha da tabela.
+--- Ajustada a planilha de registros: botao renomeado para Mostrar todos registros, incluido Voltar, busca interna, exibicao de todos os campos preenchidos e destaque verde na linha selecionada pelo zoom.
+--- Adicionada rolagem horizontal e vertical na planilha completa do painel inferior para facilitar a visualizacao de muitas colunas.
