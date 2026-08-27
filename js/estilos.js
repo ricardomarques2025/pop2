@@ -22,10 +22,10 @@ const MAPA_PANES = {
 const MAPAS_BASE_CONFIG = {
   "Claro limpo": {
     inicial: true,
-    url: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
     opcoes: {
-      attribution: "© OpenStreetMap © CARTO",
-      subdomains: "abcd",
+      attribution: "Tiles © Esri",
+      maxNativeZoom: 16,
       maxZoom: 20
     }
   },
@@ -34,14 +34,6 @@ const MAPAS_BASE_CONFIG = {
     opcoes: {
       attribution: "© OpenStreetMap contributors",
       maxZoom: 19
-    }
-  },
-  "Escuro": {
-    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    opcoes: {
-      attribution: "© OpenStreetMap © CARTO",
-      subdomains: "abcd",
-      maxZoom: 20
     }
   },
   "Satélite": {
