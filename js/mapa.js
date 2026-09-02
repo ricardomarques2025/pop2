@@ -454,8 +454,8 @@ map.addControl(new LogoMapaControl());
       FUNDEINFRA: true,
       DOR: true,
       DMA: true,
-      DPL: true,
       DPJ: true,
+      DPL: true,
       DOC: true,
       DSV: true
     };
@@ -2932,8 +2932,8 @@ map.addControl(new LogoMapaControl());
     if (!respeitarOrigem || servicosAtivos.FUNDEINFRA) addIntervencaos(obrasFundeinfraData);
     if (!respeitarOrigem || servicosAtivos.DOR) addIntervencaos(obrasDorData);
     if (!respeitarOrigem || servicosAtivos.DMA) addIntervencaos(obrasDmaData);
-    if (!respeitarOrigem || servicosAtivos.DPL) addIntervencaos(obrasDplData);
     if (!respeitarOrigem || servicosAtivos.DPJ) addIntervencaos(obrasDpjData);
+    if (!respeitarOrigem || servicosAtivos.DPL) addIntervencaos(obrasDplData);
     addIntervencaosPontos(obrasPontosTabelaData);
 
     servicos.sort(function(a, b) {
@@ -7079,6 +7079,11 @@ map.addControl(new LogoMapaControl());
       }
     }
 
+    var ordemOrigensLineares = { FUNDEINFRA: 0, DOR: 1, DMA: 2, DPJ: 3, DPL: 4 };
+    linhasBase.sort(function(a, b) {
+      return ordemOrigensLineares[origemIntervencaoFeature(a)] - ordemOrigensLineares[origemIntervencaoFeature(b)];
+    });
+
         var grupos = {};
     var servicosVisiveis = {};
     var servicosVisiveisDor = {};
@@ -7279,8 +7284,8 @@ map.addControl(new LogoMapaControl());
     });
     renderizarLegendaDor(servicosVisiveisDor, Object.assign({}, resultadoObrasPontos.legendaDor, resultadoObrasAero.legendaDor));
     renderizarLegendaDma(servicosVisiveisDma, Object.assign({}, resultadoObrasPontos.legendaDma, resultadoObrasAero.legendaDma));
-    renderizarLegendaDpl(servicosVisiveisDpl, resultadoObrasPontos.legendaDpl);
     renderizarLegendaDpj(servicosVisiveisDpj, Object.assign({}, resultadoObrasPontos.legendaDpj, resultadoObrasAero.legendaDpj));
+    renderizarLegendaDpl(servicosVisiveisDpl, resultadoObrasPontos.legendaDpl);
     renderizarLegendaDoc(resultadoObrasPontos.legendaDoc);
     renderizarLegendaDsv(resultadoObrasPontos.legendaDsv);
     renderizarLegendaAlteracoes(alteracoesVisiveis);
