@@ -3,9 +3,11 @@
 // A logica que desenha e filtra as camadas fica em js/mapa.js.
 
 const MAPA_PANES = {
+  limitesBasePane: 220,
   areasAmbientaisPane: 230,
   areasUrbanasPane: 240,
   municipiosPane: 250,
+  areaInfluenciaPane: 255,
   snvPane: 260,
   sreBasePane: 300,
   servicosPane: 500,
@@ -43,6 +45,14 @@ const MAPAS_BASE_CONFIG = {
       maxZoom: 19
     }
   }
+};
+
+const ESTILO_AREA_INFLUENCIA = {
+  color: "#2680c2",
+  weight: 1.5,
+  opacity: 1,
+  fillColor: "#87cefa",
+  fillOpacity: 0.25
 };
 
 const ESTILO_ANOTACAO_PADRAO = {
@@ -310,6 +320,7 @@ const REGRAS_ESTILO = [
   };
 
   window.MAPA_PANES = MAPA_PANES;
+  window.ESTILO_AREA_INFLUENCIA = ESTILO_AREA_INFLUENCIA;
   window.MAPAS_BASE_CONFIG = MAPAS_BASE_CONFIG;
   window.ESTILO_ANOTACAO_PADRAO = ESTILO_ANOTACAO_PADRAO;
   window.ESTILO_TEXTO_ANOTACAO_PADRAO = ESTILO_TEXTO_ANOTACAO_PADRAO;

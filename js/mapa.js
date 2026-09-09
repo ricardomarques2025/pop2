@@ -84,6 +84,7 @@ function desenharMascaraBrasil() {
   var corMascara = filtroEspacialSelecionado ? '#d9d9d9' : '#808080';
 
   mascaraBrasilLayer = L.geoJSON(mascaraBrasilData, {
+    pane: 'limitesBasePane',
     style: {
       color: corMascara,
       weight: 1,
@@ -410,6 +411,7 @@ map.addControl(new LogoMapaControl());
   var localidadesData = null;
   var areasAmbientaisData = null;
   var areasUrbanasData = null;
+  var areaInfluenciaData = null;
   var sreBaseData = null;
   var sreBaseCoincidenciasIndex = null;
   var sreData = null;
@@ -430,6 +432,7 @@ map.addControl(new LogoMapaControl());
   var localidadesLayer = null;
   var areasAmbientaisLayer = null;
   var areasUrbanasLayer = null;
+  var areaInfluenciaLayer = null;
   var sreBaseLayer = null;
   var sreBaseLabelLayer = null;
   var snvLabelLayer = null;
@@ -2039,6 +2042,7 @@ map.addControl(new LogoMapaControl());
   var municipioBaseFiltroAtivo = true;
   var areasAmbientaisFiltroAtivo = false;
   var areasUrbanasFiltroAtivo = false;
+  var areaInfluenciaFiltroAtivo = false;
   var densidadeRotulos = 0;
 
   var obrasFundeinfraData = [];
@@ -2425,6 +2429,11 @@ map.addControl(new LogoMapaControl());
     var btnAreasUrbanas = document.getElementById('toggleAreasUrbanas');
     if (btnAreasUrbanas) {
       btnAreasUrbanas.classList.toggle('ativo-filtro', areasUrbanasFiltroAtivo);
+    }
+    var btnAreaInfluencia = document.getElementById('toggleAreaInfluencia');
+    if (btnAreaInfluencia) {
+      btnAreaInfluencia.classList.toggle('ativo-filtro', areaInfluenciaFiltroAtivo);
+      btnAreaInfluencia.setAttribute('aria-pressed', String(areaInfluenciaFiltroAtivo));
     }
     atualizarBotoesAlteracoes();
   }
@@ -3245,6 +3254,7 @@ map.addControl(new LogoMapaControl());
     if (estadosLayer) map.removeLayer(estadosLayer);
 
     estadosLayer = L.geoJSON(estadosData, {
+      pane: 'limitesBasePane',
       style: function(feature) {
         if (ehGoias(feature)) {
           return {
@@ -3369,6 +3379,20 @@ map.addControl(new LogoMapaControl());
           fillOpacity: 0.28
         };
       }
+    }).addTo(map);
+  }
+
+  function desenharAreaInfluencia() {
+    if (areaInfluenciaLayer) {
+      map.removeLayer(areaInfluenciaLayer);
+      areaInfluenciaLayer = null;
+    }
+    if (!areaInfluenciaFiltroAtivo || !areaInfluenciaData || !areaInfluenciaData.features) return;
+
+    areaInfluenciaLayer = L.geoJSON(areaInfluenciaData, {
+      pane: 'areaInfluenciaPane',
+      interactive: false,
+      style: ESTILO_AREA_INFLUENCIA
     }).addTo(map);
   }
 
@@ -7377,6 +7401,7 @@ map.addControl(new LogoMapaControl());
     desenharMunicipiosBase(feats);
     desenharAreasAmbientais();
     desenharAreasUrbanas();
+    desenharAreaInfluencia();
     desenharLocalidades();
     desenharAero();
     desenharLinhasEPontos(feats);
@@ -7427,6 +7452,9 @@ map.addControl(new LogoMapaControl());
     snvFiltroAtivo = false;
     areasAmbientaisFiltroAtivo = false;
     areasUrbanasFiltroAtivo = false;
+    areaInfluenciaFiltroAtivo = false;
+    desenharAreaInfluencia();
+    atualizarBotoesBase();
     servicoFiltroAtivo = '';
     preencherIntervencaos();
 
@@ -7524,6 +7552,7 @@ map.addControl(new LogoMapaControl());
     snvFiltroAtivo = true;
     areasAmbientaisFiltroAtivo = false;
     areasUrbanasFiltroAtivo = false;
+    areaInfluenciaFiltroAtivo = false;
     servicoFiltroAtivo = '';
     preencherIntervencaos();
 
@@ -8109,6 +8138,15 @@ map.addControl(new LogoMapaControl());
     });
   }
 
+  var btnToggleAreaInfluencia = document.getElementById('toggleAreaInfluencia');
+  if (btnToggleAreaInfluencia) {
+    btnToggleAreaInfluencia.addEventListener('click', function() {
+      areaInfluenciaFiltroAtivo = !areaInfluenciaFiltroAtivo;
+      atualizarBotoesBase();
+      desenharAreaInfluencia();
+    });
+  }
+
   var btnToggleAreasUrbanas = document.getElementById('toggleAreasUrbanas');
   if (btnToggleAreasUrbanas) {
     btnToggleAreasUrbanas.addEventListener('click', function() {
@@ -8327,7 +8365,8 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/AERO.geojson', false),
     fetchGeoJSON('data/aerodromos_obras.geojson', false),
     fetchGeoJSON('data/alteracoes_linhas.geojson', false),
-    carregarJsonOpcional('data/ALTERACOES.json')
+    carregarJsonOpcional('data/ALTERACOES.json'),
+    fetchGeoJSON('data/area_infuencia.geojson', false)
   ]).then(function(resultado) {
     municipiosData = resultado[0];
     localidadesData = resultado[1];
@@ -8349,6 +8388,8 @@ map.addControl(new LogoMapaControl());
     atualizarAlteracoesTabela(resultado[13]);
 
     desenharMascaraBrasil();
+
+    areaInfluenciaData = resultado[14];
 
     preencherRGPlan();
     preencherMunicipios();
