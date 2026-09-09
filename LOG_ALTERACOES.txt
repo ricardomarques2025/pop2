@@ -384,3 +384,20 @@ Unificacao das bases de obras no arquivo DADOS.json:
 --- Adicionado recurso no painel inferior para mostrar os registros filtrados de obras lineares, obras pontuais e alteracoes de jurisdicao, com botao de zoom em cada linha da tabela.
 --- Ajustada a planilha de registros: botao renomeado para Mostrar todos registros, incluido Voltar, busca interna, exibicao de todos os campos preenchidos e destaque verde na linha selecionada pelo zoom.
 --- Adicionada rolagem horizontal e vertical na planilha completa do painel inferior para facilitar a visualizacao de muitas colunas.
+
+
+VERSAO 2.7 - 09/09/2026
+-------------------------
+
+Camadas de base, ferrovias e interacao com o mapa:
+--- Incluida area de influencia em azul claro semitransparente, com contorno azul, acima dos poligonos e abaixo das linhas; controle em Malhas de base, desativado por padrao.
+--- Adicionado contorno branco abaixo das divisas tracejadas dos municipios e ajustada a opacidade do preenchimento.
+--- Adicionado popup ao clicar no poligono municipal, com titulo "Municipio de", codigo IBGE e regiao de planejamento, com acentuacao correta na interface.
+--- Mantidos os municipios sem rotulos permanentes, usando o popup para identificar cada poligono.
+--- Ampliada a area de clique das linhas para pelo menos 18 pixels, sem alterar sua espessura visual e preservando os paineis vinculados.
+--- Incluida data/ferrovias.geojson em Malhas de base, desativada por padrao, com popup, linha continua e tracos perpendiculares.
+--- Adicionada legenda das ferrovias, exibida somente quando a camada esta ativa.
+--- Adicionada lista de ferrovias abaixo de SRE nos filtros, com nomes unicos e opcao Todas; a selecao ativa e filtra a camada sem alterar o zoom.
+--- Preservados zoom e posicao do mapa ao alternar as malhas de base.
+--- Ativada a camada Municipios por padrao na entrada Alteracoes de Jurisdicao do menu inicial.
+--- Validada a sintaxe JavaScript e realizadas verificacoes isoladas de cliques, filtros ferroviarios e legenda; sem validacao automatizada em navegador.

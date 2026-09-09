@@ -412,6 +412,9 @@ map.addControl(new LogoMapaControl());
   var areasAmbientaisData = null;
   var areasUrbanasData = null;
   var areaInfluenciaData = null;
+  var ferroviasData = null;
+  var ferroviasLayer = null;
+  var ferroviasFiltroAtivo = false;
   var sreBaseData = null;
   var sreBaseCoincidenciasIndex = null;
   var sreData = null;
@@ -2430,6 +2433,11 @@ map.addControl(new LogoMapaControl());
     if (btnAreasUrbanas) {
       btnAreasUrbanas.classList.toggle('ativo-filtro', areasUrbanasFiltroAtivo);
     }
+    var btnFerrovias = document.getElementById('toggleFerrovias');
+    if (btnFerrovias) {
+      btnFerrovias.classList.toggle('ativo-filtro', ferroviasFiltroAtivo);
+      btnFerrovias.setAttribute('aria-pressed', String(ferroviasFiltroAtivo));
+    }
     var btnAreaInfluencia = document.getElementById('toggleAreaInfluencia');
     if (btnAreaInfluencia) {
       btnAreaInfluencia.classList.toggle('ativo-filtro', areaInfluenciaFiltroAtivo);
@@ -3303,10 +3311,7 @@ map.addControl(new LogoMapaControl());
     var mascaraMunicipioSelecionado = !!municipioSelecionadoFiltro;
     var mascaraRegiaoSelecionada = !municipioSelecionadoFiltro && !!rgSelecionadaFiltro;
 
-    municipiosLayer = L.geoJSON(municipiosData, {
-      pane: 'municipiosPane',
-      interactive: false,
-      style: function(feature) {
+    var estiloMunicipio = function(feature) {
         var nome = valorSeguro(feature, 'NM_MUN');
         var rgPlan = valorSeguro(feature, 'RG_PLAN');
         var selecionado = selecionados.has(nome);
@@ -3357,7 +3362,7 @@ map.addControl(new LogoMapaControl());
             weight: 1,
             dashArray: '8, 5, 1, 5',
             fillColor: '#ffffff',
-            fillOpacity: 0
+            fillOpacity: 0.6
           };
         }
 
@@ -3378,8 +3383,118 @@ map.addControl(new LogoMapaControl());
           fillColor: '#808080',
           fillOpacity: 0.28
         };
+    };
+
+    // Desenha todos os preenchimentos antes dos contornos para preservar as divisas compartilhadas.
+    var preenchimentos = L.geoJSON(municipiosData, {
+      pane: 'municipiosPane',
+      interactive: true,
+      style: function(feature) {
+        return Object.assign({}, estiloMunicipio(feature), { stroke: false });
+      },
+      onEachFeature: function(feature, layer) {
+        vincularPopupComAreaClique(layer, function() {
+          return construirPopupAreaBase(feature, 'Município de ' + valorSeguro(feature, 'NM_MUN'), [
+            { rotulo: 'Código IBGE', nome: 'CD_MUN' },
+            { rotulo: 'Região de Planejamento', nome: 'RG_PLAN' }
+          ]);
+        });
       }
-    }).addTo(map);
+    });
+    var contornosBrancos = L.geoJSON(municipiosData, {
+      pane: 'municipiosPane',
+      interactive: false,
+      style: ESTILO_CONTORNO_BRANCO_MUNICIPIOS
+    });
+    var contornosTracejados = L.geoJSON(municipiosData, {
+      pane: 'municipiosPane',
+      interactive: false,
+      style: function(feature) {
+        return Object.assign({}, estiloMunicipio(feature), { fill: false });
+      }
+    });
+    municipiosLayer = L.layerGroup([preenchimentos, contornosBrancos, contornosTracejados]).addTo(map);
+  }
+
+  function vincularPopupComAreaClique(layer, conteudo) {
+    layer.bindPopup(conteudo);
+    if (!(layer instanceof L.Polyline) || layer instanceof L.Polygon) return;
+    var areaClique = null;
+    layer.on('add', function() {
+      if (areaClique) return;
+      areaClique = L.polyline(layer.getLatLngs(), {
+        pane: layer.options.pane,
+        weight: Math.max(18, Number(layer.options.weight) || 0),
+        opacity: 0,
+        fill: false,
+        dashArray: null,
+        interactive: true,
+        bubblingMouseEvents: false
+      });
+      areaClique.on('click', function(e) {
+        // Preserva também os handlers que atualizam o painel de informações.
+        layer.fire('click', { latlng: e.latlng, originalEvent: e.originalEvent }, true);
+      });
+      areaClique.addTo(map).bringToBack();
+    });
+    layer.on('remove', function() {
+      if (areaClique) map.removeLayer(areaClique);
+      areaClique = null;
+    });
+  }
+
+  function preencherFerrovias() {
+    var select = document.getElementById('ferroviaSelect');
+    var selecionada = select.value;
+    select.innerHTML = '<option value="">Todas</option>';
+    var nomes = new Set();
+    ((ferroviasData && ferroviasData.features) || []).forEach(function(feature) {
+      var nome = valorSeguro(feature, 'nome');
+      if (nome) nomes.add(nome);
+    });
+    Array.from(nomes).sort(function(a, b) { return a.localeCompare(b, 'pt-BR'); }).forEach(function(nome) {
+      var option = document.createElement('option');
+      option.value = nome;
+      option.textContent = nome;
+      select.appendChild(option);
+    });
+    select.value = nomes.has(selecionada) ? selecionada : '';
+  }
+
+  function desenharFerrovias() {
+    if (ferroviasLayer) map.removeLayer(ferroviasLayer);
+    ferroviasLayer = null;
+    var legendaFerrovias = document.getElementById('blocoLegendaFerrovias');
+    if (legendaFerrovias) legendaFerrovias.style.display = ferroviasFiltroAtivo && ferroviasData ? '' : 'none';
+    if (!ferroviasFiltroAtivo || !ferroviasData) return;
+    var selecionada = document.getElementById('ferroviaSelect').value;
+    var dadosFiltrados = {
+      type: 'FeatureCollection',
+      features: (ferroviasData.features || []).filter(function(feature) {
+        return !selecionada || valorSeguro(feature, 'nome') === selecionada;
+      })
+    };
+    var linhaContinua = L.geoJSON(dadosFiltrados, {
+      pane: 'ferroviasPane',
+      style: { color: '#000000', weight: 2, opacity: 1 },
+      onEachFeature: function(feature, layer) {
+        vincularPopupComAreaClique(layer, function() {
+          return construirPopupAreaBase(feature, valorSeguro(feature, 'nome') || 'Ferrovia', [
+            { rotulo: 'Sigla', nome: 'sigla' },
+            { rotulo: 'Situação', nome: 'tip_situac' },
+            { rotulo: 'Bitola', nome: 'bitola' },
+            { rotulo: 'Município', nome: 'municipio' }
+          ]);
+        });
+      }
+    });
+    // Segmentos curtos e largos formam os traços perpendiculares ao eixo da ferrovia.
+    var travessas = L.geoJSON(dadosFiltrados, {
+      pane: 'ferroviasPane',
+      interactive: false,
+      style: { color: '#000000', weight: 6, opacity: 1, dashArray: '1.2, 12', lineCap: 'butt' }
+    });
+    ferroviasLayer = L.layerGroup([linhaContinua, travessas]).addTo(map);
   }
 
   function desenharAreaInfluencia() {
@@ -3418,7 +3533,7 @@ map.addControl(new LogoMapaControl());
       },
       onEachFeature: function(feature, layer) {
         var titulo = valorSeguro(feature, 'NOME_ACEN') || 'Área urbana';
-        layer.bindPopup(function() {
+        vincularPopupComAreaClique(layer, function() {
           return construirPopupAreaBase(feature, titulo, [
             { rotulo: 'Município', nome: 'NM_MUN' },
             { rotulo: 'Região de Planejamento', nome: 'RG_PLAN' },
@@ -3452,7 +3567,7 @@ map.addControl(new LogoMapaControl());
       },
       onEachFeature: function(feature, layer) {
         var titulo = valorSeguro(feature, 'NOME') || valorSeguro(feature, 'UNIDADE') || 'Área ambiental';
-        layer.bindPopup(function() {
+        vincularPopupComAreaClique(layer, function() {
           return construirPopupAreaBase(feature, titulo, [
             { rotulo: 'Categoria', nome: 'CATEGORIA' },
             { rotulo: 'Grupo', nome: 'GRUPO' },
@@ -3717,7 +3832,11 @@ map.addControl(new LogoMapaControl());
   }
 
     function atualizarVisibilidadeRotulos() {
-    if (!localidadesLayer) return;
+      atualizarVisibilidadeGrupoRotulos(localidadesLayer);
+    }
+
+    function atualizarVisibilidadeGrupoRotulos(grupo) {
+    if (!grupo) return;
 
     var zoom = map.getZoom();
     var densidade = valorDensidadeRotulos();
@@ -3725,7 +3844,7 @@ map.addControl(new LogoMapaControl());
     var pontos = [];
 
     // Coletar todos os layers separando rótulos e pontos
-    localidadesLayer.eachLayer(function(layer) {
+    grupo.eachLayer(function(layer) {
       if (layer.options && layer.options.icon && layer.options.icon.options.className === 'localidade-label') {
         var populacao = layer.options.populacao;
         var latlng = layer.getLatLng();
@@ -4032,7 +4151,7 @@ map.addControl(new LogoMapaControl());
         pane: 'sreBasePane',
         style: function() { return style; },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup(function() { return construirPopupRodoviaBase(feature); });
+          vincularPopupComAreaClique(layer, function() { return construirPopupRodoviaBase(feature); });
         }
       }));
     }
@@ -4056,7 +4175,7 @@ map.addControl(new LogoMapaControl());
           return { color:'#ffffff', weight:1, opacity:1 };
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup(function() { return construirPopupRodoviaBase(feature); });
+          vincularPopupComAreaClique(layer, function() { return construirPopupRodoviaBase(feature); });
         }
       }));
     }
@@ -4209,7 +4328,7 @@ map.addControl(new LogoMapaControl());
         onEachFeature: function(feature, layer) {
           var p = feature.properties || {};
           var nome = p.RODOVIA || p.SNV || '';
-          layer.bindPopup(
+          vincularPopupComAreaClique(layer,
             '<b>Rodovia:</b> ' + (p.RODOVIA || '') + '<br>' +
             '<b>SNV:</b> ' + (p.SNV || '') + '<br>' +
             '<b>Trecho:</b> ' + (p.TRECHO || '') + '<br>' +
@@ -4251,7 +4370,7 @@ map.addControl(new LogoMapaControl());
         onEachFeature: function(feature, layer) {
           var p = feature.properties || {};
           var nome = p.RODOVIA || p.SNV || '';
-          layer.bindPopup(
+          vincularPopupComAreaClique(layer,
             '<b>Rodovia:</b> ' + (p.RODOVIA || '') + '<br>' +
             '<b>SNV:</b> ' + (p.SNV || '') + '<br>' +
             '<b>Trecho:</b> ' + (p.TRECHO || '') + '<br>' +
@@ -5555,7 +5674,7 @@ map.addControl(new LogoMapaControl());
         };
       },
       onEachFeature: function(feature, layer) {
-        layer.bindPopup(construirPopupAlteracao(feature));
+        vincularPopupComAreaClique(layer, construirPopupAlteracao(feature));
         layer.on('click', function() {
           atualizarPainelInferiorAlteracao(feature);
         });
@@ -5901,7 +6020,7 @@ map.addControl(new LogoMapaControl());
           };
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup(construirPopupLinha(feature));
+          vincularPopupComAreaClique(layer, construirPopupLinha(feature));
 
           layer.on('click', function() {
             atualizarPainelInferior(feature);
@@ -5948,7 +6067,7 @@ map.addControl(new LogoMapaControl());
           };
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup(construirPopupLinha(feature));
+          vincularPopupComAreaClique(layer, construirPopupLinha(feature));
 
           layer.on('click', function() {
             atualizarPainelInferior(feature);
@@ -5971,7 +6090,7 @@ map.addControl(new LogoMapaControl());
           };
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup(construirPopupLinha(feature));
+          vincularPopupComAreaClique(layer, construirPopupLinha(feature));
 
           layer.on('click', function() {
             atualizarPainelInferior(feature);
@@ -6018,7 +6137,7 @@ map.addControl(new LogoMapaControl());
           };
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup(construirPopupLinha(feature));
+          vincularPopupComAreaClique(layer, construirPopupLinha(feature));
 
           layer.on('click', function() {
             atualizarPainelInferior(feature);
@@ -6042,7 +6161,7 @@ map.addControl(new LogoMapaControl());
           };
         },
         onEachFeature: function(feature, layer) {
-          layer.bindPopup(construirPopupLinha(feature));
+          vincularPopupComAreaClique(layer, construirPopupLinha(feature));
 
           layer.on('click', function() {
             atualizarPainelInferior(feature);
@@ -7402,6 +7521,7 @@ map.addControl(new LogoMapaControl());
     desenharAreasAmbientais();
     desenharAreasUrbanas();
     desenharAreaInfluencia();
+    desenharFerrovias();
     desenharLocalidades();
     desenharAero();
     desenharLinhasEPontos(feats);
@@ -7453,7 +7573,9 @@ map.addControl(new LogoMapaControl());
     areasAmbientaisFiltroAtivo = false;
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
+    ferroviasFiltroAtivo = false;
     desenharAreaInfluencia();
+    desenharFerrovias();
     atualizarBotoesBase();
     servicoFiltroAtivo = '';
     preencherIntervencaos();
@@ -7534,6 +7656,7 @@ map.addControl(new LogoMapaControl());
   }
 
   function limparTudo() {
+    document.getElementById('ferroviaSelect').value = '';
     document.getElementById('rgPlanSelect').value = '';
     document.getElementById('municipioSelect').value = '';
     document.getElementById('rodoviaSelect').value = '';
@@ -7553,6 +7676,7 @@ map.addControl(new LogoMapaControl());
     areasAmbientaisFiltroAtivo = false;
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
+    ferroviasFiltroAtivo = false;
     servicoFiltroAtivo = '';
     preencherIntervencaos();
 
@@ -7598,6 +7722,7 @@ map.addControl(new LogoMapaControl());
       'municipioSelect',
       'rodoviaSelect',
       'sreSelect',
+      'ferroviaSelect',
       'propostaSelect',
       'servicoSelect',
       'localidadeSelect',
@@ -7663,6 +7788,7 @@ map.addControl(new LogoMapaControl());
 
     if (alteracoesEntrada) {
       limparCamposFiltroEntrada();
+      municipioBaseFiltroAtivo = true;
       for (var chaveAltEntrada in servicosAtivos) {
         servicosAtivos[chaveAltEntrada] = false;
       }
@@ -8098,26 +8224,26 @@ map.addControl(new LogoMapaControl());
       oaeFiltroAtivo = !oaeFiltroAtivo;
       this.classList.toggle('ativo-filtro', oaeFiltroAtivo);
       if (!oaeFiltroAtivo && oaeLayer) { map.removeLayer(oaeLayer); oaeLayer = null; }
-      aplicarFiltros();
+      aplicarFiltros({ preservarZoom: true });
     });
   }
 
   document.getElementById('toggleSREBase').addEventListener('click', function() {
     sreBaseFiltroAtivo = !sreBaseFiltroAtivo;
     atualizarBotoesBase();
-    aplicarFiltros();
+    aplicarFiltros({ preservarZoom: true });
   });
 
   document.getElementById('toggleSNV').addEventListener('click', function() {
     snvFiltroAtivo = !snvFiltroAtivo;
     atualizarBotoesBase();
-    aplicarFiltros();
+    aplicarFiltros({ preservarZoom: true });
   });
 
   document.getElementById('toggleLocalidades').addEventListener('click', function() {
     localidadeFiltroAtivo = !localidadeFiltroAtivo;
     atualizarBotoesBase();
-    aplicarFiltros();
+    aplicarFiltros({ preservarZoom: true });
   });
 
   var btnToggleAero = document.getElementById('toggleAero');
@@ -8134,7 +8260,22 @@ map.addControl(new LogoMapaControl());
     btnToggleMunicipios.addEventListener('click', function() {
       municipioBaseFiltroAtivo = !municipioBaseFiltroAtivo;
       atualizarBotoesBase();
-      aplicarFiltros();
+      aplicarFiltros({ preservarZoom: true });
+    });
+  }
+
+  document.getElementById('ferroviaSelect').addEventListener('change', function() {
+    ferroviasFiltroAtivo = true;
+    atualizarBotoesBase();
+    desenharFerrovias();
+  });
+
+  var btnToggleFerrovias = document.getElementById('toggleFerrovias');
+  if (btnToggleFerrovias) {
+    btnToggleFerrovias.addEventListener('click', function() {
+      ferroviasFiltroAtivo = !ferroviasFiltroAtivo;
+      atualizarBotoesBase();
+      desenharFerrovias();
     });
   }
 
@@ -8366,7 +8507,8 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/aerodromos_obras.geojson', false),
     fetchGeoJSON('data/alteracoes_linhas.geojson', false),
     carregarJsonOpcional('data/ALTERACOES.json'),
-    fetchGeoJSON('data/area_infuencia.geojson', false)
+    fetchGeoJSON('data/area_infuencia.geojson', false),
+    fetchGeoJSON('data/ferrovias.geojson', false)
   ]).then(function(resultado) {
     municipiosData = resultado[0];
     localidadesData = resultado[1];
@@ -8390,6 +8532,8 @@ map.addControl(new LogoMapaControl());
     desenharMascaraBrasil();
 
     areaInfluenciaData = resultado[14];
+    ferroviasData = resultado[15];
+    preencherFerrovias();
 
     preencherRGPlan();
     preencherMunicipios();

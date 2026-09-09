@@ -9,6 +9,7 @@ const MAPA_PANES = {
   municipiosPane: 250,
   areaInfluenciaPane: 255,
   snvPane: 260,
+  ferroviasPane: 270,
   sreBasePane: 300,
   servicosPane: 500,
   localidadesPane: 550,
@@ -45,6 +46,14 @@ const MAPAS_BASE_CONFIG = {
       maxZoom: 19
     }
   }
+};
+
+const ESTILO_CONTORNO_BRANCO_MUNICIPIOS = {
+  color: "#ffffff",
+  weight: 7,
+  opacity: 1,
+  fill: false,
+  dashArray: null
 };
 
 const ESTILO_AREA_INFLUENCIA = {
