@@ -1,0 +1,50 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.44.12-Solothurn">
+  <identifier>gisdb.gisadmin.fc_ferro_ferrovias_minfra</identifier>
+  <parentidentifier></parentidentifier>
+  <language>POR</language>
+  <type>dataset</type>
+  <title>Ferrovias MINFRA</title>
+  <abstract>O arquivo geográfico denominado Ferrovias MINFRA é vetorial, do tipo linha e tem o objetivo de ilustrar a localização das ferrovias, mapeadas pelo Ministério da Infraestrutura.
+
+Ferrovias MINFRA</abstract>
+  <keywords vocabulary="Pesquisar chaves">
+    <keyword>MINFRA</keyword>
+  </keywords>
+  <contact>
+    <name></name>
+    <organization></organization>
+    <position></position>
+    <voice></voice>
+    <fax></fax>
+    <email></email>
+    <role></role>
+  </contact>
+  <links/>
+  <dates/>
+  <fees></fees>
+  <rights> Coordenação-Geral de Gestão da Informação – CGINF (Ministério da Infraestrutura- MINFRA)</rights>
+  <encoding></encoding>
+  <crs>
+    <spatialrefsys nativeFormat="Wkt">
+      <wkt>GEOGCRS["SIRGAS 2000",DATUM["Sistema de Referencia Geocentrico para las AmericaS 2000",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["Latin America - Central America and South America - onshore and offshore. Brazil - onshore and offshore."],BBOX[-59.87,-122.19,32.72,-25.28]],ID["EPSG",4674],REMARK["Replaces SIRGAS 1995 system (CRS code 4179) for South America; expands SIRGAS to Central America."]]</wkt>
+      <proj4>+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs</proj4>
+      <srsid>3517</srsid>
+      <srid>4674</srid>
+      <authid>EPSG:4674</authid>
+      <description>SIRGAS 2000</description>
+      <projectionacronym>longlat</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>true</geographicflag>
+    </spatialrefsys>
+  </crs>
+  <extent>
+    <spatial crs="EPSG:4674" dimensions="2" maxz="0" minz="0" maxx="-34.83232000000000284" maxy="0.88722100000000004" miny="-32.57446800000000309" minx="-73.33468100000000334"/>
+    <temporal>
+      <period>
+        <start></start>
+        <end></end>
+      </period>
+    </temporal>
+  </extent>
+</qgis>

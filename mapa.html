@@ -77,6 +77,11 @@
           <option value="">Todos</option>
         </select>
 
+        <label for="bufferSelect">Área de estudo</label>
+        <select id="bufferSelect">
+          <option value="">Todos</option>
+        </select>
+
         <label for="ferroviaSelect">Ferrovia</label>
         <select id="ferroviaSelect">
           <option value="">Todas</option>
@@ -132,6 +137,7 @@
           <button class="filtro-btn base-btn" id="toggleAreasAmbientais" type="button">Áreas ambientais</button>
           <button class="filtro-btn base-btn" id="toggleAreasUrbanas" type="button">Áreas urbanas</button>
           <button class="filtro-btn base-btn" id="toggleAreaInfluencia" type="button" aria-pressed="false">Área de influência</button>
+          <button class="filtro-btn base-btn" id="toggleBuffer" type="button" aria-pressed="false">Área de estudo</button>
           <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
         </div>
       </div>
@@ -349,6 +355,18 @@
       <div class="bloco legenda-categoria" id="blocoLegendaRodFed">
         <div class="subtitulo">Rodovia Federal</div>
         <div id="legendaRodFed"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaBuffer" style="display: none;">
+        <div class="subtitulo">Área de estudo</div>
+        <div class="legenda-item">
+          <svg width="48" height="18" viewBox="0 0 48 18" aria-hidden="true"><path data-area-estudo="sre_base" d="M0 9H48" /></svg>
+          <span>Rodovias</span>
+        </div>
+        <div class="legenda-item">
+          <svg width="48" height="18" viewBox="0 0 48 18" aria-hidden="true"><path data-area-estudo="ferrovias" d="M0 9H48" /></svg>
+          <span>Ferrovias</span>
+        </div>
       </div>
 
       <div class="bloco legenda-categoria" id="blocoLegendaFerrovias" style="display: none;">

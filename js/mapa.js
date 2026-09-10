@@ -412,6 +412,9 @@ map.addControl(new LogoMapaControl());
   var areasAmbientaisData = null;
   var areasUrbanasData = null;
   var areaInfluenciaData = null;
+  var bufferData = { type: 'FeatureCollection', features: [] };
+  var bufferLayer = null;
+  var bufferFiltroAtivo = false;
   var ferroviasData = null;
   var ferroviasLayer = null;
   var ferroviasFiltroAtivo = false;
@@ -2433,6 +2436,9 @@ map.addControl(new LogoMapaControl());
     if (btnAreasUrbanas) {
       btnAreasUrbanas.classList.toggle('ativo-filtro', areasUrbanasFiltroAtivo);
     }
+    var btnBuffer = document.getElementById('toggleBuffer');
+    btnBuffer.classList.toggle('ativo-filtro', bufferFiltroAtivo);
+    btnBuffer.setAttribute('aria-pressed', String(bufferFiltroAtivo));
     var btnFerrovias = document.getElementById('toggleFerrovias');
     if (btnFerrovias) {
       btnFerrovias.classList.toggle('ativo-filtro', ferroviasFiltroAtivo);
@@ -3441,6 +3447,101 @@ map.addControl(new LogoMapaControl());
       if (areaClique) map.removeLayer(areaClique);
       areaClique = null;
     });
+  }
+
+  // OBRAS_LINHAS.SRE referencia sre nas rodovias e segmento nas ferrovias.
+  function prepararBuffer(vinculos, registros) {
+    var dadosPorId = indexarDadosPorIdcod(registros);
+    var bases = { sre_base: sreBaseData, ferrovias: ferroviasData };
+    var indices = {};
+    Object.keys(bases).forEach(function(base) {
+      indices[base] = new Map();
+      ((bases[base] && bases[base].features) || []).forEach(function(feature) {
+        var chave = String(valorSeguro(feature, base === 'ferrovias' ? 'segmento' : 'sre')).trim();
+        if (!indices[base].has(chave)) indices[base].set(chave, []);
+        indices[base].get(chave).push(feature);
+      });
+    });
+    var vistos = new Set();
+    bufferData.features = [];
+    (Array.isArray(vinculos) ? vinculos : []).forEach(function(vinculo) {
+      if (vinculo.IDCOD_BUF == null || String(vinculo.IDCOD_BUF).trim() === '') return;
+      var id = String(vinculo.IDCOD_BUF).trim();
+      var base = String(vinculo.BASE || '').trim().toLowerCase().replace(/\.geojson$/, '');
+      var sre = String(vinculo.SRE || '').trim();
+      var chave = base + ':' + sre + ':' + id;
+      if (vistos.has(chave)) return;
+      vistos.add(chave);
+      var features = indices[base] && indices[base].get(sre);
+      if (!features || !dadosPorId[id]) {
+        console.warn('Área de estudo sem geometria ou registro DADOS:', chave);
+        return;
+      }
+      dadosPorId[id].forEach(function(dados) {
+        features.forEach(function(feature) {
+          bufferData.features.push({
+            type: 'Feature', geometry: feature.geometry,
+            properties: Object.assign({}, dados, { BASE: base, SRE: sre })
+          });
+        });
+      });
+    });
+    var select = document.getElementById('bufferSelect');
+    var selecionada = select.value;
+    var descricoes = new Set();
+    bufferData.features.forEach(function(feature) {
+      if (feature.properties.DESCRICAO) descricoes.add(feature.properties.DESCRICAO);
+    });
+    select.innerHTML = '<option value="">Todos</option>';
+    Array.from(descricoes).sort(function(a, b) { return a.localeCompare(b, 'pt-BR'); }).forEach(function(descricao) {
+      var option = document.createElement('option');
+      option.value = descricao;
+      option.textContent = descricao;
+      select.appendChild(option);
+    });
+    select.value = descricoes.has(selecionada) ? selecionada : '';
+  }
+
+  function atualizarLegendaAreaEstudo() {
+    document.querySelectorAll('[data-area-estudo]').forEach(function(amostra) {
+      var estilo = ESTILOS_AREA_ESTUDO[amostra.getAttribute('data-area-estudo')];
+      amostra.setAttribute('stroke', estilo.color);
+      amostra.setAttribute('stroke-opacity', estilo.opacity);
+      amostra.setAttribute('stroke-width', estilo.weight);
+      amostra.setAttribute('stroke-linecap', estilo.lineCap);
+      amostra.setAttribute('stroke-linejoin', estilo.lineJoin);
+      var altura = Math.max(18, estilo.weight);
+      amostra.ownerSVGElement.setAttribute('height', altura);
+      amostra.ownerSVGElement.setAttribute('viewBox', '0 0 48 ' + altura);
+      amostra.setAttribute('d', 'M0 ' + altura / 2 + 'H48');
+    });
+  }
+
+  function desenharBuffer() {
+    atualizarLegendaAreaEstudo();
+    if (bufferLayer) map.removeLayer(bufferLayer);
+    bufferLayer = null;
+    var descricao = document.getElementById('bufferSelect').value;
+    var features = bufferData.features.filter(function(feature) {
+      return !descricao || feature.properties.DESCRICAO === descricao;
+    });
+    document.getElementById('blocoLegendaBuffer').style.display = bufferFiltroAtivo && features.length ? '' : 'none';
+    if (!bufferFiltroAtivo || !features.length) return;
+    bufferLayer = L.geoJSON({ type: 'FeatureCollection', features: features }, {
+      pane: 'bufferPane',
+      style: function(feature) {
+        return ESTILOS_AREA_ESTUDO[feature.properties.BASE] || ESTILOS_AREA_ESTUDO.sre_base;
+      },
+      onEachFeature: function(feature, layer) {
+        layer.bindPopup(function() {
+          return construirPopupAreaBase(feature, feature.properties.DESCRICAO || 'Área de estudo', [
+            { rotulo: 'Identificador', nome: 'IDCOD' },
+            { rotulo: 'Base', nome: 'BASE' },
+            { rotulo: 'Trecho', nome: 'SRE' }
+          ]);
+        });
+      }
+    }).addTo(map);
   }
 
   function preencherFerrovias() {
@@ -7522,6 +7623,7 @@ map.addControl(new LogoMapaControl());
     desenharAreasUrbanas();
     desenharAreaInfluencia();
     desenharFerrovias();
+    desenharBuffer();
     desenharLocalidades();
     desenharAero();
     desenharLinhasEPontos(feats);
@@ -7574,8 +7676,10 @@ map.addControl(new LogoMapaControl());
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
     ferroviasFiltroAtivo = false;
+    bufferFiltroAtivo = false;
     desenharAreaInfluencia();
     desenharFerrovias();
+    desenharBuffer();
     atualizarBotoesBase();
     servicoFiltroAtivo = '';
     preencherIntervencaos();
@@ -7656,6 +7760,7 @@ map.addControl(new LogoMapaControl());
   }
 
   function limparTudo() {
+    document.getElementById('bufferSelect').value = '';
     document.getElementById('ferroviaSelect').value = '';
     document.getElementById('rgPlanSelect').value = '';
     document.getElementById('municipioSelect').value = '';
@@ -7677,6 +7782,7 @@ map.addControl(new LogoMapaControl());
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
     ferroviasFiltroAtivo = false;
+    bufferFiltroAtivo = false;
     servicoFiltroAtivo = '';
     preencherIntervencaos();
 
@@ -7723,6 +7829,7 @@ map.addControl(new LogoMapaControl());
       'rodoviaSelect',
       'sreSelect',
       'ferroviaSelect',
+      'bufferSelect',
       'propostaSelect',
       'servicoSelect',
       'localidadeSelect',
@@ -8202,10 +8309,6 @@ map.addControl(new LogoMapaControl());
   for (var iServ = 0; iServ < botoesIntervencao.length; iServ++) {
     botoesIntervencao[iServ].addEventListener('click', function() {
       var chave = this.getAttribute('data-servico');
-      var tinhaFiltroEspacial =
-        !!(document.getElementById('propostaSelect') && document.getElementById('propostaSelect').value) ||
-        !!document.getElementById('rodoviaSelect').value ||
-        !!document.getElementById('sreSelect').value;
       servicosAtivos[chave] = !servicosAtivos[chave];
       preencherIntervencaos();
       document.getElementById('propostaSelect').value = '';
@@ -8214,7 +8317,7 @@ map.addControl(new LogoMapaControl());
       preencherPropostas();
       preencherRodovias();
       preencherSREs();
-      aplicarFiltros({ preservarZoom: !tinhaFiltroEspacial });
+      aplicarFiltros({ preservarZoom: true });
     });
   }
 
@@ -8263,6 +8366,18 @@ map.addControl(new LogoMapaControl());
       aplicarFiltros({ preservarZoom: true });
     });
   }
+
+  document.getElementById('bufferSelect').addEventListener('change', function() {
+    bufferFiltroAtivo = true;
+    atualizarBotoesBase();
+    desenharBuffer();
+  });
+
+  document.getElementById('toggleBuffer').addEventListener('click', function() {
+    bufferFiltroAtivo = !bufferFiltroAtivo;
+    atualizarBotoesBase();
+    desenharBuffer();
+  });
 
   document.getElementById('ferroviaSelect').addEventListener('change', function() {
     ferroviasFiltroAtivo = true;
@@ -8508,7 +8623,9 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/alteracoes_linhas.geojson', false),
     carregarJsonOpcional('data/ALTERACOES.json'),
     fetchGeoJSON('data/area_infuencia.geojson', false),
-    fetchGeoJSON('data/ferrovias.geojson', false)
+    fetchGeoJSON('data/ferrovias.geojson', false),
+    carregarJsonOpcional('data/OBRAS_LINHAS.json'),
+    carregarDadosUnificados()
   ]).then(function(resultado) {
     municipiosData = resultado[0];
     localidadesData = resultado[1];
@@ -8533,6 +8650,7 @@ map.addControl(new LogoMapaControl());
 
     areaInfluenciaData = resultado[14];
     ferroviasData = resultado[15];
+    prepararBuffer(resultado[16], resultado[17]);
     preencherFerrovias();
 
     preencherRGPlan();

@@ -8,6 +8,7 @@ const MAPA_PANES = {
   areasUrbanasPane: 240,
   municipiosPane: 250,
   areaInfluenciaPane: 255,
+  bufferPane: 258,
   snvPane: 260,
   ferroviasPane: 270,
   sreBasePane: 300,
@@ -343,3 +344,9 @@ const REGRAS_ESTILO = [
 
 
 
+
+// Faixa visual em pixels ao redor dos trechos vinculados à área de estudo.
+const ESTILOS_AREA_ESTUDO = {
+  sre_base: { color: '#eda1a1', weight: 18, opacity: 1.0, lineCap: 'round', lineJoin: 'round' },
+  ferrovias: { color: '#84a5ec', weight: 18, opacity: 1.0, lineCap: 'round', lineJoin: 'round' }
+};
