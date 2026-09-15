@@ -30,8 +30,9 @@
     <div class="sidebar-collapsed-label" aria-hidden="true">Origem</div>
     <div class="scroll-inner" id="sidebar-left-content">
    
-    <div class="bloco">
-      <div class="subtitulo subtitulo-painel">ORIGEM</div>
+    <details class="painel-colapsavel">
+      <summary class="subtitulo subtitulo-painel">ORIGEM</summary>
+      <div class="conteudo-colapsavel">
       <div class="grid-servicos" id="servicosLinearesBotoes">
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="FUNDEINFRA" type="button">FUNDEINFRA</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOR" type="button">DOR</button>
@@ -41,16 +42,6 @@
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOC" type="button">DOC</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DSV" type="button">DSV</button>
       </div>
-    </div>
-
-    <details class="painel-colapsavel bloco-alteracoes-jurisdicao">
-      <summary class="subtitulo subtitulo-painel">ALTERA&Ccedil;&Otilde;ES DE JURISDI&Ccedil;&Atilde;O</summary>
-      <div class="conteudo-colapsavel">
-        <div class="grid-servicos grid-alteracoes" id="alteracoesBotoes">
-          <button class="filtro-btn alteracao-btn" data-alteracao="Estadualiza&#231;&#227;o" type="button">Estadualiza&ccedil;&atilde;o</button>
-          <button class="filtro-btn alteracao-btn" data-alteracao="Federaliza&#231;&#227;o" type="button">Federaliza&ccedil;&atilde;o</button>
-          <button class="filtro-btn alteracao-btn" data-alteracao="Municipaliza&#231;&#227;o" type="button">Municipaliza&ccedil;&atilde;o</button>
-        </div>
       </div>
     </details>
 
@@ -118,17 +109,35 @@
           <option value="">Todos</option>
         </select>
 
-        <label for="rgPlanSelect">Região de Planejamento</label>
-        <select id="rgPlanSelect">
-          <option value="">Todas</option>
+        <label for="alteracaoJurisdicaoSelect">Alterações de Jurisdição</label>
+        <select id="alteracaoJurisdicaoSelect">
+          <option value="">Todos</option>
+          <option value="Estadualização">Estadualização</option>
+          <option value="Federalização">Federalização</option>
+          <option value="Municipalização">Municipalização</option>
         </select>
+
+        <details class="filtro-regional">
+          <summary>Regiões de Manutenção</summary>
+          <select id="rgManSelect" multiple hidden aria-label="Regiões de Manutenção"></select>
+          <div id="rgManSelectLista" class="lista-regional"></div>
+          <button id="rgManSelectLimpar" type="button">Limpar seleção</button>
+        </details>
+        <details class="filtro-regional">
+          <summary>Regiões de Planejamento</summary>
+          <select id="rgPlanSelect" multiple hidden aria-label="Regiões de Planejamento"></select>
+          <div id="rgPlanSelectLista" class="lista-regional"></div>
+          <button id="rgPlanSelectLimpar" type="button">Limpar seleção</button>
+        </details>
       </div>
     </details>
 
     <details class="painel-colapsavel">
-      <summary class="subtitulo subtitulo-painel">Malhas de base</summary>
+      <summary class="subtitulo subtitulo-painel">CAMADAS DE REFERÊNCIA</summary>
       <div class="conteudo-colapsavel">
         <div class="grid-botoes">
+          <button class="filtro-btn base-btn" id="toggleRegioesManutencao" type="button" aria-pressed="false">Regiões de Manutenção</button>
+          <button class="filtro-btn base-btn" id="toggleRegioesPlanejamento" type="button" aria-pressed="false">Regiões de Planejamento</button>
           <button class="filtro-btn base-btn" id="toggleMunicipiosBase" type="button">Municípios</button>
           <button class="filtro-btn base-btn ativo-filtro" id="toggleSREBase" type="button">Malha Estadual</button>
           <button class="filtro-btn base-btn ativo-filtro" id="toggleSNV" type="button">Malha Federal</button>
@@ -139,6 +148,7 @@
           <button class="filtro-btn base-btn" id="toggleAreaInfluencia" type="button" aria-pressed="false">Área de influência</button>
           <button class="filtro-btn base-btn" id="toggleBuffer" type="button" aria-pressed="false">Área de estudo</button>
           <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
+          <button class="filtro-btn base-btn ativo-filtro" id="toggleAlteracoesJurisdicao" type="button" aria-pressed="true">Alterações de Jurisdição</button>
         </div>
       </div>
     </details>
@@ -347,6 +357,16 @@
         <div id="legendaAlteracoes"></div>
       </div>
 
+      <div class="bloco legenda-categoria" id="blocoLegendaRegioesManutencao" style="display: none;">
+        <div class="subtitulo">Regiões de Manutenção</div>
+        <div id="legendaRegioesManutencao"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaRegioesPlanejamento" style="display: none;">
+        <div class="subtitulo">Regiões de Planejamento</div>
+        <div id="legendaRegioesPlanejamento"></div>
+      </div>
+
       <div class="bloco legenda-categoria" id="blocoLegendaRodEst">
         <div class="subtitulo">Rodovia Estadual</div>
         <div id="legendaRodEst"></div>
@@ -395,9 +415,11 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-<script src="js/estilos.js?v=dados-20260803d"></script>
-<script src="js/mapa.js?v=dados-20260803d"></script>
-<script src="js/impressao.js?v=dados-20260803d"></script>
+<script src="js/estilos.js?v=regioes-20260915"></script>
+<script src="js/regioes.js?v=regioes-20260915"></script>
+<script src="js/mapa.js?v=regioes-20260915"></script>
+<script src="js/impressao.js?v=regioes-20260915"></script>
+<script src="js/paineis.js?v=paineis-20260915"></script>
 
 </body>
 </html>

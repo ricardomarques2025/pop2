@@ -7,6 +7,7 @@ const MAPA_PANES = {
   areasAmbientaisPane: 230,
   areasUrbanasPane: 240,
   municipiosPane: 250,
+  regioesPane: 252,
   areaInfluenciaPane: 255,
   bufferPane: 258,
   snvPane: 260,

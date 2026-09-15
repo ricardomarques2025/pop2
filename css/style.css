@@ -1062,6 +1062,10 @@ select {
   transition: opacity 0.2s ease;
 }
 
+#sidebar-left .scroll-inner {
+  scrollbar-gutter: stable;
+}
+
 #sidebar-left .scroll-inner::-webkit-scrollbar-track,
 #sidebar-right .scroll-inner::-webkit-scrollbar-track {
   margin-top: 58px;
@@ -1212,12 +1216,12 @@ label:first-of-type {
 }
 
 .painel-colapsavel > summary.subtitulo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  display: block;
+  position: relative;
+  text-align: center;
+  min-height: 44px;
   margin: 0;
-  padding: 12px 0 10px;
+  padding: 12px 30px 10px;
   border-top: none;
   cursor: pointer;
   list-style: none;
@@ -1230,6 +1234,10 @@ label:first-of-type {
 
 .painel-colapsavel > summary.subtitulo::after {
   content: "+";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
   width: 22px;
   height: 22px;
   border: 1px solid #d8ddd9;
@@ -1249,6 +1257,20 @@ label:first-of-type {
 
 .conteudo-colapsavel {
   padding-bottom: 4px;
+}
+
+.painel-colapsavel,
+.filtro-regional {
+  box-sizing: border-box;
+}
+
+.painel-em-transicao {
+  overflow: hidden;
+  overflow-anchor: none;
+}
+
+.painel-colapsavel[data-expandido="false"] > summary.subtitulo::after {
+  content: "+";
 }
 
 select {
@@ -2604,3 +2626,17 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
     -0.8px 0.8px 0 rgba(0, 0, 0, 0.55),
     0.8px 0.8px 0 rgba(0, 0, 0, 0.55);
 }
+
+/* Filtros regionais: seleção múltipla por clique ou teclado. */
+.filtro-regional { margin: 12px 0; padding: 8px; border: 1px solid #d5dce3; border-radius: 6px; min-width: 0; }
+.filtro-regional > summary { font-size: 13px; font-weight: 600; cursor: pointer; }
+.filtro-regional[open] > summary { margin-bottom: 8px; }
+.filtro-regional select[hidden] { display: none; }
+.lista-regional { max-height: 180px; overflow-y: auto; }
+.lista-regional label { display: flex; align-items: center; gap: 8px; margin: 0; padding: 6px 3px; cursor: pointer; font-weight: normal; }
+.lista-regional label:has(input:checked) { background: #e1eef8; border-radius: 4px; }
+.lista-regional input { width: auto; margin: 0; flex-shrink: 0; }
+.filtro-regional button { margin-top: 6px; padding: 4px 8px; cursor: pointer; }
+.legenda-regiao-amostra { display: inline-block; width: 28px; height: 18px; flex-shrink: 0; border: 1.5px dashed #888888; background: #fff; }
+.legenda-regiao-amostra > span { display: block; width: 100%; height: 100%; }
+.popup-area-sobreposta + .popup-area-sobreposta { margin-top: 10px; padding-top: 10px; border-top: 1px solid #d5dce3; }
