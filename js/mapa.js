@@ -79,7 +79,7 @@ function desenharMascaraBrasil() {
   if (mascaraBrasilLayer) map.removeLayer(mascaraBrasilLayer);
 
   var municipioSelecionado = document.getElementById('municipioSelect') ? document.getElementById('municipioSelect').value : '';
-  var filtroEspacialSelecionado = !!(municipioSelecionado || temFiltroRegional());
+  var filtroEspacialSelecionado = !!(municipioSelecionado || temFiltroGeografico());
   var corMascara = filtroEspacialSelecionado ? '#d9d9d9' : '#808080';
 
   mascaraBrasilLayer = L.geoJSON(mascaraBrasilData, {
@@ -2448,8 +2448,8 @@ map.addControl(new LogoMapaControl());
     }
     var btnAreaInfluencia = document.getElementById('toggleAreaInfluencia');
     if (btnAreaInfluencia) {
-      btnAreaInfluencia.classList.toggle('ativo-filtro', areaInfluenciaFiltroAtivo);
-      btnAreaInfluencia.setAttribute('aria-pressed', String(areaInfluenciaFiltroAtivo));
+      btnAreaInfluencia.classList.toggle('ativo-filtro', areaInfluenciaFiltroAtivo || areaInfluenciaSelecionada);
+      btnAreaInfluencia.setAttribute('aria-pressed', String(areaInfluenciaFiltroAtivo || areaInfluenciaSelecionada));
     }
     atualizarBotoesAlteracoes();
   }
@@ -3624,12 +3624,19 @@ map.addControl(new LogoMapaControl());
       map.removeLayer(areaInfluenciaLayer);
       areaInfluenciaLayer = null;
     }
-    if (!areaInfluenciaFiltroAtivo || !areaInfluenciaData || !areaInfluenciaData.features) return;
+    if ((!areaInfluenciaFiltroAtivo && !areaInfluenciaSelecionada) || !areaInfluenciaData || !areaInfluenciaData.features) return;
 
     areaInfluenciaLayer = L.geoJSON(areaInfluenciaData, {
       pane: 'areaInfluenciaPane',
-      interactive: false,
-      style: ESTILO_AREA_INFLUENCIA
+      interactive: true,
+      style: ESTILO_AREA_INFLUENCIA,
+      onEachFeature: function(feature, layer) {
+        vincularPopupComAreaClique(layer, function() {
+          return construirPopupAreaBase(feature, valorSeguro(feature, 'NOME') || 'Área de Influência', [
+            { rotulo: 'Área (km²)', nome: 'AREA_KM2', tipo: 'numero', casas: 2 }
+          ]);
+        });
+      }
     }).addTo(map);
   }
 
@@ -6994,7 +7001,8 @@ map.addControl(new LogoMapaControl());
   function pontoDentroSelecaoMunicipios(lon, lat, featuresMunicipios) {
     var manutencao = poligonosManutencaoSelecionados();
     if (regioesSelecionadas('rgManSelect').length && !manutencao.some(function(f) { return pontoEmPoligonoFeature(lon, lat, f); })) return false;
-    if (!featuresMunicipios || !featuresMunicipios.length) return !temFiltroRegional() && !document.getElementById('municipioSelect').value;
+    if (temFiltroAreaInfluencia() && !featuresAreaInfluenciaSelecionada().some(function(f) { return pontoEmPoligonoFeature(lon, lat, f); })) return false;
+    if (!featuresMunicipios || !featuresMunicipios.length) return !temFiltroGeografico() && !document.getElementById('municipioSelect').value;
     if (municipiosData && featuresMunicipios.length >= municipiosData.features.length) return true;
 
     for (var i = 0; i < featuresMunicipios.length; i++) {
@@ -7604,6 +7612,8 @@ map.addControl(new LogoMapaControl());
       novoTitulo = municipioSelecionado;
     } else if (temFiltroRegional()) {
       novoTitulo = rgSelecionada.concat(regioesSelecionadas('rgManSelect').map(function(id) { return 'Manutenção ' + id; })).join(' / ');
+    } else if (temFiltroAreaInfluencia()) {
+      novoTitulo = valorSeguro(featuresAreaInfluenciaSelecionada()[0], 'NOME') || 'ÁREA DE INFLUÊNCIA';
     }
     
     if (elementoTitulo) {
@@ -7654,6 +7664,7 @@ map.addControl(new LogoMapaControl());
     desenharAreasAmbientais();
     desenharAreasUrbanas();
     desenharAreaInfluencia();
+    atualizarLegendasRegionais();
     desenharFerrovias();
     desenharBuffer();
     desenharLocalidades();
@@ -7662,8 +7673,9 @@ map.addControl(new LogoMapaControl());
     atualizarIndicadoresProgramaMunicipio(municipioSelecionado);
     atualizarIndicadoresIntervencaoEOAE(municipioSelecionado);
 
-    if (opcoes.zoomRegional) {
+    if (opcoes.zoomRegional || opcoes.zoomAreaInfluencia) {
       if (temFiltroRegional()) zoomParaRegioesSelecionadas();
+      else if (temFiltroAreaInfluencia()) zoomParaSelecao(featuresAreaInfluenciaSelecionada());
       else map.fitBounds(L.geoJSON(municipiosData).getBounds(), { padding: [20, 20], animate: false });
     } else if (!opcoes.preservarZoom) {
       var localidadeSelecionada = document.getElementById('localidadeSelect').value;
@@ -7681,6 +7693,8 @@ map.addControl(new LogoMapaControl());
           zoomParaSelecao(featsZoom);
         } else if (temFiltroRegional() && !municipioSelecionado) {
           zoomParaRegioesSelecionadas();
+        } else if (temFiltroAreaInfluencia() && !municipioSelecionado) {
+          zoomParaSelecao(featuresAreaInfluenciaSelecionada());
         } else if (feats.length > 0 && feats.length < municipiosData.features.length) {
           zoomParaSelecao(feats);
         } else {
@@ -7804,7 +7818,10 @@ map.addControl(new LogoMapaControl());
     document.getElementById('ferroviaSelect').value = '';
     document.getElementById('rgPlanSelect').value = '';
     document.getElementById('rgManSelect').value = '';
+    areaInfluenciaSelecionada = false;
+    document.getElementById('areaInfluenciaSelect').value = '';
     sincronizarListasRegionais();
+    sincronizarFiltroAreaInfluencia();
     atualizarMapaBaseRegioes();
     document.getElementById('municipioSelect').value = '';
     document.getElementById('rodoviaSelect').value = '';
@@ -7869,6 +7886,7 @@ map.addControl(new LogoMapaControl());
     var campos = [
       'rgPlanSelect',
       'rgManSelect',
+      'areaInfluenciaSelect',
       'municipioSelect',
       'rodoviaSelect',
       'sreSelect',
@@ -8696,6 +8714,7 @@ map.addControl(new LogoMapaControl());
     desenharMascaraBrasil();
 
     areaInfluenciaData = resultado[14];
+    prepararFiltroAreaInfluencia();
     ferroviasData = resultado[15];
     prepararBuffer(resultado[16], resultado[17]);
     preencherFerrovias();

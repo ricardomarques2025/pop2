@@ -4,6 +4,7 @@ var regioesPlanejamentoData = null;
 var regioesBaseAtivas = { manutencao: false, planejamento: false };
 var regioesLayers = {};
 var regioesSRE = {};
+var areaInfluenciaSelecionada = false;
 
 function regioesSelecionadas(id) {
   var select = document.getElementById(id);
@@ -12,6 +13,14 @@ function regioesSelecionadas(id) {
 
 function temFiltroRegional() {
   return regioesSelecionadas('rgPlanSelect').length > 0 || regioesSelecionadas('rgManSelect').length > 0;
+}
+
+function temFiltroAreaInfluencia() {
+  return areaInfluenciaSelecionada;
+}
+
+function temFiltroGeografico() {
+  return temFiltroRegional() || temFiltroAreaInfluencia();
 }
 
 function nomeRegiaoPlanejamento(feature) {
@@ -79,6 +88,42 @@ function prepararRegioes() {
   criarListaRegional('rgManSelect');
 }
 
+function prepararFiltroAreaInfluencia() {
+  var select = document.getElementById('areaInfluenciaSelect');
+  if (!select || !areaInfluenciaData || !areaInfluenciaData.features) return;
+  select.replaceChildren();
+  areaInfluenciaData.features.forEach(function(feature, indice) {
+    var nome = valorSeguro(feature, 'NOME') || 'Área de Influência ' + (indice + 1);
+    select.add(new Option(nome, String(indice)));
+  });
+  var lista = document.getElementById('areaInfluenciaSelectLista');
+  lista.replaceChildren();
+  Array.from(select.options).forEach(function(opcao) {
+    var label = document.createElement('label');
+    var input = document.createElement('input');
+    input.type = 'checkbox';
+    input.checked = areaInfluenciaSelecionada && opcao.value === '0';
+    input.addEventListener('change', function() {
+      areaInfluenciaSelecionada = input.checked;
+      Array.from(select.options).forEach(function(item) { item.selected = false; });
+      if (input.checked) opcao.selected = true;
+      select.dispatchEvent(new Event('change'));
+    });
+    label.append(input, document.createTextNode(opcao.textContent));
+    lista.appendChild(label);
+  });
+}
+
+function sincronizarFiltroAreaInfluencia() {
+  document.querySelectorAll('#areaInfluenciaSelectLista input').forEach(function(input) {
+    input.checked = areaInfluenciaSelecionada;
+  });
+}
+
+function featuresAreaInfluenciaSelecionada() {
+  return areaInfluenciaSelecionada && areaInfluenciaData ? areaInfluenciaData.features : [];
+}
+
 // Interseção geométrica, inclusive segmentos que atravessam uma região sem
 // possuir vértices dentro dela. As caixas evitam comparações desnecessárias.
 var cacheGeometriasRegionais = new WeakMap();
@@ -135,8 +180,8 @@ function featureCruzaRegiao(feature, poligono) {
 
 var cacheFiltroRegional = new WeakMap();
 function featureAtendeRegioes(feature) {
-  if (!temFiltroRegional()) return true;
-  var chave = regioesSelecionadas('rgManSelect').join('|') + '/' + regioesSelecionadas('rgPlanSelect').join('|');
+  if (!temFiltroGeografico()) return true;
+  var chave = regioesSelecionadas('rgManSelect').join('|') + '/' + regioesSelecionadas('rgPlanSelect').join('|') + '/' + areaInfluenciaSelecionada;
   var anterior = cacheFiltroRegional.get(feature);
   if (anterior && anterior.chave === chave) return anterior.resultado;
   var resultado = calcularFiltroRegional(feature);
@@ -156,11 +201,14 @@ function calcularFiltroRegional(feature) {
   }
   if (planejamento.length) {
     var nome = nomeRegiaoPlanejamento(feature);
-    if (nome) return planejamento.includes(nome);
-    return regioesPlanejamentoData.features.some(function(p) {
+    if (nome && !planejamento.includes(nome)) return false;
+    if (!nome && !regioesPlanejamentoData.features.some(function(p) {
       return planejamento.includes(p.properties.nome) && featureCruzaRegiao(feature, p);
-    });
+    })) return false;
   }
+  if (areaInfluenciaSelecionada && !featuresAreaInfluenciaSelecionada().some(function(area) {
+    return featureCruzaRegiao(feature, area);
+  })) return false;
   return true;
 }
 
@@ -216,6 +264,28 @@ function atualizarLegendasRegionais() {
       alvo.appendChild(item);
     });
   });
+  var blocoArea = document.getElementById('blocoLegendaAreaInfluencia');
+  var alvoArea = document.getElementById('legendaAreaInfluencia');
+  if (blocoArea && alvoArea) {
+    alvoArea.replaceChildren();
+    var visivel = areaInfluenciaData && (areaInfluenciaFiltroAtivo || areaInfluenciaSelecionada);
+    blocoArea.style.display = visivel ? '' : 'none';
+    if (visivel) {
+      featuresAreaInfluenciaSelecionada().forEach(function(feature) {
+        var item = document.createElement('div');
+        item.className = 'legenda-item';
+        item.innerHTML = '<span class="legenda-regiao-amostra"><span style="background:#87cefa;opacity:0"></span></span>' +
+          '<div class="legenda-texto">' + escapeHtml(valorSeguro(feature, 'NOME') || 'Área de Influência') + '</div>';
+        alvoArea.appendChild(item);
+      });
+      if (!areaInfluenciaSelecionada) {
+        var itemPadrao = document.createElement('div');
+        itemPadrao.className = 'legenda-item';
+        itemPadrao.innerHTML = '<span class="legenda-regiao-amostra"><span style="background:#87cefa;opacity:0.25"></span></span><div class="legenda-texto">Área de Influência</div>';
+        alvoArea.appendChild(itemPadrao);
+      }
+    }
+  }
 }
 
 function desenharRegioesBase() {
@@ -300,6 +370,20 @@ function configurarControlesRegionais() {
       document.getElementById(id).value = '';
       document.getElementById(id).dispatchEvent(new Event('change'));
     });
+  });
+  document.getElementById('areaInfluenciaSelect').addEventListener('change', function() {
+    areaInfluenciaSelecionada = Array.from(this.selectedOptions).length > 0;
+    atualizarMapaBaseRegioes();
+    atualizarMunicipiosPorRegiao();
+    preencherRodovias();
+    preencherSREs();
+    aplicarFiltros({ zoomAreaInfluencia: true });
+  });
+  document.getElementById('areaInfluenciaSelectLimpar').addEventListener('click', function() {
+    areaInfluenciaSelecionada = false;
+    document.getElementById('areaInfluenciaSelect').value = '';
+    sincronizarFiltroAreaInfluencia();
+    document.getElementById('areaInfluenciaSelect').dispatchEvent(new Event('change'));
   });
   ['manutencao', 'planejamento'].forEach(function(tipo) {
     document.getElementById(tipo === 'manutencao' ? 'toggleRegioesManutencao' : 'toggleRegioesPlanejamento').addEventListener('click', function() {
