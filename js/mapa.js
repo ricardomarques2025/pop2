@@ -3632,7 +3632,7 @@ map.addControl(new LogoMapaControl());
       style: ESTILO_AREA_INFLUENCIA,
       onEachFeature: function(feature, layer) {
         vincularPopupComAreaClique(layer, function() {
-          return construirPopupAreaBase(feature, valorSeguro(feature, 'NOME') || 'Área de Influência', [
+          return construirPopupAreaBase(feature, nomeExibicaoAreaInfluencia(feature, 0), [
             { rotulo: 'Área (km²)', nome: 'AREA_KM2', tipo: 'numero', casas: 2 }
           ]);
         });
@@ -7613,7 +7613,7 @@ map.addControl(new LogoMapaControl());
     } else if (temFiltroRegional()) {
       novoTitulo = rgSelecionada.concat(regioesSelecionadas('rgManSelect').map(function(id) { return 'Manutenção ' + id; })).join(' / ');
     } else if (temFiltroAreaInfluencia()) {
-      novoTitulo = valorSeguro(featuresAreaInfluenciaSelecionada()[0], 'NOME') || 'ÁREA DE INFLUÊNCIA';
+      novoTitulo = nomeExibicaoAreaInfluencia(featuresAreaInfluenciaSelecionada()[0], 0).toUpperCase();
     }
     
     if (elementoTitulo) {

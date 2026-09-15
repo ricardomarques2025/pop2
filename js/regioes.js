@@ -23,6 +23,11 @@ function temFiltroGeografico() {
   return temFiltroRegional() || temFiltroAreaInfluencia();
 }
 
+function nomeExibicaoAreaInfluencia(feature, indice) {
+  var nome = valorSeguro(feature, 'NOME') || 'Área de Estudo ' + (indice + 1);
+  return String(nome).replace(/Área de Influência/gi, 'Área de Estudo');
+}
+
 function nomeRegiaoPlanejamento(feature) {
   return String(valorSeguro(feature, 'RG_PLAN') || valorSeguro(feature, 'REG_PLAN'));
 }
@@ -93,7 +98,7 @@ function prepararFiltroAreaInfluencia() {
   if (!select || !areaInfluenciaData || !areaInfluenciaData.features) return;
   select.replaceChildren();
   areaInfluenciaData.features.forEach(function(feature, indice) {
-    var nome = valorSeguro(feature, 'NOME') || 'Área de Influência ' + (indice + 1);
+    var nome = nomeExibicaoAreaInfluencia(feature, indice);
     select.add(new Option(nome, String(indice)));
   });
   var lista = document.getElementById('areaInfluenciaSelectLista');
@@ -275,13 +280,13 @@ function atualizarLegendasRegionais() {
         var item = document.createElement('div');
         item.className = 'legenda-item';
         item.innerHTML = '<span class="legenda-regiao-amostra"><span style="background:#87cefa;opacity:0"></span></span>' +
-          '<div class="legenda-texto">' + escapeHtml(valorSeguro(feature, 'NOME') || 'Área de Influência') + '</div>';
+          '<div class="legenda-texto">' + escapeHtml(nomeExibicaoAreaInfluencia(feature, 0)) + '</div>';
         alvoArea.appendChild(item);
       });
       if (!areaInfluenciaSelecionada) {
         var itemPadrao = document.createElement('div');
         itemPadrao.className = 'legenda-item';
-        itemPadrao.innerHTML = '<span class="legenda-regiao-amostra"><span style="background:#87cefa;opacity:0.25"></span></span><div class="legenda-texto">Área de Influência</div>';
+        itemPadrao.innerHTML = '<span class="legenda-regiao-amostra"><span style="background:#87cefa;opacity:0.25"></span></span><div class="legenda-texto">Área de Estudo</div>';
         alvoArea.appendChild(itemPadrao);
       }
     }
